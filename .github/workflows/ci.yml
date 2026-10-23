@@ -1,0 +1,70 @@
+# Quality gates for pull requests and pushes. No secrets are used: the backend
+# e2e suite starts its own throwaway PostgreSQL (embedded-postgres), and the
+# optional live API contract test is skipped because LIVE_API_BASE_URL is unset.
+# Nothing here deploys, migrates or seeds a real database.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flutter:
+    name: Flutter (analyze, tests, goldens)
+    # Golden baselines were generated on Windows; font rasterisation differs between
+    # platforms, so the goldens are compared on the same OS.
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.5
+          cache: true
+      - name: Dependencies (locked)
+        run: flutter pub get --enforce-lockfile
+      - name: Analyze
+        run: flutter analyze
+      - name: Tests (includes the golden tests; live API test is skipped)
+        run: flutter test
+
+  backend:
+    name: Backend (types, build, unit, e2e)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.11.1
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - name: Install (locked; generates the Prisma client)
+        run: npm ci
+      - name: Prisma schema
+        run: npm run prisma:validate
+      - name: Format
+        run: npm run format:check
+      - name: Type check
+        run: npm run lint
+      - name: Build
+        run: npm run build
+      - name: Unit tests
+        run: npm test
+      - name: E2E tests (ephemeral local PostgreSQL)
+        run: npm run test:e2e
+      - name: Dependency audit (runtime dependencies)
+        run: npm audit --omit=dev --audit-level=high
