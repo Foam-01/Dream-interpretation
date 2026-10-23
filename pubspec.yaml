@@ -36,7 +36,6 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -58,6 +57,15 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  # Noto Thai variable fonts (OFL), bundled so the app works offline.
+  fonts:
+    - family: NotoSansThai
+      fonts:
+        - asset: assets/fonts/NotoSansThai.ttf
+    - family: NotoSerifThai
+      fonts:
+        - asset: assets/fonts/NotoSerifThai.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

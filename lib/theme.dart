@@ -1,60 +1,60 @@
 import 'package:flutter/material.dart';
 
-/// Placeholder design tokens. Replace with values from the Claude Design
-/// file (`Dream App.dc.html`) once it can be read.
-class AppColors {
-  static const night = Color(0xFF1B1035);
-  static const nightSoft = Color(0xFF2A1B4F);
-  static const card = Color(0xFF33245E);
-  static const gold = Color(0xFFE8C26A);
-  static const goldSoft = Color(0xFFF5E2B0);
-  static const text = Color(0xFFF4EEFF);
-  static const textMuted = Color(0xFFB9AED6);
-  static const danger = Color(0xFFFF8A80);
+/// Design tokens taken from Claude Design `Dream App.dc.html`.
+class C {
+  static const red = Color(0xFF8E1414);
+  static const redBright = Color(0xFFB81E1E);
+  static const redTile = Color(0xFFC42424);
+  static const redDeep = Color(0xFF5A0E0E);
+  static const gold = Color(0xFFF2C96B);
+  static const goldDeep = Color(0xFFD4A23A);
+  static const goldLight = Color(0xFFFFE3A3);
+  static const goldBorder = Color(0xFFE4C27A);
+  static const goldMuted = Color(0xFFC9A25A);
+  static const tabInactive = Color(0xFFD9B88A);
+  static const cream = Color(0xFFFBF4E8);
+  static const card = Color(0xFFFFFDF7);
+  static const input = Color(0xFFFFF8EA);
+  static const tileLight = Color(0xFFFBECC8);
+  static const divider = Color(0xFFF0E2C4);
+  static const chipGrey = Color(0xFFE9DCC4);
+  static const onRed = Color(0xFFFFF3D6);
+  static const onRedMuted = Color(0xFFF7D9A8);
+  static const ink = Color(0xFF3A1A10);
+  static const inkBody = Color(0xFF4A2A1A);
+  static const inkSoft = Color(0xFF5A3A2A);
+  static const inkMuted = Color(0xFF7A5A4A);
+  static const caption = Color(0xFF9A7A4A);
+  static const placeholder = Color(0xFFA8796A);
+  static const imgText = Color(0xFF8A6A3A);
+  static const stripeA = Color(0xFFF3E2BF);
+  static const stripeB = Color(0xFFEAD3A3);
 }
 
-class AppSpacing {
-  static const xs = 4.0;
-  static const sm = 8.0;
-  static const md = 16.0;
-  static const lg = 24.0;
-  static const radius = 16.0;
-}
+TextStyle _font(String family, double size, FontWeight weight, Color color, double? letterSpacing, double? height) =>
+    TextStyle(
+      fontFamily: family,
+      fontSize: size,
+      fontWeight: weight,
+      // Variable fonts: drive the wght axis explicitly.
+      fontVariations: [FontVariation.weight(weight.value.toDouble())],
+      color: color,
+      letterSpacing: letterSpacing,
+      height: height,
+    );
+
+TextStyle serif(double size, {FontWeight weight = FontWeight.w700, Color color = C.ink, double? letterSpacing, double? height}) =>
+    _font('NotoSerifThai', size, weight, color, letterSpacing, height);
+
+TextStyle sans(double size, {FontWeight weight = FontWeight.w400, Color color = C.ink, double? height}) =>
+    _font('NotoSansThai', size, weight, color, null, height);
 
 ThemeData buildTheme() {
-  final base = ThemeData(
+  return ThemeData(
     useMaterial3: true,
-    brightness: Brightness.dark,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: AppColors.gold,
-      brightness: Brightness.dark,
-      primary: AppColors.gold,
-      surface: AppColors.night,
-    ),
-  );
-  return base.copyWith(
-    scaffoldBackgroundColor: AppColors.night,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: AppColors.night,
-      foregroundColor: AppColors.goldSoft,
-      centerTitle: true,
-      elevation: 0,
-    ),
-    cardTheme: CardThemeData(
-      color: AppColors.card,
-      elevation: 0,
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radius)),
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: AppColors.nightSoft,
-      hintStyle: const TextStyle(color: AppColors.textMuted),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppSpacing.radius),
-        borderSide: BorderSide.none,
-      ),
-    ),
-    textTheme: base.textTheme.apply(bodyColor: AppColors.text, displayColor: AppColors.text),
+    fontFamily: 'NotoSansThai',
+    colorScheme: ColorScheme.fromSeed(seedColor: C.red, primary: C.red, surface: C.cream),
+    scaffoldBackgroundColor: C.cream,
+    textSelectionTheme: const TextSelectionThemeData(cursorColor: C.redBright),
   );
 }

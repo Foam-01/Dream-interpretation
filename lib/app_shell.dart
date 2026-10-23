@@ -1,0 +1,255 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'data/design_data.dart';
+import 'screens/feature_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/menu_screen.dart';
+import 'screens/result_screen.dart';
+import 'screens/search_screen.dart';
+import 'theme.dart';
+
+sealed class AppPage {
+  const AppPage();
+}
+
+class HomePage extends AppPage {
+  const HomePage();
+}
+
+class SearchPage extends AppPage {
+  const SearchPage();
+}
+
+class ResultPage extends AppPage {
+  final int index;
+  const ResultPage(this.index);
+}
+
+class MenuPage extends AppPage {
+  final String tab;
+  const MenuPage(this.tab);
+}
+
+class FeaturePage extends AppPage {
+  final String key;
+  const FeaturePage(this.key);
+}
+
+/// Navigation + shared UI state, exposed to screens via [AppScope].
+class AppController extends ChangeNotifier {
+  String tab = 'home';
+  final Map<String, List<AppPage>> _stacks = {for (final t in _tabs) t.$1: [_root(t.$1)]};
+  String query = '';
+  String cat = 'ทั้งหมด';
+  final Set<int> saved = {};
+
+  AppPage get page => _stacks[tab]!.last;
+  int get depth => _stacks[tab]!.length;
+
+  static AppPage _root(String t) => switch (t) {
+        'home' => const HomePage(),
+        'dream' => const SearchPage(),
+        _ => MenuPage(t),
+      };
+
+  void goTab(String t) {
+    tab = t;
+    _stacks[t] = [_root(t)];
+    notifyListeners();
+  }
+
+  void goSearch({bool resetCat = false}) {
+    if (resetCat) cat = 'ทั้งหมด';
+    goTab('dream');
+  }
+
+  void openDream(int i) {
+    tab = 'dream';
+    _stacks['dream'] = [const SearchPage(), ResultPage(i)];
+    notifyListeners();
+  }
+
+  void openFeat(String k) {
+    tab = tabOf(k);
+    _stacks[tab] = [MenuPage(tab), FeaturePage(k)];
+    notifyListeners();
+  }
+
+  /// Returns false when nothing left to pop (let the system exit).
+  bool back() {
+    if (depth > 1) {
+      _stacks[tab]!.removeLast();
+    } else if (tab != 'home') {
+      tab = 'home';
+    } else {
+      return false;
+    }
+    notifyListeners();
+    return true;
+  }
+
+  void setQuery(String q) {
+    query = q;
+    notifyListeners();
+  }
+
+  void setCat(String c) {
+    cat = c;
+    notifyListeners();
+  }
+
+  void toggleSave(int i) {
+    saved.contains(i) ? saved.remove(i) : saved.add(i);
+    notifyListeners();
+  }
+}
+
+class AppScope extends InheritedNotifier<AppController> {
+  const AppScope({super.key, required AppController controller, required super.child})
+      : super(notifier: controller);
+
+  static AppController of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<AppScope>()!.notifier!;
+}
+
+const _tabs = [
+  ('home', 'หน้าแรก', 'บ'),
+  ('dream', 'ทำนายฝัน', 'ฝ'),
+  ('lucky', 'เลขเด็ด', '๙'),
+  ('ritual', 'แก้ฝัน', 'ธ'),
+  ('book', 'ตำรา', 'ต'),
+];
+
+class AppShell extends StatefulWidget {
+  const AppShell({super.key});
+  @override
+  State<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends State<AppShell> {
+  final _controller = AppController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Widget _screenFor(AppPage page) => switch (page) {
+        HomePage() => const HomeScreen(),
+        SearchPage() => const SearchScreen(),
+        ResultPage(:final index) => ResultScreen(index: index),
+        MenuPage(:final tab) => MenuScreen(tab: tab),
+        FeaturePage(:final key) => FeatureScreen(featKey: key),
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    return AppScope(
+      controller: _controller,
+      child: ListenableBuilder(
+        listenable: _controller,
+        builder: (context, _) {
+          final page = _controller.page;
+          return PopScope(
+            canPop: _controller.depth == 1 && _controller.tab == 'home',
+            onPopInvokedWithResult: (didPop, _) {
+              if (!didPop) _controller.back();
+            },
+            child: AnnotatedRegion<SystemUiOverlayStyle>(
+              value: const SystemUiOverlayStyle(
+                statusBarColor: C.red,
+                statusBarIconBrightness: Brightness.light,
+                systemNavigationBarColor: C.redDeep,
+                systemNavigationBarIconBrightness: Brightness.light,
+              ),
+              child: Scaffold(
+                backgroundColor: C.cream,
+                body: Column(children: [
+                  Container(color: C.red, height: MediaQuery.paddingOf(context).top),
+                  Expanded(
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
+                      child: KeyedSubtree(
+                        // New key per page so scroll position resets like the design.
+                        key: ValueKey('${_controller.tab}/${_controller.depth}/${page.runtimeType}/${_pageId(page)}'),
+                        child: _screenFor(page),
+                      ),
+                    ),
+                  ),
+                  _BottomTabs(current: _controller.tab, onTap: _controller.goTab),
+                ]),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  String _pageId(AppPage p) => switch (p) {
+        ResultPage(:final index) => '$index',
+        FeaturePage(:final key) => key,
+        MenuPage(:final tab) => tab,
+        _ => '',
+      };
+}
+
+class _BottomTabs extends StatelessWidget {
+  final String current;
+  final ValueChanged<String> onTap;
+  const _BottomTabs({required this.current, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final bottom = MediaQuery.paddingOf(context).bottom;
+    return Container(
+      decoration: const BoxDecoration(
+        color: C.redDeep,
+        border: Border(top: BorderSide(color: C.goldDeep, width: 2)),
+      ),
+      padding: EdgeInsets.fromLTRB(4, 6, 4, 6 + (bottom > 0 ? bottom : 8)),
+      child: Row(children: [
+        for (final (key, label, glyph) in _tabs)
+          Expanded(
+            child: Semantics(
+              button: true,
+              selected: key == current,
+              label: label,
+              excludeSemantics: true,
+              child: InkResponse(
+                onTap: () => onTap(key),
+                child: SizedBox(
+                  height: 48,
+                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Container(
+                      width: 34,
+                      height: 28,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: key == current ? C.gold : Colors.transparent,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Text(glyph,
+                          style: serif(15, color: key == current ? C.redDeep : C.tabInactive, height: 1.2)),
+                    ),
+                    const SizedBox(height: 3),
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(label,
+                            maxLines: 1,
+                            style: sans(11, color: key == current ? C.goldLight : C.tabInactive, height: 1.1)),
+                      ),
+                    ),
+                  ]),
+                ),
+              ),
+            ),
+          ),
+      ]),
+    );
+  }
+}
