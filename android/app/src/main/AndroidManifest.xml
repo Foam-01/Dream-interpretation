@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required for API mode (API_BASE_URL); release builds have no other network access. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="ทำนายฝัน"
         android:name="${applicationName}"

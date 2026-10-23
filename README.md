@@ -8,6 +8,12 @@ A Flutter application for dream interpretation.
 |--------|----------|
 | [![Foam-01](https://avatars.githubusercontent.com/Foam-01?s=64)](https://github.com/Foam-01) | [@Foam-01](https://github.com/Foam-01) |
 
+## Data source
+
+By default the app uses bundled SAMPLE data. Build with
+`--dart-define=API_BASE_URL=http://10.0.2.2:3000/api/v1` to read dreams from the backend in `backend/`.
+See [docs/api-mode.md](docs/api-mode.md).
+
 ## Getting Started
 
 This project is built with Flutter.

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'data/design_data.dart';
+import 'data/dream_repository.dart';
+import 'data/sample_dream_repository.dart';
 import 'screens/feature_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/menu_screen.dart';
@@ -38,6 +40,11 @@ class FeaturePage extends AppPage {
 
 /// Navigation + shared UI state, exposed to screens via [AppScope].
 class AppController extends ChangeNotifier {
+  AppController({this.repository = const SampleDreamRepository()});
+
+  /// Source of dream data for Home, Search and Result (sample data or the API).
+  final DreamRepository repository;
+
   String tab = 'home';
   final Map<String, List<AppPage>> _stacks = {for (final t in _tabs) t.$1: [_root(t.$1)]};
   String query = '';
@@ -122,16 +129,19 @@ const _tabs = [
 ];
 
 class AppShell extends StatefulWidget {
-  const AppShell({super.key, this.clock = DateTime.now});
+  const AppShell({super.key, this.clock = DateTime.now, this.repository = const SampleDreamRepository()});
 
   /// Called once per screen build to give date-dependent screens a single instant.
   final DateTime Function() clock;
+
+  /// Dream data source handed to [AppController.repository].
+  final DreamRepository repository;
   @override
   State<AppShell> createState() => _AppShellState();
 }
 
 class _AppShellState extends State<AppShell> {
-  final _controller = AppController();
+  late final _controller = AppController(repository: widget.repository);
 
   @override
   void dispose() {

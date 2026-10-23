@@ -2,19 +2,63 @@ import 'package:flutter/material.dart';
 
 import '../app_shell.dart';
 import '../data/design_data.dart';
+import '../state/load_request.dart';
 import '../theme.dart';
 import '../widgets/ui.dart';
 
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
   final String dreamId;
   const ResultScreen({super.key, required this.dreamId});
 
   @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
+  // One request per screen: AppShell gives every dream page its own key, so
+  // a different dream id always gets a fresh State (no stale detail).
+  final _request = LoadRequest<Dream?>();
+  bool _started = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
+    final repo = AppScope.of(context).repository;
+    _request.run(() => repo.byId(widget.dreamId));
+    _request.addListener(_changed);
+  }
+
+  void _changed() => setState(() {});
+
+  @override
+  void dispose() {
+    _request.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final app = AppScope.of(context);
-    final d = dreamById(dreamId);
+    switch (_request.status) {
+      case LoadStatus.idle || LoadStatus.loading:
+        return _Placeholder(onBack: () => app.goSearch(), child: const GoldLoading(height: 200));
+      case LoadStatus.failure:
+        return _Placeholder(
+          onBack: () => app.goSearch(),
+          child: LoadErrorView(message: loadErrorMessage(_request.error), onRetry: _request.retry),
+        );
+      case LoadStatus.success:
+    }
+    final d = _request.value;
     // Unknown id: never fall back to another dream; show a not-found state.
-    if (d == null) return _NotFound(onBack: () => app.goSearch());
+    if (d == null) {
+      return _Placeholder(
+        onBack: () => app.goSearch(),
+        child: Text('ไม่พบความฝันนี้', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
+      );
+    }
     final saved = app.saved.contains(d.id);
 
     return ListView(padding: EdgeInsets.zero, children: [
@@ -175,9 +219,11 @@ class _LuckBar extends StatelessWidget {
       );
 }
 
-class _NotFound extends StatelessWidget {
+/// Red header with a back link above a not-found, loading or error body.
+class _Placeholder extends StatelessWidget {
   final VoidCallback onBack;
-  const _NotFound({required this.onBack});
+  final Widget child;
+  const _Placeholder({required this.onBack, required this.child});
 
   @override
   Widget build(BuildContext context) => ListView(padding: EdgeInsets.zero, children: [
@@ -185,9 +231,6 @@ class _NotFound extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
           child: Align(alignment: Alignment.centerLeft, child: BackLink(label: 'กลับ', onTap: onBack)),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 40),
-          child: Text('ไม่พบความฝันนี้', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
-        ),
+        Padding(padding: const EdgeInsets.symmetric(vertical: 40), child: child),
       ]);
 }

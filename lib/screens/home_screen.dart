@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../app_shell.dart';
 import '../data/design_data.dart';
+import '../data/dream_repository.dart';
 import '../data/formulas.dart';
+import '../state/load_request.dart';
 import '../theme.dart';
 import '../widgets/ui.dart';
 
@@ -144,19 +146,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       const SectionLabel('ฝันยอดฮิตวันนี้'),
-      // Row sizes to the tallest card instead of a fixed height that clipped it.
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: IntrinsicHeight(
-          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            for (var i = 0; i < 5; i++) ...[
-              if (i > 0) const SizedBox(width: 10),
-              DreamCard(dreamId: dreams[i].id, width: 120, number: dreams[i].firstTwo),
-            ],
-          ]),
-        ),
-      ),
+      const _HotDreams(),
       const SizedBox(height: 24),
     ]);
   }
@@ -197,29 +187,89 @@ class _Badge extends StatelessWidget {
 }
 
 /// Card with image placeholder + dream name + number (home hot list, digit screen).
-class DreamCard extends StatelessWidget {
-  final String dreamId;
-  final double? width;
-  final String number;
-  final double numberSize;
-  const DreamCard({super.key, required this.dreamId, required this.number, this.width, this.numberSize = 16});
+/// "ฝันยอดฮิตวันนี้": the first five dreams in catalogue order, from the repository.
+class _HotDreams extends StatefulWidget {
+  const _HotDreams();
+  @override
+  State<_HotDreams> createState() => _HotDreamsState();
+}
+
+// Kept alive inside Home's ListView so scrolling it off screen does not refetch.
+class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMixin {
+  final _request = LoadRequest<DreamPage>();
+  bool _started = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
+    final repo = AppScope.of(context).repository;
+    _request.run(() => repo.list(limit: 5));
+    _request.addListener(_changed);
+  }
+
+  void _changed() => setState(() {});
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    _request.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final d = dreamById(dreamId);
-    if (d == null) return const SizedBox.shrink();
+    super.build(context);
+    final items = _request.value?.items ?? const <DreamSummary>[];
+    return switch (_request.status) {
+      LoadStatus.idle || LoadStatus.loading => const GoldLoading(height: 136),
+      LoadStatus.failure => LoadErrorView(message: loadErrorMessage(_request.error), onRetry: _request.retry),
+      LoadStatus.success when items.isEmpty => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 24),
+          child: Text('ยังไม่มีความฝันยอดฮิต', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
+        ),
+      // Row sizes to the tallest card instead of a fixed height that clipped it.
+      LoadStatus.success => SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: IntrinsicHeight(
+            child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              for (var i = 0; i < items.length; i++) ...[
+                if (i > 0) const SizedBox(width: 10),
+                DreamCard(dreamId: items[i].id, name: items[i].name, width: 120, number: items[i].firstTwo),
+              ],
+            ]),
+          ),
+        ),
+    };
+  }
+}
+
+class DreamCard extends StatelessWidget {
+  final String dreamId, name;
+  final double? width;
+  final String number;
+  final double numberSize;
+  const DreamCard(
+      {super.key, required this.dreamId, required this.name, required this.number, this.width, this.numberSize = 16});
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       width: width,
       child: CreamCard(
         radius: 14,
         padding: EdgeInsets.zero,
-        onTap: () => AppScope.of(context).openDream(d.id),
+        onTap: () => AppScope.of(context).openDream(dreamId),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-          ImagePlaceholder('ภาพ ${d.name}', height: 80, width: double.infinity),
+          ImagePlaceholder('ภาพ $name', height: 80, width: double.infinity),
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('ฝันเห็น${d.name}',
+              Text('ฝันเห็น$name',
                   maxLines: 1, overflow: TextOverflow.ellipsis, style: sans(14, weight: FontWeight.w600)),
               Text(number, style: serif(numberSize, color: C.redBright, height: 1.3)),
             ]),

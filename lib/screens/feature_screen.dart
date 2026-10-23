@@ -395,7 +395,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,
                 childAspectRatio: 1.15,
-                children: [for (final d in list) DreamCard(dreamId: d.id, number: d.two, numberSize: 15)],
+                children: [for (final d in list) DreamCard(dreamId: d.id, name: d.name, number: d.two, numberSize: 15)],
               ),
       ),
     ];

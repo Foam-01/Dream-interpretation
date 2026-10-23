@@ -322,3 +322,48 @@ class ContentGrid extends StatelessWidget {
     return Column(children: rows);
   }
 }
+
+/// Centered gold progress indicator for data that is still loading.
+class GoldLoading extends StatelessWidget {
+  final double height;
+  const GoldLoading({super.key, this.height = 120});
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+        height: height,
+        child: const Center(
+          child: SizedBox(
+            width: 28,
+            height: 28,
+            child: CircularProgressIndicator(strokeWidth: 3, color: C.gold, semanticsLabel: 'กำลังโหลด'),
+          ),
+        ),
+      );
+}
+
+/// Short Thai error message with a gold "ลองใหม่" (retry) pill.
+class LoadErrorView extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+  const LoadErrorView({super.key, required this.message, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text(message, textAlign: TextAlign.center, style: sans(14, color: C.caption)),
+          const SizedBox(height: 12),
+          Semantics(
+            button: true,
+            child: GestureDetector(
+              onTap: onRetry,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                decoration: BoxDecoration(color: C.gold, borderRadius: BorderRadius.circular(20)),
+                child: Text('ลองใหม่', style: sans(14, weight: FontWeight.w600, color: C.redDeep)),
+              ),
+            ),
+          ),
+        ]),
+      );
+}

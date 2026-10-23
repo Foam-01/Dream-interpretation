@@ -1,7 +1,7 @@
 # Flutter integration contract
 
-Status: **contract ready, app not yet connected.** The Flutter app still uses `lib/data/design_data.dart`.
-Connecting it is a separate milestone and must keep the current UI/UX.
+Status: **connected.** The Flutter app uses this API when built with `--dart-define=API_BASE_URL=...`
+and the bundled sample data otherwise. See [docs/api-mode.md](../../docs/api-mode.md) for app-side behaviour.
 
 ## Base URL
 
@@ -74,6 +74,7 @@ Malformed id (not a lowercase slug) → 400 `VALIDATION_ERROR`.
 
 | Flutter | API | Notes |
 |---|---|---|
+| `DreamSummary` | list item | `GET /dreams` items; `Dream` is built only from the detail |
 | `Dream.id` | `id` | Same stable slugs |
 | `name` | `name` | |
 | `cat` (Thai name) | `category.name` (+ `category.id`) | Filter by `category.id` |
