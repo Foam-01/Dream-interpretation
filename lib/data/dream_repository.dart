@@ -36,7 +36,12 @@ class DreamSummary {
   /// Category slug and Thai display name.
   final DreamCategory category;
   final LuckyNumbers numbers;
-  final bool good;
+
+  /// null when the source does not say whether the dream is a good omen.
+  final bool? good;
+
+  /// null when there is no image; cards then show the placeholder.
+  final DreamImage? image;
   final ContentStatus contentStatus;
   const DreamSummary({
     required this.id,
@@ -46,22 +51,27 @@ class DreamSummary {
     required this.numbers,
     required this.good,
     required this.contentStatus,
+    this.image,
   });
 
-  /// Summary of a bundled sample dream.
-  DreamSummary.fromDream(Dream d, {required this.category})
+  /// Summary of a bundled dream (the bundled หมวด ก content is owner-approved, i.e. verified).
+  DreamSummary.fromDream(Dream d, {required this.category, this.contentStatus = ContentStatus.verified})
     : id = d.id,
       name = d.name,
       short = d.short,
       numbers = d.numbers,
       good = d.good,
-      contentStatus = ContentStatus.sample;
+      image = d.image;
 
   /// Thai category name, like [Dream.cat].
   String get cat => category.name;
   String get two => numbers.twoDisplay;
   String get firstTwo => numbers.firstTwo;
 }
+
+/// List order: the curated catalogue order (default, what every screen uses), or Thai
+/// dictionary order ก–ฮ computed by the backend with ICU collation (API `sort=name`).
+enum DreamSort { catalogue, name }
 
 /// One page of `GET /dreams` results.
 class DreamPage {
@@ -134,7 +144,15 @@ abstract interface class DreamRepository {
   /// (case-sensitive substring), optionally limited to [categoryId].
   /// Fails with [DreamRepositoryErrorKind.invalidRequest] for an unknown
   /// category, an over-long query or out-of-range paging.
-  Future<DreamPage> list({String? q, String? categoryId, int page = 1, int limit = defaultPageSize});
+  /// [DreamSort.name] is only available from the API; local repositories fail with
+  /// [DreamRepositoryErrorKind.invalidRequest] rather than approximate Thai ordering.
+  Future<DreamPage> list({
+    String? q,
+    String? categoryId,
+    int page = 1,
+    int limit = defaultPageSize,
+    DreamSort sort = DreamSort.catalogue,
+  });
 
   /// The dream with this stable id, or null when none exists.
   Future<Dream?> byId(String id);

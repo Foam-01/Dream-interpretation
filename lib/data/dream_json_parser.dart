@@ -48,18 +48,11 @@ DreamPage parseDreamPage(Object? json) {
 Dream parseDreamDetail(Object? json) {
   final m = _map(_map(json, r'$')['data'], 'data');
   final s = _summary(m, 'data');
+  // Digits may be empty for sourced content (printed sources often give only 2/3-digit numbers).
   final digits = _strings(m['digits'], 'data.digits');
   for (var i = 0; i < digits.length; i++) {
     if (!_digit.hasMatch(digits[i])) throw DreamJsonException('data.digits[$i]', 'is not a single digit');
   }
-  if (digits.isEmpty) throw const DreamJsonException('data.digits', 'is empty');
-  final luck = _map(m['luckForecast'], 'data.luckForecast');
-  final money = _int(luck['money'], 'data.luckForecast.money');
-  final love = _int(luck['love'], 'data.luckForecast.love');
-  final health = _int(luck['health'], 'data.luckForecast.health');
-  // Check before constructing: LuckForecast's asserts would throw in debug only.
-  final problems = LuckForecast.check(money: money, love: love, health: health);
-  if (problems.isNotEmpty) throw DreamJsonException('data.luckForecast', problems.join('; '));
   final dream = Dream(
     s.id,
     s.name,
@@ -68,9 +61,12 @@ Dream parseDreamDetail(Object? json) {
     List.unmodifiable(digits),
     s.short,
     _string(m['meaning'], 'data.meaning'),
-    LuckForecast(money: money, love: love, health: health),
+    _forecast(_required(m, 'luckForecast', 'data'), 'data.luckForecast'),
     s.good,
-    _string(m['advice'], 'data.advice'),
+    _nullable(_required(m, 'advice', 'data'), 'data.advice', _string),
+    image: s.image,
+    source: _nullable(m['source'], 'data.source', _source),
+    aliases: m.containsKey('aliases') ? List.unmodifiable(_aliases(m['aliases'], 'data.aliases')) : const [],
   );
   final invalid = dream.validate();
   if (invalid.isNotEmpty) throw DreamJsonException('data', invalid.join('; '));
@@ -90,10 +86,17 @@ DreamSummary _summary(Map<String, Object?> m, String path) {
   final id = _string(m['id'], '$path.id');
   if (!_slug.hasMatch(id)) throw DreamJsonException('$path.id', 'is not a slug');
   final numbersJson = _map(m['numbers'], '$path.numbers');
-  final numbers = LuckyNumbers.copy(
+  final parsed = LuckyNumbers.copy(
     twoDigit: _strings(numbersJson['twoDigit'], '$path.numbers.twoDigit'),
     threeDigit: _strings(numbersJson['threeDigit'], '$path.numbers.threeDigit'),
   );
+  // "ไม่ควรเสี่ยง" must be explicit: empty numbers without the flag (or numbers with it) are invalid.
+  // Absent in the first API version, where numbers were always present.
+  final noLucky = m.containsKey('noLuckyNumbers') ? _bool(m['noLuckyNumbers'], '$path.noLuckyNumbers') : false;
+  if (noLucky != parsed.isNone) {
+    throw DreamJsonException('$path.numbers', noLucky ? 'must be empty when noLuckyNumbers' : 'is empty');
+  }
+  final numbers = noLucky ? const LuckyNumbers.none() : parsed;
   final problems = numbers.validate();
   if (problems.isNotEmpty) throw DreamJsonException('$path.numbers', problems.join('; '));
   return DreamSummary(
@@ -101,14 +104,78 @@ DreamSummary _summary(Map<String, Object?> m, String path) {
     name: _string(m['name'], '$path.name'),
     category: _category(m['category'], '$path.category'),
     short: _string(m['short'], '$path.short'),
-    good: _bool(m['isGoodOmen'], '$path.isGoodOmen'),
+    good: _nullable(_required(m, 'isGoodOmen', path), '$path.isGoodOmen', _bool),
     numbers: numbers,
+    // Fields added after the first API version: absent is treated like null.
+    image: _nullable(m['image'], '$path.image', _image),
     contentStatus: switch (m['contentStatus']) {
       'SAMPLE' => ContentStatus.sample,
       'VERIFIED' => ContentStatus.verified,
       _ => throw DreamJsonException('$path.contentStatus', 'is not SAMPLE or VERIFIED'),
     },
   );
+}
+
+/// Present in the response (null allowed): catches a server that dropped a field.
+Object? _required(Map<String, Object?> m, String key, String path) =>
+    m.containsKey(key) ? m[key] : throw DreamJsonException('$path.$key', 'is missing');
+
+T? _nullable<T>(Object? v, String path, T Function(Object? v, String path) parse) => v == null ? null : parse(v, path);
+
+LuckForecast? _forecast(Object? json, String path) {
+  if (json == null) return null;
+  final luck = _map(json, path);
+  final money = _int(luck['money'], '$path.money');
+  final love = _int(luck['love'], '$path.love');
+  final health = _int(luck['health'], '$path.health');
+  // Check before constructing: LuckForecast's asserts would throw in debug only.
+  final problems = LuckForecast.check(money: money, love: love, health: health);
+  if (problems.isNotEmpty) throw DreamJsonException(path, problems.join('; '));
+  return LuckForecast(money: money, love: love, health: health);
+}
+
+final _https = RegExp(r'^https://\S+$');
+
+String _httpsUrl(Object? v, String path) {
+  final s = _string(v, path);
+  final uri = Uri.tryParse(s);
+  if (!_https.hasMatch(s) || uri == null || uri.host.isEmpty) throw DreamJsonException(path, 'is not an https URL');
+  return s;
+}
+
+DreamImage _image(Object? json, String path) {
+  final m = _map(json, path);
+  return DreamImage(
+    url: _httpsUrl(m['url'], '$path.url'),
+    alt: _nullable(m['alt'], '$path.alt', _string),
+    credit: _string(m['credit'], '$path.credit'),
+    license: _string(m['license'], '$path.license'),
+    sourceUrl: _nullable(m['sourceUrl'], '$path.sourceUrl', _httpsUrl),
+  );
+}
+
+DreamSource _source(Object? json, String path) {
+  final m = _map(json, path);
+  final id = _string(m['id'], '$path.id');
+  if (!_slug.hasMatch(id)) throw DreamJsonException('$path.id', 'is not a slug');
+  return DreamSource(
+    id: id,
+    title: _string(m['title'], '$path.title'),
+    author: _nullable(m['author'], '$path.author', _string),
+    publisher: _nullable(m['publisher'], '$path.publisher', _string),
+    edition: _nullable(m['edition'], '$path.edition', _string),
+    year: _nullable(m['year'], '$path.year', (v, p) => _int(v, p, min: 1000)),
+    url: _nullable(m['url'], '$path.url', _httpsUrl),
+    locator: _nullable(m['locator'], '$path.locator', _string),
+  );
+}
+
+List<String> _aliases(Object? v, String path) {
+  final list = _strings(v, path);
+  for (var i = 0; i < list.length; i++) {
+    _string(list[i], '$path[$i]');
+  }
+  return list;
 }
 
 DreamCategory _category(Object? json, String path) {

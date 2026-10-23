@@ -1,6 +1,8 @@
 // Content ported from Claude Design `Dream App.dc.html`.
 // Lottery numbers are kept as String to preserve leading zeros ("08").
 
+import 'dreams_k.dart';
+
 /// Two- and three-digit lucky numbers of a dream, stored as literal strings so
 /// leading zeros survive ("08", "098"). Never derived from other fields.
 class LuckyNumbers {
@@ -19,6 +21,15 @@ class LuckyNumbers {
   factory LuckyNumbers.copy({required List<String> twoDigit, required List<String> threeDigit}) =>
       LuckyNumbers(twoDigit: List.unmodifiable(twoDigit), threeDigit: List.unmodifiable(threeDigit));
 
+  /// The source says "ไม่ควรเสี่ยง": no lucky numbers at all (both lists empty).
+  const LuckyNumbers.none() : _twoDigit = const [], _threeDigit = const [];
+
+  /// Text shown instead of numbers for [LuckyNumbers.none].
+  static const noLuckyNumbersText = 'ไม่ควรเสี่ยง';
+
+  /// True for "ไม่ควรเสี่ยง" (no numbers in either list).
+  bool get isNone => _twoDigit.isEmpty && _threeDigit.isEmpty;
+
   final List<String> _twoDigit;
   final List<String> _threeDigit;
 
@@ -29,14 +40,15 @@ class LuckyNumbers {
   /// Display separator used throughout the UI (space, U+00B7, space).
   static const separator = ' · ';
 
-  String get twoDisplay => _twoDigit.join(separator);
-  String get threeDisplay => _threeDigit.join(separator);
-  String get firstTwo => _twoDigit.first;
+  String get twoDisplay => isNone ? noLuckyNumbersText : _twoDigit.join(separator);
+  String get threeDisplay => isNone ? noLuckyNumbersText : _threeDigit.join(separator);
+  String get firstTwo => isNone ? noLuckyNumbersText : _twoDigit.first;
 
   /// Problems with the data; empty when valid. Each value must be exactly 2
   /// (or 3) ASCII digits 0-9: rejects empty lists, empty strings, spaces,
   /// non-digit characters (incl. Thai digits) and wrong lengths. Never fixes data.
-  List<String> validate() => [
+  /// [LuckyNumbers.none] ("ไม่ควรเสี่ยง") is valid; one empty list on its own is not.
+  List<String> validate() => isNone ? const [] : [
         if (_twoDigit.isEmpty) 'twoDigit is empty',
         if (_threeDigit.isEmpty) 'threeDigit is empty',
         for (final n in _twoDigit)
@@ -75,16 +87,78 @@ class LuckForecast {
   List<String> validate() => check(money: money, love: love, health: health);
 }
 
+/// Illustration of a dream: from the API (https URL with the required attribution) or bundled with the app.
+class DreamImage {
+  /// https URL, or an asset path (`assets/…`) for bundled images. Neither is trusted to load:
+  /// callers need a fallback.
+  final String url;
+  final String? alt, sourceUrl;
+
+  /// Required for API images; null for images bundled by the content owner.
+  final String? credit, license;
+  const DreamImage({
+    required this.url,
+    required String this.credit,
+    required String this.license,
+    this.alt,
+    this.sourceUrl,
+  });
+
+  /// An image bundled with the app (supplied by the content owner; no attribution line).
+  const DreamImage.asset(this.url, {this.alt}) : credit = null, license = null, sourceUrl = null;
+
+  bool get isAsset => url.startsWith('assets/');
+
+  /// Caption shown with the image, e.g. "ภาพ: ชื่อผู้ถ่าย · CC BY 4.0"; null when there is no credit.
+  String? get attribution => credit == null ? null : 'ภาพ: $credit${license == null ? '' : ' · $license'}';
+}
+
+/// Citation of the interpretation text (API field `source`), kept apart from the image credit.
+class DreamSource {
+  final String id, title;
+  final String? author, publisher, edition, url;
+  final int? year;
+
+  /// Page or section within the source, e.g. "หน้า 12".
+  final String? locator;
+  const DreamSource({
+    required this.id,
+    required this.title,
+    this.author,
+    this.publisher,
+    this.edition,
+    this.year,
+    this.url,
+    this.locator,
+  });
+
+  /// One line for display: title, author, year and locator when known.
+  String get citation => [title, ?author, if (year != null) '$year', ?locator].join(' · ');
+}
+
 class Dream {
   /// Stable identifier (English slug). Never derived from list position.
   final String id;
-  final String name, cat, short, meaning, advice;
+  final String name, cat, short, meaning;
   final LuckyNumbers numbers;
+
+  /// Single lucky digits; may be empty for sourced content.
   final List<String> digits;
-  final LuckForecast luckForecast;
-  final bool good;
+
+  /// Optional for sourced content (printed sources rarely give advice, omen polarity or scores);
+  /// always present in the bundled SAMPLE data.
+  final String? advice;
+  final LuckForecast? luckForecast;
+  final bool? good;
+
+  final DreamImage? image;
+  final DreamSource? source;
+
+  /// Extra search keywords from the API.
+  final List<String> aliases;
   const Dream(this.id, this.name, this.cat, this.numbers, this.digits, this.short, this.meaning, this.luckForecast,
-      this.good, this.advice);
+      this.good, this.advice,
+      {this.image, this.source, this.aliases = const []});
 
   // Compatibility getters kept for existing call sites (display strings unchanged).
   String get two => numbers.twoDisplay;
@@ -94,42 +168,13 @@ class Dream {
   /// Data problems of this dream, prefixed by the failing part; empty when valid.
   List<String> validate() => [
         for (final p in numbers.validate()) 'numbers: $p',
-        for (final p in luckForecast.validate()) 'luckForecast: $p',
+        for (final p in luckForecast?.validate() ?? const <String>[]) 'luckForecast: $p',
       ];
 }
 
-const dreams = <Dream>[
-  Dream('snake', 'งู', 'สัตว์', LuckyNumbers(twoDigit: ['56', '65'], threeDigit: ['567', '556']), ['5', '6'], 'จะได้พบเนื้อคู่ หรือมีโชคลาภ',
-      'ฝันเห็นงูตามตำราโบราณ หมายถึงเนื้อคู่หรือคนรักกำลังจะเข้ามา หากงูรัดตัวแน่น ทายว่าจะได้คู่ครองในเร็ววัน ผู้มีคู่แล้วจะได้โชคลาภจากคนใกล้ตัว',
-      LuckForecast(money: 84, love: 90, health: 62), true, 'ให้ทำบุญใส่บาตรในวันเกิด อธิษฐานขอให้โชคนี้มาถึงโดยไว'),
-  Dream('elephant', 'ช้าง', 'สัตว์', LuckyNumbers(twoDigit: ['91', '19'], threeDigit: ['919', '199']), ['9', '1'], 'จะมีผู้ใหญ่อุปถัมภ์ ยศถาบรรดาศักดิ์',
-      'ฝันเห็นช้างหมายถึงบารมี จะได้รับการสนับสนุนจากผู้ใหญ่ หน้าที่การงานก้าวหน้า หากขี่ช้างทายว่าจะได้เลื่อนตำแหน่ง',
-      LuckForecast(money: 92, love: 70, health: 75), true, 'ถวายดอกดาวเรืองแด่พระพิฆเนศ แล้วขอพรเรื่องงาน'),
-  Dream('tooth-falling-out', 'ฟันหลุด', 'ร่างกาย', LuckyNumbers(twoDigit: ['08', '80'], threeDigit: ['098', '809']), ['0', '8'], 'ระวังเรื่องญาติผู้ใหญ่ สุขภาพ',
-      'ฝันว่าฟันหลุด ตำราว่าเป็นลางเตือนเรื่องญาติผู้ใหญ่หรือคนในบ้าน ควรดูแลสุขภาพและระมัดระวังการเดินทาง',
-      LuckForecast(money: 45, love: 40, health: 58), false, 'ตื่นเช้าให้บ้วนน้ำลายลงดิน กล่าว "ขอให้ฝันร้ายกลายเป็นดี" แล้วกรวดน้ำให้เจ้ากรรมนายเวร'),
-  Dream('flood', 'น้ำท่วม', 'ธรรมชาติ', LuckyNumbers(twoDigit: ['27', '72'], threeDigit: ['277', '720']), ['2', '7'], 'ทรัพย์สินไหลมาเทมา',
-      'ฝันเห็นน้ำท่วมบ้าน หมายถึงจะมีทรัพย์สินเงินทองไหลเข้ามาอย่างล้นเหลือ หากน้ำใสยิ่งเป็นมงคล',
-      LuckForecast(money: 88, love: 65, health: 70), true, 'จุดธูป 9 ดอกบอกเจ้าที่ ขอให้โชคลาภไหลมาเทมา'),
-  Dream('fish', 'ปลา', 'สัตว์', LuckyNumbers(twoDigit: ['84', '48'], threeDigit: ['844', '468']), ['8', '4'], 'จะได้ลาภก้อนเล็ก',
-      'ฝันเห็นปลาว่ายน้ำ ทายว่าจะได้ลาภลอย หากจับปลาได้จะได้เงินก้อนโดยไม่คาดคิด',
-      LuckForecast(money: 80, love: 60, health: 72), true, 'ปล่อยปลาในวันพระ ช่วยเสริมโชคตามฝัน'),
-  Dream('fire', 'ไฟไหม้', 'ธรรมชาติ', LuckyNumbers(twoDigit: ['34', '43'], threeDigit: ['347', '430']), ['3', '4'], 'จะได้ลาภใหญ่ ธุรกิจรุ่งเรือง',
-      'ฝันเห็นไฟไหม้บ้าน ตำราโบราณว่าเป็นฝันดี กิจการจะรุ่งเรืองเหมือนไฟลุกโชน จะได้ลาภใหญ่',
-      LuckForecast(money: 78, love: 55, health: 66), true, 'ทำบุญถวายเทียนที่วัด เสริมความรุ่งเรือง'),
-  Dream('monk', 'พระ', 'บุคคล', LuckyNumbers(twoDigit: ['89', '98'], threeDigit: ['889', '908']), ['8', '9'], 'สิ่งศักดิ์สิทธิ์คุ้มครอง',
-      'ฝันเห็นพระสงฆ์ หมายถึงบุญบารมีส่งผล จะพ้นเคราะห์ และมีสิ่งศักดิ์สิทธิ์คุ้มครอง',
-      LuckForecast(money: 75, love: 80, health: 85), true, 'สวดบทอิติปิโส 9 จบ ก่อนนอน'),
-  Dream('dead-person', 'คนตาย', 'บุคคล', LuckyNumbers(twoDigit: ['09', '90'], threeDigit: ['090', '900']), ['0', '9'], 'จะมีอายุยืน พ้นเคราะห์',
-      'ฝันเห็นคนตาย ตำราว่าเป็นฝันกลับ ผู้ฝันจะมีอายุยืน เคราะห์ร้ายจะหมดไป',
-      LuckForecast(money: 60, love: 55, health: 82), false, 'กรวดน้ำอุทิศส่วนกุศล และสวดบทแก้ฝันร้ายก่อนนอน 3 คืน'),
-  Dream('gold', 'ทองคำ', 'สิ่งของ', LuckyNumbers(twoDigit: ['59', '95'], threeDigit: ['559', '959']), ['5', '9'], 'โชคลาภ เงินทองเพิ่มพูน',
-      'ฝันว่าได้ทองคำ ทายว่าจะได้ทรัพย์ หากใส่สร้อยทองจะได้เกียรติยศ',
-      LuckForecast(money: 90, love: 68, health: 70), true, 'ไหว้แม่กวนอิมด้วยผลไม้สีเหลือง'),
-  Dream('tiger', 'เสือ', 'สัตว์', LuckyNumbers(twoDigit: ['37', '73'], threeDigit: ['373', '737']), ['3', '7'], 'จะได้อำนาจ บารมี',
-      'ฝันเห็นเสือ หมายถึงอำนาจวาสนา จะมีคนเกรงขาม หากเสือไล่ให้ระวังศัตรู',
-      LuckForecast(money: 70, love: 50, health: 65), true, 'บูชาพ่อแก่ ขอให้มีบารมีคุ้มครอง'),
-];
+/// The app's bundled dreams: the real หมวด ก content, generated from the import file
+/// (see lib/data/dreams_k.dart). The former SAMPLE design data lives in test/fixtures only.
+const dreams = dreamsK;
 
 /// Looks a dream up by its stable [id]; null when no dream has that id.
 Dream? dreamById(String id, [List<Dream> source = dreams]) {
@@ -152,7 +197,7 @@ bool debugValidateDreams([List<Dream> source = dreams]) {
   return true;
 }
 
-const dreamCats = ['ทั้งหมด', 'สัตว์', 'ร่างกาย', 'ธรรมชาติ', 'บุคคล', 'สิ่งของ'];
+const dreamCats = ['ทั้งหมด', 'หมวด ก'];
 
 class MenuItem {
   final String glyph, key, title, desc;
@@ -183,10 +228,11 @@ const menus = <String, MenuDef>{
     MenuItem('๕', '5', 'ตารางชื่อสัตว์', 'ทำนายฝันจากสัตว์ + เลข'),
     MenuItem('๑๒', '12', 'หลักทำนายฝันตัวเลข', 'ตามตำราโบราณ'),
     MenuItem('๑', '1', 'พยากรณ์โชคชะตาชีวิต', 'จากความฝัน + ตัวเลข'),
+    MenuItem('ก', '13', 'ทำนายฝันหมวด ก', 'คำทำนายความฝันที่ขึ้นต้นด้วย ก'),
   ]),
 };
 
-enum FeatType { day, digit, steps, animals, pae, draw, table }
+enum FeatType { day, digit, steps, animals, pae, draw, table, letter }
 
 class FeatDef {
   final String title, sub;
@@ -207,12 +253,13 @@ const feats = <String, FeatDef>{
   '10': FeatDef('สูตรเลขวิ่งประจำวัน', 'เลขวิ่งเด่นวันนี้', FeatType.day),
   '11': FeatDef('บทสวดมนต์ความฝัน', 'สวดก่อนนอน–หลังตื่น', FeatType.steps),
   '12': FeatDef('หลักทำนายฝันตัวเลข', 'ตามตำราโบราณ', FeatType.table),
+  '13': FeatDef('ทำนายฝันหมวด ก', 'คำทำนายความฝันที่ขึ้นต้นด้วย ก', FeatType.letter),
 };
 
 /// Which bottom tab a feature belongs to.
 String tabOf(String k) => const ['3', '4', '11'].contains(k)
     ? 'ritual'
-    : const ['1', '5', '6', '12'].contains(k)
+    : const ['1', '5', '6', '12', '13'].contains(k)
         ? 'book'
         : 'lucky';
 

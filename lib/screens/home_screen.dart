@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app_shell.dart';
 import '../data/design_data.dart';
+import '../data/dream_images_k.dart';
 import '../data/dream_repository.dart';
 import '../data/formulas.dart';
 import '../state/load_request.dart';
@@ -239,7 +240,12 @@ class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMix
             child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               for (var i = 0; i < items.length; i++) ...[
                 if (i > 0) const SizedBox(width: 10),
-                DreamCard(dreamId: items[i].id, name: items[i].name, width: 120, number: items[i].firstTwo),
+                DreamCard(
+                    dreamId: items[i].id,
+                    name: items[i].name,
+                    image: items[i].image,
+                    width: 120,
+                    number: items[i].firstTwo),
               ],
             ]),
           ),
@@ -250,11 +256,18 @@ class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMix
 
 class DreamCard extends StatelessWidget {
   final String dreamId, name;
+  final DreamImage? image;
   final double? width;
   final String number;
   final double numberSize;
   const DreamCard(
-      {super.key, required this.dreamId, required this.name, required this.number, this.width, this.numberSize = 16});
+      {super.key,
+      required this.dreamId,
+      required this.name,
+      required this.number,
+      this.image,
+      this.width,
+      this.numberSize = 16});
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +278,8 @@ class DreamCard extends StatelessWidget {
         padding: EdgeInsets.zero,
         onTap: () => AppScope.of(context).openDream(dreamId),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-          ImagePlaceholder('ภาพ $name', height: 80, width: double.infinity),
+          DreamImageView(
+              image: dreamImageFor(dreamId, image), placeholderLabel: 'ภาพ $name', height: 80, width: double.infinity),
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

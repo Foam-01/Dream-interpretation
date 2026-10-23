@@ -1,25 +1,19 @@
 import 'package:flutter/foundation.dart';
 
+import 'category_k.dart';
 import 'design_data.dart';
 import 'dream_repository.dart';
 
-/// Category ids for the bundled sample data, in app order. Must match
-/// `dreamCats` (minus "ทั้งหมด") and the backend seed
-/// (backend/prisma/seed-data.ts); both are checked by tests.
-const sampleCategories = [
-  DreamCategory('animal', 'สัตว์'),
-  DreamCategory('body', 'ร่างกาย'),
-  DreamCategory('nature', 'ธรรมชาติ'),
-  DreamCategory('person', 'บุคคล'),
-  DreamCategory('object', 'สิ่งของ'),
-];
+/// Categories of the bundled data, in app order. Must match `dreamCats` (minus "ทั้งหมด") and the
+/// backend's content categories (backend/prisma/seed-data.ts); both are checked by tests.
+const sampleCategories = [DreamCategory(letterKCategoryId, 'หมวด ก')];
 
 final _slug = RegExp(r'^[a-z0-9-]{1,64}$');
 
-/// Serves the bundled SAMPLE data with the same rules as the backend API
-/// (validation, search, filtering, paging). Results complete synchronously
-/// ([SynchronousFuture]) so screens using it can render on the first frame,
-/// exactly as they do with the global lists today.
+/// Serves the bundled data (the real หมวด ก content; tests may pass other data) with the same rules as
+/// the backend API (validation, search, filtering, paging). Results complete synchronously
+/// ([SynchronousFuture]) so screens using it render on the first frame. The class keeps its original
+/// name; it is the offline repository, used when no API_BASE_URL is configured.
 class SampleDreamRepository implements DreamRepository {
   const SampleDreamRepository({this.source = dreams, this.categoryList = sampleCategories});
 
@@ -36,10 +30,17 @@ class SampleDreamRepository implements DreamRepository {
   Future<List<DreamCategory>> categories() => SynchronousFuture(List.unmodifiable(categoryList));
 
   @override
-  Future<DreamPage> list({String? q, String? categoryId, int page = 1, int limit = DreamRepository.defaultPageSize}) =>
-      _guard(() => _list(q, categoryId, page, limit));
+  Future<DreamPage> list({
+    String? q,
+    String? categoryId,
+    int page = 1,
+    int limit = DreamRepository.defaultPageSize,
+    DreamSort sort = DreamSort.catalogue,
+  }) => _guard(() => _list(q, categoryId, page, limit, sort));
 
-  DreamPage _list(String? q, String? categoryId, int page, int limit) {
+  DreamPage _list(String? q, String? categoryId, int page, int limit, DreamSort sort) {
+    // Dart has no Thai collation; code-point order would put เ แ โ ใ ไ words after ฮ.
+    if (sort != DreamSort.catalogue) throw _invalid('sort=name is only available from the API');
     if (page < 1) throw _invalid('page must not be less than 1');
     if (limit < 1 || limit > DreamRepository.maxPageSize) {
       throw _invalid('limit must be between 1 and ${DreamRepository.maxPageSize}');

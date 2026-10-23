@@ -1,4 +1,4 @@
-// I3: Home, Search and Result read dreams through the repository. In API mode
+// I3: Home, Search and Result read legacySampleDreams through the repository. In API mode
 // (a remote repository) they show loading, error/retry and empty states, ignore
 // stale responses and never fall back to the bundled sample data.
 // Responses are controlled with Completers; no real time or network is used.
@@ -11,6 +11,9 @@ import 'package:maha_dream/app_shell.dart';
 import 'package:maha_dream/data/design_data.dart';
 import 'package:maha_dream/data/dream_repository.dart';
 import 'package:maha_dream/main.dart';
+
+import 'fixtures/legacy_sample_data.dart';
+
 import 'package:maha_dream/screens/search_screen.dart' show searchDebounce;
 
 class Call {
@@ -41,8 +44,13 @@ class ControlledRepository implements DreamRepository {
   Future<List<DreamCategory>> categories() => _call('categories', {});
 
   @override
-  Future<DreamPage> list({String? q, String? categoryId, int page = 1, int limit = DreamRepository.defaultPageSize}) =>
-      _call('list', {'q': q, 'category': categoryId, 'page': page, 'limit': limit});
+  Future<DreamPage> list({
+    String? q,
+    String? categoryId,
+    int page = 1,
+    int limit = DreamRepository.defaultPageSize,
+    DreamSort sort = DreamSort.catalogue,
+  }) => _call('list', {'q': q, 'category': categoryId, 'page': page, 'limit': limit});
 
   @override
   Future<Dream?> byId(String id) => _call('byId', {'id': id});
@@ -98,7 +106,7 @@ final retry = find.text('ลองใหม่');
 
 void main() {
   group('Home (API mode)', () {
-    testWidgets('loading, then remote hot dreams', (tester) async {
+    testWidgets('loading, then remote hot legacySampleDreams', (tester) async {
       final repo = await pumpApp(tester);
       expect(spinner, findsOneWidget);
       final call = repo.of('list').single;
@@ -299,7 +307,7 @@ void main() {
       await tester.pump();
       repo.of('byId').last.complete(toothDetail);
       await tester.pump();
-      first.complete(dreamById('snake'));
+      first.complete(dreamById('snake', legacySampleDreams));
       await tester.pump();
       expect(find.text('ฝันเห็นฟันหลุดจากเซิร์ฟเวอร์'), findsOneWidget);
       expect(find.text('ฝันเห็นงู'), findsNothing);
@@ -312,7 +320,7 @@ void main() {
       var created = 0;
       await HttpOverrides.runZoned(
         () async {
-          await tester.pumpWidget(const MahaDreamApp());
+          await tester.pumpWidget(const MahaDreamApp(repository: legacySampleRepository));
           controller(tester).goSearch();
           await tester.pump();
           controller(tester).openDream('tooth-falling-out');
@@ -329,7 +337,7 @@ void main() {
     });
 
     testWidgets('search updates immediately (no debounce, no spinner)', (tester) async {
-      await tester.pumpWidget(const MahaDreamApp());
+      await tester.pumpWidget(const MahaDreamApp(repository: legacySampleRepository));
       controller(tester).goSearch();
       await tester.pump();
       await tester.enterText(find.byType(TextField), 'งู');

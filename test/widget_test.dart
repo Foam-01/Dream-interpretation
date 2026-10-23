@@ -5,9 +5,11 @@ import 'package:maha_dream/app_shell.dart';
 import 'package:maha_dream/data/design_data.dart';
 import 'package:maha_dream/data/formulas.dart';
 
+import 'fixtures/legacy_sample_data.dart';
+
 void main() {
   test('dream numbers keep leading zeros', () {
-    final d = dreams.firstWhere((d) => d.name == 'ฟันหลุด');
+    final d = legacySampleDreams.firstWhere((d) => d.name == 'ฟันหลุด');
     expect(d.firstTwo, '08');
   });
 
@@ -52,7 +54,7 @@ void main() {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    await tester.pumpWidget(const MahaDreamApp());
+    await tester.pumpWidget(const MahaDreamApp(repository: legacySampleRepository));
   }
 
   testWidgets('home quick link opens Pae Kong feature', (tester) async {

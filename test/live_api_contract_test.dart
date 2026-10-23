@@ -35,6 +35,23 @@ void main() {
     expect(p3.items.map((d) => d.id), ['gold', 'tiger']);
   }, skip: skip);
 
+  test('every public dream parses (all pages, list and detail), whatever the catalogue holds', () async {
+    var page = 1;
+    var seen = 0;
+    while (true) {
+      final p = await repo.list(page: page, limit: 100, sort: DreamSort.name);
+      for (final s in p.items) {
+        final d = await repo.byId(s.id);
+        expect(d, isNotNull, reason: s.id);
+        expect(d!.numbers.twoDigit, s.numbers.twoDigit, reason: s.id);
+      }
+      seen += p.items.length;
+      if (page >= p.totalPages) break;
+      page++;
+    }
+    expect(seen, greaterThan(0));
+  }, skip: skip);
+
   test('detail keeps leading zeros; unknown id is null; bad requests are typed', () async {
     final tooth = (await repo.byId('tooth-falling-out'))!;
     expect(tooth.numbers.twoDigit, ['08', '80']);

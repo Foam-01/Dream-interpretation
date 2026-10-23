@@ -1,5 +1,5 @@
 // I1: the data access boundary. SampleDreamRepository must follow the backend
-// API contract (backend/test/dreams.e2e-spec.ts) and give the same results as
+// API contract (backend/test/legacySampleDreams.e2e-spec.ts) and give the same results as
 // the screens' current inline filtering, so switching sources later changes nothing.
 import 'dart:io';
 
@@ -12,7 +12,9 @@ import 'package:maha_dream/data/sample_dream_repository.dart';
 import 'package:maha_dream/main.dart';
 import 'package:maha_dream/screens/home_screen.dart';
 
-const repo = SampleDreamRepository();
+import 'fixtures/legacy_sample_data.dart';
+
+const repo = legacySampleRepository;
 
 List<String> ids(DreamPage p) => [for (final d in p.items) d.id];
 
@@ -24,26 +26,29 @@ Matcher invalid(String detail) => throwsA(
 
 void main() {
   group('categories', () {
-    test('match dreamCats (without "ทั้งหมด") in app order', () async {
+    test('match legacySampleCats (without "ทั้งหมด") in app order', () async {
       final cats = await repo.categories();
-      expect(cats.map((c) => c.name), dreamCats.skip(1));
+      expect(cats.map((c) => c.name), legacySampleCats.skip(1));
       expect(cats.map((c) => c.id), ['animal', 'body', 'nature', 'person', 'object']);
     });
 
     test('every dream belongs to a known category', () {
-      final names = sampleCategories.map((c) => c.name).toSet();
-      for (final d in dreams) {
+      final names = legacySampleCategories.map((c) => c.name).toSet();
+      for (final d in legacySampleDreams) {
         expect(names, contains(d.cat), reason: d.id);
       }
     });
 
     test('ids and names match the backend seed', () {
       final ts = File('backend/prisma/seed-data.ts').readAsStringSync();
+      // Only the sample categories mirror the app; content categories (e.g. หมวด ก) are server-only.
+      final start = ts.indexOf('export const seedCategories');
+      final sampleBlock = ts.substring(start, ts.indexOf('];', start));
       final seeded = [
-        for (final m in RegExp(r"\{ id: '([a-z-]+)', name: '([^']+)', sortOrder: \d+ \}").allMatches(ts))
+        for (final m in RegExp(r"\{ id: '([a-z-]+)', name: '([^']+)', sortOrder: \d+ \}").allMatches(sampleBlock))
           DreamCategory(m[1]!, m[2]!),
       ];
-      expect(seeded, sampleCategories);
+      expect(seeded, legacySampleCategories);
     });
 
     test('returned list cannot be modified', () async {
@@ -55,7 +60,7 @@ void main() {
   group('list', () {
     test('defaults: all 10 in app order, page 1 of 1', () async {
       final p = await repo.list();
-      expect(ids(p), dreams.map((d) => d.id));
+      expect(ids(p), legacySampleDreams.map((d) => d.id));
       expect((p.page, p.limit, p.total, p.totalPages), (1, 20, 10, 1));
     });
 
@@ -93,12 +98,12 @@ void main() {
     });
 
     test('gives the same results as the search screen filter for every category and query', () async {
-      final catId = {for (final c in sampleCategories) c.name: c.id};
-      for (final cat in dreamCats) {
+      final catId = {for (final c in legacySampleCategories) c.name: c.id};
+      for (final cat in legacySampleCats) {
         for (final raw in ['', 'งู', ' ฝัน ', 'จะ', 'โชค', 'xyz']) {
           final q = raw.trim();
           final expected = [
-            for (final d in dreams)
+            for (final d in legacySampleDreams)
               if ((cat == 'ทั้งหมด' || d.cat == cat) && (q.isEmpty || d.name.contains(q) || d.short.contains(q))) d.id,
           ];
           final p = await repo.list(q: raw, categoryId: cat == 'ทั้งหมด' ? null : catId[cat], limit: 100);
@@ -147,8 +152,8 @@ void main() {
     });
 
     test('returns the same object as dreamById for every dream', () async {
-      for (final d in dreams) {
-        expect(identical(await repo.byId(d.id), dreamById(d.id)), isTrue, reason: d.id);
+      for (final d in legacySampleDreams) {
+        expect(identical(await repo.byId(d.id), dreamById(d.id, legacySampleDreams)), isTrue, reason: d.id);
       }
     });
 
@@ -159,7 +164,7 @@ void main() {
     });
 
     test('custom source is respected', () async {
-      final r = SampleDreamRepository(source: dreams.sublist(0, 2));
+      final r = SampleDreamRepository(source: legacySampleDreams.sublist(0, 2), categoryList: legacySampleCategories);
       expect(await r.byId('tooth-falling-out'), isNull);
       expect((await r.list()).total, 2);
     });
@@ -167,13 +172,13 @@ void main() {
 
   group('injection', () {
     test('defaults to the bundled sample data everywhere', () {
-      expect(const MahaDreamApp().repository, isA<SampleDreamRepository>());
+      expect(const MahaDreamApp(repository: legacySampleRepository).repository, isA<SampleDreamRepository>());
       expect(const AppShell().repository, isA<SampleDreamRepository>());
       expect(AppController().repository, isA<SampleDreamRepository>());
     });
 
     testWidgets('MahaDreamApp passes its repository to the controller', (tester) async {
-      final custom = SampleDreamRepository(source: dreams.sublist(0, 1));
+      final custom = SampleDreamRepository(source: legacySampleDreams.sublist(0, 1));
       await tester.pumpWidget(MahaDreamApp(repository: custom));
       // AppScope sits below AppShell, so look it up from a screen.
       final ctx = tester.element(find.byType(HomeScreen));

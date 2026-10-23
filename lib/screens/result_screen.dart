@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app_shell.dart';
 import '../data/design_data.dart';
+import '../data/dream_images_k.dart';
 import '../state/load_request.dart';
 import '../theme.dart';
 import '../widgets/ui.dart';
@@ -88,16 +89,28 @@ class _ResultScreenState extends State<ResultScreen> {
             ),
           ]),
           const SizedBox(height: 6),
-          ImagePlaceholder('ภาพประกอบ: ${d.name}',
-              height: 170,
-              width: double.infinity,
-              radius: 16,
-              fontSize: 12,
-              band: 8,
-              border: Border.all(color: C.gold, width: 2)),
+          DreamImageView(
+            image: dreamImageFor(d.id, d.image),
+            placeholderLabel: 'ภาพประกอบ: ${d.name}',
+            height: 170,
+            width: double.infinity,
+            radius: 16,
+            fontSize: 12,
+            band: 8,
+            border: Border.all(color: C.gold, width: 2),
+          ),
+          if (d.image?.attribution case final credit?) ...[
+            const SizedBox(height: 4),
+            Text(credit, style: sans(11, color: C.onRedMuted)),
+          ],
           const SizedBox(height: 14),
           Text('ฝันเห็น${d.name}', style: serif(26, weight: FontWeight.w800, color: C.goldLight)),
-          Text('หมวด${d.cat} · ตำราโบราณ', style: sans(14, color: C.onRedMuted)),
+          // Sourced content names its source; the bundled SAMPLE data keeps the original design text.
+          // Only a cited source is named; no source → no claim about where the text comes from.
+          Text(
+            [d.cat.startsWith('หมวด') ? d.cat : 'หมวด${d.cat}', ?d.source?.title].join(' · '),
+            style: sans(14, color: C.onRedMuted),
+          ),
         ]),
       ),
       Padding(
@@ -107,15 +120,25 @@ class _ResultScreenState extends State<ResultScreen> {
           child: Column(children: [
             Text('เลขนำโชคจากความฝัน', style: serif(15, color: C.red)),
             const SizedBox(height: 10),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              for (final n in d.digits) Padding(padding: const EdgeInsets.symmetric(horizontal: 4), child: DigitBox(n)),
-            ]),
-            const SizedBox(height: 14),
-            Row(children: [
-              Expanded(child: _NumTile(label: 'สองตัว', value: d.two)),
-              const SizedBox(width: 8),
-              Expanded(child: _NumTile(label: 'สามตัว', value: d.three)),
-            ]),
+            if (d.digits.isNotEmpty) ...[
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                for (final n in d.digits)
+                  Padding(padding: const EdgeInsets.symmetric(horizontal: 4), child: DigitBox(n)),
+              ]),
+              const SizedBox(height: 14),
+            ],
+            // "ไม่ควรเสี่ยง" is shown as the source says it, never as numbers.
+            if (d.numbers.isNone)
+              const SizedBox(
+                width: double.infinity,
+                child: _NumTile(label: 'เลขเสี่ยงโชค', value: LuckyNumbers.noLuckyNumbersText),
+              )
+            else
+              Row(children: [
+                Expanded(child: _NumTile(label: 'สองตัว', value: d.two)),
+                const SizedBox(width: 8),
+                Expanded(child: _NumTile(label: 'สามตัว', value: d.three)),
+              ]),
           ]),
         ),
       ),
@@ -129,28 +152,43 @@ class _ResultScreenState extends State<ResultScreen> {
                 Text('คำทำนาย', style: serif(16)),
                 const SizedBox(height: 6),
                 Text(d.meaning, style: sans(15, color: C.inkBody, height: 1.7)),
+                if (d.source != null) ...[
+                  const SizedBox(height: 10),
+                  Text('ที่มา: ${d.source!.citation}', style: sans(12, color: C.caption)),
+                ],
               ]),
             ),
           ),
-          const SizedBox(height: 12),
-          CreamCard(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('พยากรณ์โชคชะตา', style: serif(16)),
-              const SizedBox(height: 10),
-              _LuckBar(label: 'การเงิน', value: d.luckForecast.money),
-              _LuckBar(label: 'ความรัก', value: d.luckForecast.love),
-              _LuckBar(label: 'สุขภาพ', value: d.luckForecast.health),
-            ]),
-          ),
+          // Forecast scores and advice are optional: sourced content shows only what its source gives.
+          if (d.luckForecast case final f?) ...[
+            const SizedBox(height: 12),
+            CreamCard(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('พยากรณ์โชคชะตา', style: serif(16)),
+                const SizedBox(height: 10),
+                _LuckBar(label: 'การเงิน', value: f.money),
+                _LuckBar(label: 'ความรัก', value: f.love),
+                _LuckBar(label: 'สุขภาพ', value: f.health),
+              ]),
+            ),
+          ],
+          if (d.advice case final advice?) ...[
           const SizedBox(height: 12),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(color: C.red, borderRadius: BorderRadius.circular(16)),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(d.good ? 'เคล็ดลับขอโชค' : 'เคล็ดลับแก้ฝันร้าย', style: serif(16, color: C.goldLight)),
+              Text(
+                switch (d.good) {
+                  true => 'เคล็ดลับขอโชค',
+                  false => 'เคล็ดลับแก้ฝันร้าย',
+                  null => 'คำแนะนำ',
+                },
+                style: serif(16, color: C.goldLight),
+              ),
               const SizedBox(height: 6),
-              Text(d.advice, style: sans(14, color: C.onRed, height: 1.7)),
+              Text(advice, style: sans(14, color: C.onRed, height: 1.7)),
               const SizedBox(height: 12),
               Semantics(
                 button: true,
@@ -165,6 +203,7 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
             ]),
           ),
+          ],
         ]),
       ),
     ]);

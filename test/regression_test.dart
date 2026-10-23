@@ -9,13 +9,15 @@ import 'package:maha_dream/main.dart';
 import 'package:maha_dream/screens/home_screen.dart' show DreamCard;
 import 'package:maha_dream/widgets/ui.dart';
 
+import 'fixtures/legacy_sample_data.dart';
+
 Future<void> pumpApp(WidgetTester tester, {double textScale = 1.0}) async {
   tester.view.physicalSize = const Size(390, 844);
   tester.view.devicePixelRatio = 1;
   tester.platformDispatcher.textScaleFactorTestValue = textScale;
   addTearDown(tester.view.reset);
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-  await tester.pumpWidget(const MahaDreamApp());
+  await tester.pumpWidget(const MahaDreamApp(repository: legacySampleRepository));
 }
 
 Future<void> tapText(WidgetTester tester, String text, {bool last = false}) async {
@@ -91,7 +93,7 @@ void main() {
       await tapPill(tester, 'สัตว์');
       expect(find.text('พบ 4 รายการ'), findsOneWidget);
       await tapPill(tester, 'ทั้งหมด');
-      expect(find.text('พบ ${dreams.length} รายการ'), findsOneWidget);
+      expect(find.text('พบ ${legacySampleDreams.length} รายการ'), findsOneWidget);
       expect(find.text('พบ 10 รายการ'), findsOneWidget);
     });
 
@@ -174,7 +176,7 @@ void main() {
 
     testWidgets('"อ่านบทสวด ›" goes to the ritual tab menu (not directly to prayers)', (tester) async {
       await openToothDream(tester);
-            await tapText(tester, 'อ่านบทสวด ›');
+      await tapText(tester, 'อ่านบทสวด ›');
       expect(find.text('แก้ฝัน & ขอโชค'), findsOneWidget);
       expect(find.text('บทสวดมนต์ความฝัน'), findsOneWidget);
       expect(find.text('ฝันเห็นฟันหลุด'), findsNothing);
@@ -188,7 +190,7 @@ void main() {
     });
   });
 
-  group('C. Saved dreams (in-memory)', () {
+  group('C. Saved legacySampleDreams (in-memory)', () {
     testWidgets('toggling save twice returns to initial state', (tester) async {
       await pumpApp(tester);
       await openSearch(tester);
@@ -301,7 +303,9 @@ void main() {
       expect(find.text('เลือกวันเกิดของคุณ · วันอาทิตย์'), findsOneWidget);
     });
 
-    testWidgets('digit summary: selecting 7 lists dreams containing 7', (tester) async {
+    testWidgets('digit summary: selecting 7 shows the digit lore and the empty state', (tester) async {
+      // The feature reads the bundled dreams' single digits. The real หมวด ก content has none,
+      // so every digit shows the empty state (nothing is derived or invented).
       await pumpApp(tester);
       await tapTab(tester, 'เลขเด็ด');
       await tapText(tester, 'สรุปเลขนำโชค 0–9');
@@ -309,17 +313,11 @@ void main() {
       await tapPill(tester, '7');
       expect(find.text('เลข 7 · ไม้เท้า'), findsOneWidget);
       expect(find.text('ความฝันที่ให้เลข 7'), findsOneWidget);
-      await scrollTo(tester, find.text('ฝันเห็นเสือ'));
-      expect(find.text('ฝันเห็นน้ำท่วม'), findsOneWidget);
-      expect(find.text('ฝันเห็นเสือ'), findsOneWidget);
-      expect(find.text('ฝันเห็นงู'), findsNothing);
+      expect(find.text('ยังไม่มีความฝันที่ให้เลขนี้'), findsOneWidget);
     });
 
-    test('digit summary empty state is unreachable with current data', () {
-      // Every digit 0-9 appears in at least one dream, so the
-      // "ยังไม่มีความฝันที่ให้เลขนี้" branch cannot be reached through the UI.
-      final used = dreams.expand((d) => d.digits).toSet();
-      expect(used, containsAll(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']));
+    test('the bundled real content has no single lucky digits', () {
+      expect(dreams.expand((d) => d.digits), isEmpty);
     });
 
     testWidgets('pae kong: selecting 300–399 jumps to 300 and cells are selectable', (tester) async {
@@ -421,7 +419,7 @@ void main() {
         await scrollTo(tester, find.text('ฝันเห็นงู'));
         final card = find.ancestor(of: find.text('ฝันเห็นงู').first, matching: find.byType(DreamCard));
         final cardRect = tester.getRect(card);
-        for (final f in [find.text('ฝันเห็นงู').first, find.text(dreams[0].firstTwo).first]) {
+        for (final f in [find.text('ฝันเห็นงู').first, find.text(legacySampleDreams[0].firstTwo).first]) {
           final r = tester.getRect(f);
           expect(r.bottom, lessThanOrEqualTo(cardRect.bottom), reason: 'text bottom inside card');
           expect(r.top, greaterThanOrEqualTo(cardRect.top));

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../data/design_data.dart';
 import '../theme.dart';
 
 /// Gold diagonal lattice overlay used on red headers.
@@ -366,4 +367,84 @@ class LoadErrorView extends StatelessWidget {
           ),
         ]),
       );
+}
+
+/// A dream illustration from the API, or the striped placeholder when there is none.
+/// The URL is not trusted to work: while loading it shows the placeholder with a small
+/// gold indicator, and on any error (bad URL, 404, not an image) it falls back to the
+/// placeholder, so a broken image never shows as a blank or error box.
+class DreamImageView extends StatelessWidget {
+  final DreamImage? image;
+  final String placeholderLabel;
+  final double? height;
+  final double? width;
+  final double radius;
+  final double fontSize;
+  final double band;
+  final BoxBorder? border;
+  const DreamImageView({
+    super.key,
+    required this.image,
+    required this.placeholderLabel,
+    this.height,
+    this.width,
+    this.radius = 0,
+    this.fontSize = 10,
+    this.band = 6,
+    this.border,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final placeholder = ImagePlaceholder(placeholderLabel,
+        height: height, width: width, radius: radius, fontSize: fontSize, band: band, border: border);
+    final img = image;
+    final uri = img == null ? null : Uri.tryParse(img.url);
+    if (img == null) return placeholder;
+    if (img.isAsset) {
+      return Container(
+        height: height,
+        width: width,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius), border: border),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(radius),
+          child: Image.asset(
+            img.url,
+            fit: BoxFit.cover,
+            semanticLabel: img.alt,
+            errorBuilder: (context, error, stack) =>
+                ImagePlaceholder(placeholderLabel, radius: radius, fontSize: fontSize, band: band),
+          ),
+        ),
+      );
+    }
+    if (uri == null || !uri.isScheme('https') || uri.host.isEmpty) return placeholder;
+    return Container(
+      height: height,
+      width: width,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius), border: border),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
+        child: Image.network(
+          img.url,
+          fit: BoxFit.cover,
+          semanticLabel: img.alt,
+          loadingBuilder: (context, child, progress) => progress == null
+              ? child
+              : Stack(fit: StackFit.expand, children: [
+                  ImagePlaceholder(placeholderLabel, radius: radius, fontSize: fontSize, band: band),
+                  const Center(
+                    child: SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: C.gold),
+                    ),
+                  ),
+                ]),
+          errorBuilder: (context, error, stack) =>
+              ImagePlaceholder(placeholderLabel, radius: radius, fontSize: fontSize, band: band),
+        ),
+      ),
+    );
+  }
 }

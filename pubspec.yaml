@@ -58,6 +58,10 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  # หมวด ก dream pictures (cropped/resized copies; originals in backend/content/incoming/category-01-k).
+  assets:
+    - assets/dreams/
+
   # Noto Thai variable fonts (OFL), bundled so the app works offline.
   fonts:
     - family: NotoSansThai

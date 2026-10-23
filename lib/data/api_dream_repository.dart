@@ -55,7 +55,13 @@ class ApiDreamRepository implements DreamRepository {
       _categories ??= List.unmodifiable(await _get(_uri(['dream-categories']), parseCategoryList));
 
   @override
-  Future<DreamPage> list({String? q, String? categoryId, int page = 1, int limit = DreamRepository.defaultPageSize}) {
+  Future<DreamPage> list({
+    String? q,
+    String? categoryId,
+    int page = 1,
+    int limit = DreamRepository.defaultPageSize,
+    DreamSort sort = DreamSort.catalogue,
+  }) {
     final query = q?.trim() ?? '';
     return _get(
       _uri(
@@ -65,6 +71,7 @@ class ApiDreamRepository implements DreamRepository {
           if (limit != DreamRepository.defaultPageSize) 'limit': '$limit',
           if (query.isNotEmpty) 'q': query,
           'category': ?categoryId,
+          if (sort == DreamSort.name) 'sort': 'name',
         },
       ),
       parseDreamPage,

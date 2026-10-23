@@ -211,7 +211,7 @@ void main() {
       expect(d.digits, ['0', '8']);
       expect(d.meaning, startsWith('ฝันว่าฟันหลุด'));
       expect(d.advice, startsWith('ตื่นเช้า'));
-      expect((d.luckForecast.money, d.luckForecast.love, d.luckForecast.health), (45, 40, 58));
+      expect((d.luckForecast!.money, d.luckForecast!.love, d.luckForecast!.health), (45, 40, 58));
       expect(d.good, isFalse);
       expect(() => d.numbers.twoDigit.add('11'), throwsUnsupportedError);
       expect(() => d.digits.add('1'), throwsUnsupportedError);

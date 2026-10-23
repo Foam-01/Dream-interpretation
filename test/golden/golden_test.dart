@@ -6,6 +6,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:maha_dream/data/dream_images_k.dart';
 import 'package:maha_dream/main.dart';
 import 'package:maha_dream/widgets/ui.dart';
 
@@ -22,6 +23,17 @@ Future<void> pumpApp(WidgetTester tester) async {
   addTearDown(tester.view.reset);
   addTearDown(tester.platformDispatcher.clearAllTestValues);
   await tester.pumpWidget(const MahaDreamApp());
+  await tester.pumpAndSettle();
+}
+
+/// Decodes the bundled dream pictures before a capture (asset decoding is asynchronous).
+Future<void> precacheDreamImages(WidgetTester tester) async {
+  final context = tester.element(find.byType(Scaffold).first);
+  await tester.runAsync(() async {
+    for (final image in dreamImagesK.values) {
+      await precacheImage(AssetImage(image.url), context);
+    }
+  });
   await tester.pumpAndSettle();
 }
 
@@ -74,6 +86,7 @@ void main() {
     testWidgets('search: default list', (tester) async {
       await pumpApp(tester);
       await openSearch(tester);
+      await precacheDreamImages(tester);
       await expectGolden(tester, 'search_default');
     });
 
@@ -88,27 +101,29 @@ void main() {
       await expectGolden(tester, 'search_empty');
     });
 
-    testWidgets('search: category สัตว์ selected', (tester) async {
+    testWidgets('search: category หมวด ก selected', (tester) async {
       await pumpApp(tester);
       await openSearch(tester);
-      await tap(tester, find.widgetWithText(SelectPill, 'สัตว์'));
-      await expectGolden(tester, 'search_cat_animal');
+      await tap(tester, find.widgetWithText(SelectPill, 'หมวด ก'));
+      await precacheDreamImages(tester);
+      await expectGolden(tester, 'search_cat_k');
     });
   });
 
   group('Golden A — dream detail', () {
-    testWidgets('detail: ฝันเห็นงู (good omen)', (tester) async {
+    testWidgets('detail: กบ (lucky numbers, no source cited)', (tester) async {
       await pumpApp(tester);
       await openSearch(tester);
-      await tap(tester, _text('ฝันเห็นงู'));
-      await expectGolden(tester, 'detail_snake');
+      await tap(tester, _text('ฝันเห็นกบ'));
+      await precacheDreamImages(tester);
+      await expectGolden(tester, 'detail_frog');
     });
 
-    testWidgets('detail: ฝันเห็นฟันหลุด (bad omen, leading zero)', (tester) async {
+    testWidgets('detail: กราม (ไม่ควรเสี่ยง)', (tester) async {
       await pumpApp(tester);
       await openSearch(tester);
-      await tap(tester, _text('ฝันเห็นฟันหลุด'));
-      await expectGolden(tester, 'detail_tooth');
+      await tap(tester, _text('ฝันเห็นกราม'));
+      await expectGolden(tester, 'detail_jaw');
     });
   });
 
@@ -156,6 +171,14 @@ void main() {
       await openFeature(tester, 'ตำรา', 'ภาพแป๊ะกงชี้โชค');
       await expectGolden(tester, 'feat06_pae_kong');
     });
+
+    testWidgets('feature 13: ทำนายฝันหมวด ก (list with per-dream pictures)', (tester) async {
+      await pumpApp(tester);
+      await openFeature(tester, 'ตำรา', 'ทำนายฝันหมวด ก');
+      await precacheDreamImages(tester);
+      await expectGolden(tester, 'feat13_letter_k');
+    });
+
 
     testWidgets('feature 3: เคล็ดลับแก้ฝันร้าย (steps / remedies)', (tester) async {
       await pumpApp(tester);

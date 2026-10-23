@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../app_shell.dart';
+import '../data/dream_images_k.dart';
 import '../data/dream_repository.dart';
 import '../state/load_request.dart';
 import '../theme.dart';
@@ -211,7 +212,8 @@ class _ResultRow extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       onTap: () => AppScope.of(context).openDream(d.id),
       child: Row(children: [
-        const ImagePlaceholder('ภาพ', width: 60, height: 60, radius: 10, fontSize: 9),
+        DreamImageView(
+            image: dreamImageFor(d.id, d.image), placeholderLabel: 'ภาพ', width: 60, height: 60, radius: 10, fontSize: 9),
         const SizedBox(width: 12),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -221,7 +223,9 @@ class _ResultRow extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          Text(d.firstTwo, style: serif(20, weight: FontWeight.w800, color: C.redBright, height: 1.3)),
+          d.numbers.isNone
+              ? Text(d.firstTwo, style: sans(13, weight: FontWeight.w600, color: C.redBright, height: 1.6))
+              : Text(d.firstTwo, style: serif(20, weight: FontWeight.w800, color: C.redBright, height: 1.3)),
           Text(d.cat, style: sans(11, color: C.caption)),
         ]),
       ]),

@@ -8,6 +8,8 @@ import 'package:maha_dream/data/design_data.dart';
 import 'package:maha_dream/screens/result_screen.dart';
 import 'package:maha_dream/theme.dart';
 
+import 'fixtures/legacy_sample_data.dart';
+
 /// id -> (two display, three display, firstTwo)
 const _numbers = <String, (String, String, String)>{
   'snake': ('56 · 65', '567 · 556', '56'),
@@ -37,13 +39,13 @@ const _luck = <String, (int, int, int)>{
 };
 
 void main() {
-  test('all 10 dreams keep their stable ids in order', () {
-    expect(dreams.map((d) => d.id).toList(), _numbers.keys.toList());
+  test('all 10 legacySampleDreams keep their stable ids in order', () {
+    expect(legacySampleDreams.map((d) => d.id).toList(), _numbers.keys.toList());
   });
 
   test('two / three / firstTwo display strings are unchanged', () {
     for (final MapEntry(key: id, value: (two, three, first)) in _numbers.entries) {
-      final d = dreamById(id)!;
+      final d = dreamById(id, legacySampleDreams)!;
       expect(d.two, two, reason: id);
       expect(d.three, three, reason: id);
       expect(d.firstTwo, first, reason: id);
@@ -52,16 +54,16 @@ void main() {
 
   test('luck scores (money, love, health) are unchanged', () {
     for (final MapEntry(key: id, value: (money, love, health)) in _luck.entries) {
-      final f = dreamById(id)!.luckForecast;
+      final f = dreamById(id, legacySampleDreams)!.luckForecast!; // all sample legacySampleDreams have a forecast
       expect((f.money, f.love, f.health), (money, love, health), reason: id);
     }
   });
 
   test('twoDigit / threeDigit hold the literal strings, leading zeros intact', () {
-    final n = dreamById('tooth-falling-out')!.numbers;
+    final n = dreamById('tooth-falling-out', legacySampleDreams)!.numbers;
     expect(n.twoDigit, ['08', '80']);
     expect(n.threeDigit, ['098', '809']);
-    final m = dreamById('dead-person')!.numbers;
+    final m = dreamById('dead-person', legacySampleDreams)!.numbers;
     expect(m.twoDigit, ['09', '90']);
     expect(m.threeDigit, ['090', '900']);
     expect(m.twoDigit.first, isA<String>());
@@ -69,7 +71,7 @@ void main() {
 
   test('display uses exactly " · " (space, U+00B7, space)', () {
     expect(LuckyNumbers.separator.codeUnits, [0x20, 0xB7, 0x20]);
-    expect(dreamById('snake')!.two.codeUnits, '56 · 65'.codeUnits);
+    expect(dreamById('snake', legacySampleDreams)!.two.codeUnits, '56 · 65'.codeUnits);
   });
 
   test('LuckyNumbers supports more than two values', () {
@@ -81,7 +83,7 @@ void main() {
   });
 
   test('number lists are read-only', () {
-    final n = dreamById('snake')!.numbers;
+    final n = dreamById('snake', legacySampleDreams)!.numbers;
     expect(() => n.twoDigit.add('99'), throwsUnsupportedError);
     expect(() => n.threeDigit[0] = '000', throwsUnsupportedError);
     final mutable = ['12', '21'];
@@ -137,16 +139,21 @@ void main() {
   });
 
   group('validation', () {
-    test('all sample dreams are valid', () {
-      for (final d in dreams) {
+    test('all sample legacySampleDreams are valid', () {
+      for (final d in legacySampleDreams) {
         expect(d.numbers.validate(), isEmpty, reason: d.id);
       }
       expect(debugValidateDreams(), isTrue);
     });
 
     test('reports empty lists and wrong digit counts without fixing data', () {
-      const empty = LuckyNumbers(twoDigit: [], threeDigit: []);
-      expect(empty.validate(), ['twoDigit is empty', 'threeDigit is empty']);
+      // Both lists empty = "ไม่ควรเสี่ยง" (LuckyNumbers.none), which is valid; one empty list is not.
+      const none = LuckyNumbers(twoDigit: [], threeDigit: []);
+      expect(none.validate(), isEmpty);
+      expect(none.isNone, isTrue);
+      expect((none.twoDisplay, none.threeDisplay, none.firstTwo), ('ไม่ควรเสี่ยง', 'ไม่ควรเสี่ยง', 'ไม่ควรเสี่ยง'));
+      expect(const LuckyNumbers(twoDigit: [], threeDigit: ['123']).validate(), ['twoDigit is empty']);
+      expect(const LuckyNumbers(twoDigit: ['12'], threeDigit: []).validate(), ['threeDigit is empty']);
       const bad = LuckyNumbers(twoDigit: ['8', '123', 'ab'], threeDigit: ['12', '1234']);
       expect(bad.validate(), hasLength(5));
       expect(bad.twoDigit, ['8', '123', 'ab']); // untouched
@@ -172,7 +179,7 @@ void main() {
     tester.view.physicalSize = const Size(390, 1600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    final c = AppController();
+    final c = AppController(repository: legacySampleRepository);
     addTearDown(c.dispose);
     await tester.pumpWidget(MaterialApp(
       theme: buildTheme(),
@@ -222,8 +229,8 @@ void main() {
     });
 
     test('every sample forecast passes runtime validation', () {
-      for (final d in dreams) {
-        expect(d.luckForecast.validate(), isEmpty, reason: d.id);
+      for (final d in legacySampleDreams) {
+        expect(d.luckForecast!.validate(), isEmpty, reason: d.id);
         expect(d.validate(), isEmpty, reason: d.id);
       }
     });
@@ -233,17 +240,17 @@ void main() {
           LuckForecast(money: 1, love: 1, health: 1), true, 'x');
       expect(broken.validate(), ['numbers: threeDigit is empty', 'numbers: twoDigit "8" is not 2 digits']);
       expect(
-          () => debugValidateDreams([dreams.first, broken]),
+          () => debugValidateDreams([legacySampleDreams.first, broken]),
           throwsA(isA<StateError>().having((e) => e.message, 'message',
               allOf(contains('"broken-sample"'), contains('numbers: twoDigit "8"'), isNot(contains('snake'))))));
     });
 
     test('validation has no side effects on the data', () {
-      final before = [for (final d in dreams) '${d.id}|${d.two}|${d.three}|${d.luckForecast.money}'];
+      final before = [for (final d in legacySampleDreams) '${d.id}|${d.two}|${d.three}|${d.luckForecast!.money}'];
       for (var i = 0; i < 3; i++) {
         debugValidateDreams();
       }
-      expect([for (final d in dreams) '${d.id}|${d.two}|${d.three}|${d.luckForecast.money}'], before);
+      expect([for (final d in legacySampleDreams) '${d.id}|${d.two}|${d.three}|${d.luckForecast!.money}'], before);
     });
   });
 }
