@@ -1,49 +1,134 @@
 // Content ported from Claude Design `Dream App.dc.html`.
 // Lottery numbers are kept as String to preserve leading zeros ("08").
 
+/// Two- and three-digit lucky numbers of a dream, stored as literal strings so
+/// leading zeros survive ("08", "098"). Never derived from other fields.
+class LuckyNumbers {
+  /// For data that is already immutable (e.g. `const` list literals).
+  ///
+  /// This constructor stores the given lists as-is; it does NOT copy them, so a
+  /// caller that keeps and mutates a list passed here would change this object.
+  /// Use [LuckyNumbers.copy] for lists that may be modified later.
+  // Private named parameters are passed as `twoDigit:` / `threeDigit:`.
+  const LuckyNumbers({required this._twoDigit, required this._threeDigit});
+
+  /// For input lists that may be mutable (e.g. parsed at runtime).
+  ///
+  /// Copies both lists into unmodifiable lists at construction time, so later
+  /// changes to the input lists do not affect this object.
+  factory LuckyNumbers.copy({required List<String> twoDigit, required List<String> threeDigit}) =>
+      LuckyNumbers(twoDigit: List.unmodifiable(twoDigit), threeDigit: List.unmodifiable(threeDigit));
+
+  final List<String> _twoDigit;
+  final List<String> _threeDigit;
+
+  /// Unmodifiable copies; mutating the returned list throws [UnsupportedError].
+  List<String> get twoDigit => List.unmodifiable(_twoDigit);
+  List<String> get threeDigit => List.unmodifiable(_threeDigit);
+
+  /// Display separator used throughout the UI (space, U+00B7, space).
+  static const separator = ' · ';
+
+  String get twoDisplay => _twoDigit.join(separator);
+  String get threeDisplay => _threeDigit.join(separator);
+  String get firstTwo => _twoDigit.first;
+
+  /// Problems with the data; empty when valid. Each value must be exactly 2
+  /// (or 3) ASCII digits 0-9: rejects empty lists, empty strings, spaces,
+  /// non-digit characters (incl. Thai digits) and wrong lengths. Never fixes data.
+  List<String> validate() => [
+        if (_twoDigit.isEmpty) 'twoDigit is empty',
+        if (_threeDigit.isEmpty) 'threeDigit is empty',
+        for (final n in _twoDigit)
+          if (!RegExp(r'^\d{2}$').hasMatch(n)) 'twoDigit "$n" is not 2 digits',
+        for (final n in _threeDigit)
+          if (!RegExp(r'^\d{3}$').hasMatch(n)) 'threeDigit "$n" is not 3 digits',
+      ];
+}
+
+/// Sample forecast scores (0-100) shown as bars on the dream detail page.
+/// These are design sample values, not verified predictions.
+class LuckForecast {
+  const LuckForecast({required this.money, required this.love, required this.health})
+      : assert(money >= 0 && money <= 100, 'money must be 0-100'),
+        assert(love >= 0 && love <= 100, 'love must be 0-100'),
+        assert(health >= 0 && health <= 100, 'health must be 0-100');
+
+  /// การเงิน
+  final int money;
+
+  /// ความรัก
+  final int love;
+
+  /// สุขภาพ
+  final int health;
+
+  /// Range problems for the given scores (each must be 0-100 inclusive); empty
+  /// when valid. Works with assertions disabled; never clamps or fixes values.
+  static List<String> check({required int money, required int love, required int health}) => [
+        for (final (field, value) in [('money', money), ('love', love), ('health', health)])
+          if (value < 0 || value > 100) '$field $value is outside 0-100',
+      ];
+
+  /// Runtime check of this forecast (the constructor asserts only run when
+  /// assertions are enabled, e.g. debug builds and tests).
+  List<String> validate() => check(money: money, love: love, health: health);
+}
+
 class Dream {
   /// Stable identifier (English slug). Never derived from list position.
   final String id;
-  final String name, cat, two, three, short, meaning, advice;
+  final String name, cat, short, meaning, advice;
+  final LuckyNumbers numbers;
   final List<String> digits;
-  final List<int> luck; // money, love, health (0-100)
+  final LuckForecast luckForecast;
   final bool good;
-  const Dream(this.id, this.name, this.cat, this.two, this.three, this.digits, this.short, this.meaning, this.luck, this.good,
-      this.advice);
-  String get firstTwo => two.split(' · ').first;
+  const Dream(this.id, this.name, this.cat, this.numbers, this.digits, this.short, this.meaning, this.luckForecast,
+      this.good, this.advice);
+
+  // Compatibility getters kept for existing call sites (display strings unchanged).
+  String get two => numbers.twoDisplay;
+  String get three => numbers.threeDisplay;
+  String get firstTwo => numbers.firstTwo;
+
+  /// Data problems of this dream, prefixed by the failing part; empty when valid.
+  List<String> validate() => [
+        for (final p in numbers.validate()) 'numbers: $p',
+        for (final p in luckForecast.validate()) 'luckForecast: $p',
+      ];
 }
 
 const dreams = <Dream>[
-  Dream('snake', 'งู', 'สัตว์', '56 · 65', '567 · 556', ['5', '6'], 'จะได้พบเนื้อคู่ หรือมีโชคลาภ',
+  Dream('snake', 'งู', 'สัตว์', LuckyNumbers(twoDigit: ['56', '65'], threeDigit: ['567', '556']), ['5', '6'], 'จะได้พบเนื้อคู่ หรือมีโชคลาภ',
       'ฝันเห็นงูตามตำราโบราณ หมายถึงเนื้อคู่หรือคนรักกำลังจะเข้ามา หากงูรัดตัวแน่น ทายว่าจะได้คู่ครองในเร็ววัน ผู้มีคู่แล้วจะได้โชคลาภจากคนใกล้ตัว',
-      [84, 90, 62], true, 'ให้ทำบุญใส่บาตรในวันเกิด อธิษฐานขอให้โชคนี้มาถึงโดยไว'),
-  Dream('elephant', 'ช้าง', 'สัตว์', '91 · 19', '919 · 199', ['9', '1'], 'จะมีผู้ใหญ่อุปถัมภ์ ยศถาบรรดาศักดิ์',
+      LuckForecast(money: 84, love: 90, health: 62), true, 'ให้ทำบุญใส่บาตรในวันเกิด อธิษฐานขอให้โชคนี้มาถึงโดยไว'),
+  Dream('elephant', 'ช้าง', 'สัตว์', LuckyNumbers(twoDigit: ['91', '19'], threeDigit: ['919', '199']), ['9', '1'], 'จะมีผู้ใหญ่อุปถัมภ์ ยศถาบรรดาศักดิ์',
       'ฝันเห็นช้างหมายถึงบารมี จะได้รับการสนับสนุนจากผู้ใหญ่ หน้าที่การงานก้าวหน้า หากขี่ช้างทายว่าจะได้เลื่อนตำแหน่ง',
-      [92, 70, 75], true, 'ถวายดอกดาวเรืองแด่พระพิฆเนศ แล้วขอพรเรื่องงาน'),
-  Dream('tooth-falling-out', 'ฟันหลุด', 'ร่างกาย', '08 · 80', '098 · 809', ['0', '8'], 'ระวังเรื่องญาติผู้ใหญ่ สุขภาพ',
+      LuckForecast(money: 92, love: 70, health: 75), true, 'ถวายดอกดาวเรืองแด่พระพิฆเนศ แล้วขอพรเรื่องงาน'),
+  Dream('tooth-falling-out', 'ฟันหลุด', 'ร่างกาย', LuckyNumbers(twoDigit: ['08', '80'], threeDigit: ['098', '809']), ['0', '8'], 'ระวังเรื่องญาติผู้ใหญ่ สุขภาพ',
       'ฝันว่าฟันหลุด ตำราว่าเป็นลางเตือนเรื่องญาติผู้ใหญ่หรือคนในบ้าน ควรดูแลสุขภาพและระมัดระวังการเดินทาง',
-      [45, 40, 58], false, 'ตื่นเช้าให้บ้วนน้ำลายลงดิน กล่าว "ขอให้ฝันร้ายกลายเป็นดี" แล้วกรวดน้ำให้เจ้ากรรมนายเวร'),
-  Dream('flood', 'น้ำท่วม', 'ธรรมชาติ', '27 · 72', '277 · 720', ['2', '7'], 'ทรัพย์สินไหลมาเทมา',
+      LuckForecast(money: 45, love: 40, health: 58), false, 'ตื่นเช้าให้บ้วนน้ำลายลงดิน กล่าว "ขอให้ฝันร้ายกลายเป็นดี" แล้วกรวดน้ำให้เจ้ากรรมนายเวร'),
+  Dream('flood', 'น้ำท่วม', 'ธรรมชาติ', LuckyNumbers(twoDigit: ['27', '72'], threeDigit: ['277', '720']), ['2', '7'], 'ทรัพย์สินไหลมาเทมา',
       'ฝันเห็นน้ำท่วมบ้าน หมายถึงจะมีทรัพย์สินเงินทองไหลเข้ามาอย่างล้นเหลือ หากน้ำใสยิ่งเป็นมงคล',
-      [88, 65, 70], true, 'จุดธูป 9 ดอกบอกเจ้าที่ ขอให้โชคลาภไหลมาเทมา'),
-  Dream('fish', 'ปลา', 'สัตว์', '84 · 48', '844 · 468', ['8', '4'], 'จะได้ลาภก้อนเล็ก',
+      LuckForecast(money: 88, love: 65, health: 70), true, 'จุดธูป 9 ดอกบอกเจ้าที่ ขอให้โชคลาภไหลมาเทมา'),
+  Dream('fish', 'ปลา', 'สัตว์', LuckyNumbers(twoDigit: ['84', '48'], threeDigit: ['844', '468']), ['8', '4'], 'จะได้ลาภก้อนเล็ก',
       'ฝันเห็นปลาว่ายน้ำ ทายว่าจะได้ลาภลอย หากจับปลาได้จะได้เงินก้อนโดยไม่คาดคิด',
-      [80, 60, 72], true, 'ปล่อยปลาในวันพระ ช่วยเสริมโชคตามฝัน'),
-  Dream('fire', 'ไฟไหม้', 'ธรรมชาติ', '34 · 43', '347 · 430', ['3', '4'], 'จะได้ลาภใหญ่ ธุรกิจรุ่งเรือง',
+      LuckForecast(money: 80, love: 60, health: 72), true, 'ปล่อยปลาในวันพระ ช่วยเสริมโชคตามฝัน'),
+  Dream('fire', 'ไฟไหม้', 'ธรรมชาติ', LuckyNumbers(twoDigit: ['34', '43'], threeDigit: ['347', '430']), ['3', '4'], 'จะได้ลาภใหญ่ ธุรกิจรุ่งเรือง',
       'ฝันเห็นไฟไหม้บ้าน ตำราโบราณว่าเป็นฝันดี กิจการจะรุ่งเรืองเหมือนไฟลุกโชน จะได้ลาภใหญ่',
-      [78, 55, 66], true, 'ทำบุญถวายเทียนที่วัด เสริมความรุ่งเรือง'),
-  Dream('monk', 'พระ', 'บุคคล', '89 · 98', '889 · 908', ['8', '9'], 'สิ่งศักดิ์สิทธิ์คุ้มครอง',
+      LuckForecast(money: 78, love: 55, health: 66), true, 'ทำบุญถวายเทียนที่วัด เสริมความรุ่งเรือง'),
+  Dream('monk', 'พระ', 'บุคคล', LuckyNumbers(twoDigit: ['89', '98'], threeDigit: ['889', '908']), ['8', '9'], 'สิ่งศักดิ์สิทธิ์คุ้มครอง',
       'ฝันเห็นพระสงฆ์ หมายถึงบุญบารมีส่งผล จะพ้นเคราะห์ และมีสิ่งศักดิ์สิทธิ์คุ้มครอง',
-      [75, 80, 85], true, 'สวดบทอิติปิโส 9 จบ ก่อนนอน'),
-  Dream('dead-person', 'คนตาย', 'บุคคล', '09 · 90', '090 · 900', ['0', '9'], 'จะมีอายุยืน พ้นเคราะห์',
+      LuckForecast(money: 75, love: 80, health: 85), true, 'สวดบทอิติปิโส 9 จบ ก่อนนอน'),
+  Dream('dead-person', 'คนตาย', 'บุคคล', LuckyNumbers(twoDigit: ['09', '90'], threeDigit: ['090', '900']), ['0', '9'], 'จะมีอายุยืน พ้นเคราะห์',
       'ฝันเห็นคนตาย ตำราว่าเป็นฝันกลับ ผู้ฝันจะมีอายุยืน เคราะห์ร้ายจะหมดไป',
-      [60, 55, 82], false, 'กรวดน้ำอุทิศส่วนกุศล และสวดบทแก้ฝันร้ายก่อนนอน 3 คืน'),
-  Dream('gold', 'ทองคำ', 'สิ่งของ', '59 · 95', '559 · 959', ['5', '9'], 'โชคลาภ เงินทองเพิ่มพูน',
+      LuckForecast(money: 60, love: 55, health: 82), false, 'กรวดน้ำอุทิศส่วนกุศล และสวดบทแก้ฝันร้ายก่อนนอน 3 คืน'),
+  Dream('gold', 'ทองคำ', 'สิ่งของ', LuckyNumbers(twoDigit: ['59', '95'], threeDigit: ['559', '959']), ['5', '9'], 'โชคลาภ เงินทองเพิ่มพูน',
       'ฝันว่าได้ทองคำ ทายว่าจะได้ทรัพย์ หากใส่สร้อยทองจะได้เกียรติยศ',
-      [90, 68, 70], true, 'ไหว้แม่กวนอิมด้วยผลไม้สีเหลือง'),
-  Dream('tiger', 'เสือ', 'สัตว์', '37 · 73', '373 · 737', ['3', '7'], 'จะได้อำนาจ บารมี',
+      LuckForecast(money: 90, love: 68, health: 70), true, 'ไหว้แม่กวนอิมด้วยผลไม้สีเหลือง'),
+  Dream('tiger', 'เสือ', 'สัตว์', LuckyNumbers(twoDigit: ['37', '73'], threeDigit: ['373', '737']), ['3', '7'], 'จะได้อำนาจ บารมี',
       'ฝันเห็นเสือ หมายถึงอำนาจวาสนา จะมีคนเกรงขาม หากเสือไล่ให้ระวังศัตรู',
-      [70, 50, 65], true, 'บูชาพ่อแก่ ขอให้มีบารมีคุ้มครอง'),
+      LuckForecast(money: 70, love: 50, health: 65), true, 'บูชาพ่อแก่ ขอให้มีบารมีคุ้มครอง'),
 ];
 
 /// Looks a dream up by its stable [id]; null when no dream has that id.
@@ -52,6 +137,19 @@ Dream? dreamById(String id, [List<Dream> source = dreams]) {
     if (d.id == id) return d;
   }
   return null;
+}
+
+/// Data check for [source] (numbers and luck scores), identifying dreams by id.
+/// Throws [StateError] on invalid data instead of silently fixing it.
+///
+/// `main()` calls this inside `assert(...)`, so in the app it only runs when
+/// assertions are enabled (debug); release builds skip it.
+bool debugValidateDreams([List<Dream> source = dreams]) {
+  for (final d in source) {
+    final problems = d.validate();
+    if (problems.isNotEmpty) throw StateError('Dream "${d.id}" has invalid data: ${problems.join('; ')}');
+  }
+  return true;
 }
 
 const dreamCats = ['ทั้งหมด', 'สัตว์', 'ร่างกาย', 'ธรรมชาติ', 'บุคคล', 'สิ่งของ'];

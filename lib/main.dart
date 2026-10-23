@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app_shell.dart';
+import 'data/design_data.dart';
 import 'theme.dart';
 
-void main() => runApp(const MahaDreamApp());
+void main() {
+  // Debug builds fail fast on malformed sample data (no-op in release).
+  assert(debugValidateDreams());
+  runApp(const MahaDreamApp());
+}
 
 class MahaDreamApp extends StatelessWidget {
   const MahaDreamApp({super.key});

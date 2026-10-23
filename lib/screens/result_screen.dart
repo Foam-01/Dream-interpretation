@@ -93,7 +93,9 @@ class ResultScreen extends StatelessWidget {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text('พยากรณ์โชคชะตา', style: serif(16)),
               const SizedBox(height: 10),
-              for (final (i, k) in const ['การเงิน', 'ความรัก', 'สุขภาพ'].indexed) _LuckBar(label: k, value: d.luck[i]),
+              _LuckBar(label: 'การเงิน', value: d.luckForecast.money),
+              _LuckBar(label: 'ความรัก', value: d.luckForecast.love),
+              _LuckBar(label: 'สุขภาพ', value: d.luckForecast.health),
             ]),
           ),
           const SizedBox(height: 12),
