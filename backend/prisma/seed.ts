@@ -16,20 +16,24 @@ export function isLocalDatabase(url: string): boolean {
 }
 
 export async function seed(prisma: PrismaClient): Promise<{ categories: number; dreams: number }> {
-  await prisma.$transaction(async (tx) => {
-    for (const c of seedCategories) {
-      await tx.dreamCategory.upsert({
-        where: { id: c.id },
-        create: c,
-        update: { name: c.name, sortOrder: c.sortOrder },
-      });
-    }
-    for (const d of seedDreams) {
-      const data = { ...d, contentStatus: ContentStatus.SAMPLE };
-      const { id, ...rest } = data;
-      await tx.dream.upsert({ where: { id }, create: data, update: rest });
-    }
-  });
+  await prisma.$transaction(
+    async (tx) => {
+      for (const c of seedCategories) {
+        await tx.dreamCategory.upsert({
+          where: { id: c.id },
+          create: c,
+          update: { name: c.name, sortOrder: c.sortOrder },
+        });
+      }
+      for (const d of seedDreams) {
+        const data = { ...d, contentStatus: ContentStatus.SAMPLE };
+        const { id, ...rest } = data;
+        await tx.dream.upsert({ where: { id }, create: data, update: rest });
+      }
+      // Remote databases (e.g. Neon) add per-query latency; the 5s default is too short for ~15 upserts.
+    },
+    { maxWait: 15_000, timeout: 120_000 },
+  );
   return { categories: seedCategories.length, dreams: seedDreams.length };
 }
 
