@@ -6,14 +6,16 @@ import '../theme.dart';
 import '../widgets/ui.dart';
 
 class ResultScreen extends StatelessWidget {
-  final int index;
-  const ResultScreen({super.key, required this.index});
+  final String dreamId;
+  const ResultScreen({super.key, required this.dreamId});
 
   @override
   Widget build(BuildContext context) {
     final app = AppScope.of(context);
-    final d = dreams[index];
-    final saved = app.saved.contains(index);
+    final d = dreamById(dreamId);
+    // Unknown id: never fall back to another dream; show a not-found state.
+    if (d == null) return _NotFound(onBack: () => app.goSearch());
+    final saved = app.saved.contains(d.id);
 
     return ListView(padding: EdgeInsets.zero, children: [
       RedHeader(
@@ -25,7 +27,7 @@ class ResultScreen extends StatelessWidget {
             Semantics(
               button: true,
               child: GestureDetector(
-                onTap: () => app.toggleSave(index),
+                onTap: () => app.toggleSave(d.id),
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
@@ -169,4 +171,21 @@ class _LuckBar extends StatelessWidget {
           SizedBox(width: 30, child: Text('$value', textAlign: TextAlign.right, style: sans(13, color: C.red))),
         ]),
       );
+}
+
+class _NotFound extends StatelessWidget {
+  final VoidCallback onBack;
+  const _NotFound({required this.onBack});
+
+  @override
+  Widget build(BuildContext context) => ListView(padding: EdgeInsets.zero, children: [
+        RedHeader(
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
+          child: Align(alignment: Alignment.centerLeft, child: BackLink(label: 'กลับ', onTap: onBack)),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 40),
+          child: Text('ไม่พบความฝันนี้', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
+        ),
+      ]);
 }

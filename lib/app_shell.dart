@@ -22,8 +22,8 @@ class SearchPage extends AppPage {
 }
 
 class ResultPage extends AppPage {
-  final int index;
-  const ResultPage(this.index);
+  final String dreamId;
+  const ResultPage(this.dreamId);
 }
 
 class MenuPage extends AppPage {
@@ -42,7 +42,7 @@ class AppController extends ChangeNotifier {
   final Map<String, List<AppPage>> _stacks = {for (final t in _tabs) t.$1: [_root(t.$1)]};
   String query = '';
   String cat = 'ทั้งหมด';
-  final Set<int> saved = {};
+  final Set<String> saved = {};
 
   AppPage get page => _stacks[tab]!.last;
   int get depth => _stacks[tab]!.length;
@@ -64,9 +64,9 @@ class AppController extends ChangeNotifier {
     goTab('dream');
   }
 
-  void openDream(int i) {
+  void openDream(String id) {
     tab = 'dream';
-    _stacks['dream'] = [const SearchPage(), ResultPage(i)];
+    _stacks['dream'] = [const SearchPage(), ResultPage(id)];
     notifyListeners();
   }
 
@@ -99,8 +99,8 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleSave(int i) {
-    saved.contains(i) ? saved.remove(i) : saved.add(i);
+  void toggleSave(String id) {
+    saved.contains(id) ? saved.remove(id) : saved.add(id);
     notifyListeners();
   }
 }
@@ -139,7 +139,7 @@ class _AppShellState extends State<AppShell> {
   Widget _screenFor(AppPage page) => switch (page) {
         HomePage() => const HomeScreen(),
         SearchPage() => const SearchScreen(),
-        ResultPage(:final index) => ResultScreen(index: index),
+        ResultPage(:final dreamId) => ResultScreen(dreamId: dreamId),
         MenuPage(:final tab) => MenuScreen(tab: tab),
         FeaturePage(:final key) => FeatureScreen(featKey: key),
       };
@@ -190,7 +190,7 @@ class _AppShellState extends State<AppShell> {
   }
 
   String _pageId(AppPage p) => switch (p) {
-        ResultPage(:final index) => '$index',
+        ResultPage(:final dreamId) => dreamId,
         FeaturePage(:final key) => key,
         MenuPage(:final tab) => tab,
         _ => '',

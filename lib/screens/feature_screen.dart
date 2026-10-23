@@ -332,8 +332,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
   List<Widget> _digitBody() {
     final l = lore[_digit];
     final list = [
-      for (var i = 0; i < dreams.length; i++)
-        if (dreams[i].digits.contains('$_digit')) i,
+      for (final d in dreams)
+        if (d.digits.contains('$_digit')) d,
     ];
     return [
       Padding(
@@ -391,7 +391,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,
                 childAspectRatio: 1.15,
-                children: [for (final i in list) DreamCard(index: i, number: dreams[i].two, numberSize: 15)],
+                children: [for (final d in list) DreamCard(dreamId: d.id, number: d.two, numberSize: 15)],
               ),
       ),
     ];

@@ -31,10 +31,8 @@ class _SearchScreenState extends State<SearchScreen> {
     final app = AppScope.of(context);
     final q = app.query.trim();
     final results = [
-      for (var i = 0; i < dreams.length; i++)
-        if ((app.cat == 'ทั้งหมด' || dreams[i].cat == app.cat) &&
-            (q.isEmpty || dreams[i].name.contains(q) || dreams[i].short.contains(q)))
-          i,
+      for (final d in dreams)
+        if ((app.cat == 'ทั้งหมด' || d.cat == app.cat) && (q.isEmpty || d.name.contains(q) || d.short.contains(q))) d,
     ];
 
     return Column(children: [
@@ -116,8 +114,8 @@ class _SearchScreenState extends State<SearchScreen> {
               padding: const EdgeInsets.symmetric(vertical: 40),
               child: Text('ไม่พบความฝันนี้ ลองคำอื่น', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
             ),
-          for (final i in results)
-            Padding(padding: const EdgeInsets.only(bottom: 10), child: _ResultRow(index: i)),
+          for (final d in results)
+            Padding(padding: const EdgeInsets.only(bottom: 10), child: _ResultRow(dreamId: d.id)),
         ]),
       ),
     ]);
@@ -125,16 +123,17 @@ class _SearchScreenState extends State<SearchScreen> {
 }
 
 class _ResultRow extends StatelessWidget {
-  final int index;
-  const _ResultRow({required this.index});
+  final String dreamId;
+  const _ResultRow({required this.dreamId});
 
   @override
   Widget build(BuildContext context) {
-    final d = dreams[index];
+    final d = dreamById(dreamId);
+    if (d == null) return const SizedBox.shrink();
     return CreamCard(
       radius: 14,
       padding: const EdgeInsets.all(10),
-      onTap: () => AppScope.of(context).openDream(index),
+      onTap: () => AppScope.of(context).openDream(d.id),
       child: Row(children: [
         const ImagePlaceholder('ภาพ', width: 60, height: 60, radius: 10, fontSize: 9),
         const SizedBox(width: 12),

@@ -150,7 +150,7 @@ class HomeScreen extends StatelessWidget {
           child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             for (var i = 0; i < 5; i++) ...[
               if (i > 0) const SizedBox(width: 10),
-              DreamCard(index: i, width: 120, number: dreams[i].firstTwo),
+              DreamCard(dreamId: dreams[i].id, width: 120, number: dreams[i].firstTwo),
             ],
           ]),
         ),
@@ -196,21 +196,22 @@ class _Badge extends StatelessWidget {
 
 /// Card with image placeholder + dream name + number (home hot list, digit screen).
 class DreamCard extends StatelessWidget {
-  final int index;
+  final String dreamId;
   final double? width;
   final String number;
   final double numberSize;
-  const DreamCard({super.key, required this.index, required this.number, this.width, this.numberSize = 16});
+  const DreamCard({super.key, required this.dreamId, required this.number, this.width, this.numberSize = 16});
 
   @override
   Widget build(BuildContext context) {
-    final d = dreams[index];
+    final d = dreamById(dreamId);
+    if (d == null) return const SizedBox.shrink();
     return SizedBox(
       width: width,
       child: CreamCard(
         radius: 14,
         padding: EdgeInsets.zero,
-        onTap: () => AppScope.of(context).openDream(index),
+        onTap: () => AppScope.of(context).openDream(d.id),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
           ImagePlaceholder('ภาพ ${d.name}', height: 80, width: double.infinity),
           Padding(
