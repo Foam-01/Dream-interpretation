@@ -49,6 +49,27 @@ describe('parseCorsOrigins', () => {
     ]);
   });
 
+  it.each([
+    ['*'],
+    ['https://a.example/path'],
+    ['a.example'],
+    ['https://*.example'],
+    ['https://u:p@a.example'],
+    ['ftp://a.example'],
+  ])('rejects CORS origin %s', (origin) => {
+    expect(() => validateEnv({ DATABASE_URL: SECRET_URL, CORS_ORIGINS: `https://ok.example,${origin}` })).toThrow(
+      /CORS_ORIGINS/,
+    );
+  });
+
+  it('accepts origins with ports and does not echo DATABASE_URL in CORS errors', () => {
+    expect(
+      validateEnv({ DATABASE_URL: SECRET_URL, CORS_ORIGINS: 'https://app.example, http://localhost:5173' })
+        .CORS_ORIGINS,
+    ).toBe('https://app.example, http://localhost:5173');
+    expect(() => validateEnv({ DATABASE_URL: SECRET_URL, CORS_ORIGINS: '*' })).not.toThrow(/super-secret/);
+  });
+
   it('returns an empty list when unset (CORS disabled)', () => {
     expect(parseCorsOrigins(undefined)).toEqual([]);
     expect(parseCorsOrigins('')).toEqual([]);

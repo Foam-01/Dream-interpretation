@@ -36,9 +36,9 @@ describe('Health (e2e)', () => {
         .expect(503, { status: 'unavailable', database: 'down' });
     });
 
-    it('data endpoints return a generic 500 without leaking connection details', async () => {
-      const res = await request(app.getHttpServer()).get('/api/v1/dreams').expect(500);
-      expect(res.body).toEqual({ error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } });
+    it('data endpoints return 503 (retryable) without leaking connection details', async () => {
+      const res = await request(app.getHttpServer()).get('/api/v1/dreams').expect(503);
+      expect(res.body).toEqual({ error: { code: 'SERVICE_UNAVAILABLE', message: 'Service unavailable' } });
       expect(JSON.stringify(res.body)).not.toMatch(/nobody|nothing|127\.0\.0\.1|ECONNREFUSED/);
     });
   });

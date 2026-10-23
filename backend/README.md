@@ -28,7 +28,8 @@ Environment variables (validated at startup; the app exits with a message naming
 | `DATABASE_URL` | yes | – | `postgresql://…`. Real environment variables override `.env`. |
 | `PORT` | no | `3000` | 1–65535 |
 | `NODE_ENV` | no | `development` | `development` \| `test` \| `production`. Swagger UI is disabled in production. |
-| `CORS_ORIGINS` | no | empty | Comma-separated browser origins. Empty disables CORS (the mobile app does not need it). |
+| `CORS_ORIGINS` | no | empty | Comma-separated browser origins (`https://host[:port]`, no `*`). Empty disables CORS (the mobile app does not need it). |
+| `DIRECT_DATABASE_URL` | no | – | Prisma CLI only: direct (non-pooled) URL for migrations; falls back to `DATABASE_URL`. |
 
 ## Database
 
@@ -56,8 +57,9 @@ npm run db:seed
 
 Put the Neon connection string in `DATABASE_URL` (in `.env` locally, or the deployment's secret store).
 The pooled endpoint works for the app. Before running `npm run db:migrate:deploy` against Neon, confirm
-the branch is the intended one (use a dedicated dev branch for development). Never run
-`prisma migrate reset` against Neon.
+the branch is the intended one (use a dedicated dev branch for development), and set `DIRECT_DATABASE_URL` to
+the direct (non-pooled) endpoint. Never run `prisma migrate reset` against Neon.
+Production deployment, migrations and rollback: [docs/deployment.md](docs/deployment.md).
 
 ## Run
 
@@ -81,7 +83,8 @@ npm run build && npm start
 
 Errors always use `{"error":{"code","message","details?"}}` with codes
 `VALIDATION_ERROR` (400), `NOT_FOUND`/`DREAM_NOT_FOUND` (404), `SERVICE_UNAVAILABLE` (503), `INTERNAL_ERROR` (500).
-Unknown query parameters are rejected. 500 responses never include messages, stack traces or connection details.
+Unknown query parameters are rejected. When the database is unreachable, data endpoints return 503
+`SERVICE_UNAVAILABLE`. 5xx responses never include messages, stack traces or connection details.
 
 See [docs/flutter-integration.md](docs/flutter-integration.md) for the full contract and app mapping.
 

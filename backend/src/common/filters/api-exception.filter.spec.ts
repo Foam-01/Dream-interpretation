@@ -6,7 +6,9 @@ function run(exception: unknown) {
   const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
   const host = { switchToHttp: () => ({ getResponse: () => res }) } as unknown as ArgumentsHost;
   const filter = new ApiExceptionFilter();
-  jest.spyOn((filter as unknown as { logger: { error: () => void } }).logger, 'error').mockImplementation(() => {});
+  const logger = (filter as unknown as { logger: { error: () => void; warn: () => void } }).logger;
+  jest.spyOn(logger, 'error').mockImplementation(() => {});
+  jest.spyOn(logger, 'warn').mockImplementation(() => {});
   filter.catch(exception, host);
   return { status: res.status.mock.calls[0][0] as number, body: res.json.mock.calls[0][0] as unknown };
 }
@@ -35,6 +37,28 @@ describe('ApiExceptionFilter', () => {
 
   it('maps 503 to SERVICE_UNAVAILABLE', () => {
     expect(run(new ServiceUnavailableException()).status).toBe(503);
+  });
+
+  function prismaError(name: string, code?: string): Error {
+    const e = new Error('Invalid `prisma.dream.findMany()` invocation: postgresql://user:pw@db.internal:5432');
+    e.name = name;
+    if (code) Object.assign(e, { code });
+    return e;
+  }
+
+  it.each([
+    ['PrismaClientKnownRequestError', 'ECONNREFUSED'],
+    ['PrismaClientKnownRequestError', 'P1001'],
+    ['PrismaClientKnownRequestError', 'P2024'],
+    ['PrismaClientInitializationError', undefined],
+  ])('maps database outages (%s %s) to 503 SERVICE_UNAVAILABLE without details', (name, code) => {
+    const { status, body } = run(prismaError(name, code));
+    expect(status).toBe(503);
+    expect(body).toEqual({ error: { code: 'SERVICE_UNAVAILABLE', message: 'Service unavailable' } });
+  });
+
+  it('keeps other Prisma errors as 500', () => {
+    expect(run(prismaError('PrismaClientKnownRequestError', 'P2002')).status).toBe(500);
   });
 
   it('hides internals of unexpected errors', () => {
