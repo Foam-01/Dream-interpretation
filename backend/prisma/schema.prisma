@@ -1,0 +1,61 @@
+// DreamApp catalogue. Read-only content served to the Flutter app.
+// Lucky numbers are stored as text so leading zeros ("08", "098") survive.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Whether content is design/demo sample data or verified against a cited source.
+enum ContentStatus {
+  SAMPLE
+  VERIFIED
+}
+
+model DreamCategory {
+  /// Stable public slug, e.g. "animal".
+  id        String   @id @db.VarChar(64)
+  /// Display name in Thai, as used by the app.
+  name      String   @unique @db.VarChar(100)
+  sortOrder Int      @unique @map("sort_order")
+  dreams    Dream[]
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("dream_category")
+}
+
+model Dream {
+  /// Stable public slug used by the app and API (e.g. "tooth-falling-out"). Never a list position.
+  id            String        @id @db.VarChar(64)
+  name          String        @db.VarChar(200)
+  categoryId    String        @map("category_id") @db.VarChar(64)
+  category      DreamCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  short         String
+  meaning       String
+  advice        String
+  isGoodOmen    Boolean       @map("is_good_omen")
+  /// Single lucky digits shown as boxes ("0".."9"), ordered.
+  digits        String[]
+  /// Two-digit numbers ("08"), ordered. CHECK constraints in the migration enforce the format.
+  twoDigit      String[]      @map("two_digit")
+  /// Three-digit numbers ("098"), ordered.
+  threeDigit    String[]      @map("three_digit")
+  /// Sample forecast scores 0-100 (CHECK constraints in the migration).
+  luckMoney     Int           @map("luck_money") @db.SmallInt
+  luckLove      Int           @map("luck_love") @db.SmallInt
+  luckHealth    Int           @map("luck_health") @db.SmallInt
+  contentStatus ContentStatus @default(SAMPLE) @map("content_status")
+  /// Stable display order (matches the app's current list order).
+  sortOrder     Int           @unique @map("sort_order")
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([categoryId, sortOrder])
+  @@map("dream")
+}
