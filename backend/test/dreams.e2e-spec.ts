@@ -2,7 +2,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { PrismaPg } from '@prisma/adapter-pg';
 import request from 'supertest';
 import { PrismaClient } from '../generated/prisma/client';
-import { isLocalDatabase, seed } from '../prisma/seed';
+import { isLocalDatabase, seedSampleFixtures } from '../prisma/seed';
 import { createApp } from './helpers';
 
 // Runs against the isolated PostgreSQL started by test/setup/global-setup.ts (migrations applied).
@@ -35,13 +35,13 @@ describe('Dreams API (e2e, real PostgreSQL)', () => {
 
   describe('seeded with the app sample data', () => {
     beforeAll(async () => {
-      await seed(prisma);
-      await seed(prisma); // idempotent: second run must not duplicate
+      await seedSampleFixtures(prisma);
+      await seedSampleFixtures(prisma); // idempotent: second run must not duplicate
     });
 
     it('seed is idempotent', async () => {
       expect(await prisma.dream.count()).toBe(10);
-      expect(await prisma.dreamCategory.count()).toBe(5);
+      expect(await prisma.dreamCategory.count()).toBe(6); // 5 sample categories + หมวด ก
     });
 
     it('GET /dreams returns all 10 in app order with default pagination', async () => {
@@ -135,6 +135,7 @@ describe('Dreams API (e2e, real PostgreSQL)', () => {
         { id: 'nature', name: 'ธรรมชาติ' },
         { id: 'person', name: 'บุคคล' },
         { id: 'object', name: 'สิ่งของ' },
+        { id: 'letter-k', name: 'หมวด ก' },
       ]);
     });
 

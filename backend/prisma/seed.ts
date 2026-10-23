@@ -1,10 +1,12 @@
-// Idempotent seed of the app's existing SAMPLE dream data.
-// - Upserts by stable id: running it twice creates no duplicates.
-// - Never deletes rows.
+// Idempotent seed.
+// - `npm run db:seed` (seed): creates the content categories (e.g. หมวด ก) only. Real dreams come from the
+//   importer (npm run content:import); the old SAMPLE design dreams are no longer seeded.
+// - seedSampleFixtures: the SAMPLE design dreams and categories, for automated tests only.
+// - Upserts by stable id; never deletes; DRAFT/VERIFIED rows are never overwritten by sample data.
 // - Refuses non-local databases unless SEED_ALLOW_REMOTE=true is set explicitly.
 import { PrismaPg } from '@prisma/adapter-pg';
 import { ContentStatus, PrismaClient } from '../generated/prisma/client';
-import { seedCategories, seedDreams } from './seed-data';
+import { allCategories, contentCategories, seedDreams } from './seed-data';
 
 export function isLocalDatabase(url: string): boolean {
   try {
@@ -15,10 +17,26 @@ export function isLocalDatabase(url: string): boolean {
   }
 }
 
-export async function seed(prisma: PrismaClient): Promise<{ categories: number; dreams: number }> {
+/** Production seed: content categories only. */
+export async function seed(prisma: PrismaClient): Promise<{ categories: number }> {
+  for (const c of contentCategories) {
+    await prisma.dreamCategory.upsert({
+      where: { id: c.id },
+      create: c,
+      update: { name: c.name, sortOrder: c.sortOrder },
+    });
+  }
+  return { categories: contentCategories.length };
+}
+
+/** Test fixtures: every category plus the 10 SAMPLE design dreams. */
+export async function seedSampleFixtures(
+  prisma: PrismaClient,
+): Promise<{ categories: number; dreams: number; protectedIds: string[] }> {
+  const protectedIds: string[] = [];
   await prisma.$transaction(
     async (tx) => {
-      for (const c of seedCategories) {
+      for (const c of allCategories) {
         await tx.dreamCategory.upsert({
           where: { id: c.id },
           create: c,
@@ -28,13 +46,21 @@ export async function seed(prisma: PrismaClient): Promise<{ categories: number; 
       for (const d of seedDreams) {
         const data = { ...d, contentStatus: ContentStatus.SAMPLE };
         const { id, ...rest } = data;
-        await tx.dream.upsert({ where: { id }, create: data, update: rest });
+        const existing = await tx.dream.findUnique({ where: { id }, select: { contentStatus: true } });
+        if (!existing) {
+          await tx.dream.create({ data });
+        } else if (existing.contentStatus === ContentStatus.SAMPLE) {
+          await tx.dream.update({ where: { id }, data: rest });
+        } else {
+          // A DRAFT/VERIFIED row with this id holds real content: sample data must never overwrite it.
+          protectedIds.push(id);
+        }
       }
       // Remote databases (e.g. Neon) add per-query latency; the 5s default is too short for ~15 upserts.
     },
     { maxWait: 15_000, timeout: 120_000 },
   );
-  return { categories: seedCategories.length, dreams: seedDreams.length };
+  return { categories: allCategories.length, dreams: seedDreams.length - protectedIds.length, protectedIds };
 }
 
 async function main(): Promise<void> {
@@ -53,7 +79,7 @@ async function main(): Promise<void> {
   const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: url }) });
   try {
     const result = await seed(prisma);
-    console.log(`Seeded ${result.categories} categories and ${result.dreams} SAMPLE dreams (upsert).`);
+    console.log(`Seeded ${result.categories} content categories (upsert). No dreams are seeded.`);
   } finally {
     await prisma.$disconnect();
   }

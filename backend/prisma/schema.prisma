@@ -11,10 +11,32 @@ datasource db {
   provider = "postgresql"
 }
 
-/// Whether content is design/demo sample data or verified against a cited source.
+/// Whether content is design/demo sample data, imported but not yet approved (DRAFT, never served by the
+/// public API), or approved for publication by the content owner (VERIFIED; a cited source is optional).
 enum ContentStatus {
   SAMPLE
+  DRAFT
   VERIFIED
+}
+
+/// A citable source of dream interpretations (e.g. a printed ตำราทำนายฝัน). One source serves many dreams.
+model ContentSource {
+  /// Stable slug, e.g. "tamra-example-2510".
+  id        String   @id @db.VarChar(64)
+  title     String   @db.VarChar(300)
+  author    String?  @db.VarChar(200)
+  publisher String?  @db.VarChar(200)
+  edition   String?  @db.VarChar(100)
+  /// Publication year as printed (Buddhist or Common Era); see `note` for which.
+  year      Int?     @db.SmallInt
+  /// https only (CHECK constraint).
+  url       String?
+  note      String?
+  dreams    Dream[]
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("content_source")
 }
 
 model DreamCategory {
@@ -32,30 +54,48 @@ model DreamCategory {
 
 model Dream {
   /// Stable public slug used by the app and API (e.g. "tooth-falling-out"). Never a list position.
-  id            String        @id @db.VarChar(64)
-  name          String        @db.VarChar(200)
-  categoryId    String        @map("category_id") @db.VarChar(64)
-  category      DreamCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  short         String
-  meaning       String
-  advice        String
-  isGoodOmen    Boolean       @map("is_good_omen")
-  /// Single lucky digits shown as boxes ("0".."9"), ordered.
-  digits        String[]
+  id             String         @id @db.VarChar(64)
+  name           String         @db.VarChar(200)
+  categoryId     String         @map("category_id") @db.VarChar(64)
+  category       DreamCategory  @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// Extra search keywords (exact match), e.g. other spellings. Never NULL; may be empty.
+  aliases        String[]       @default([])
+  short          String
+  meaning        String
+  /// Optional: printed sources rarely contain advice, omen polarity, digits or forecast scores.
+  advice         String?
+  isGoodOmen     Boolean?       @map("is_good_omen")
+  /// Single lucky digits shown as boxes ("0".."9"), ordered. May be empty.
+  digits         String[]
   /// Two-digit numbers ("08"), ordered. CHECK constraints in the migration enforce the format.
-  twoDigit      String[]      @map("two_digit")
+  twoDigit       String[]       @map("two_digit")
   /// Three-digit numbers ("098"), ordered.
-  threeDigit    String[]      @map("three_digit")
-  /// Sample forecast scores 0-100 (CHECK constraints in the migration).
-  luckMoney     Int           @map("luck_money") @db.SmallInt
-  luckLove      Int           @map("luck_love") @db.SmallInt
-  luckHealth    Int           @map("luck_health") @db.SmallInt
-  contentStatus ContentStatus @default(SAMPLE) @map("content_status")
+  threeDigit     String[]       @map("three_digit")
+  /// The source says "ไม่ควรเสี่ยง" (do not gamble on this dream): both number lists are then empty
+  /// (CHECK constraint). Never derived or guessed.
+  noLuckyNumbers Boolean        @default(false) @map("no_lucky_numbers")
+  /// Sample forecast scores 0-100; all three set or all three NULL (CHECK constraints in the migrations).
+  luckMoney      Int?           @map("luck_money") @db.SmallInt
+  luckLove       Int?           @map("luck_love") @db.SmallInt
+  luckHealth     Int?           @map("luck_health") @db.SmallInt
+  /// Where the interpretation text comes from, and where in it (page/section).
+  sourceId       String?        @map("source_id") @db.VarChar(64)
+  source         ContentSource? @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  sourceLocator  String?        @map("source_locator") @db.VarChar(200)
+  /// Illustration (https URL) and its attribution, separate from the text source. All NULL when there is no
+  /// image; credit and license are required when there is one (CHECK constraint).
+  imageUrl       String?        @map("image_url")
+  imageAlt       String?        @map("image_alt") @db.VarChar(300)
+  imageCredit    String?        @map("image_credit") @db.VarChar(300)
+  imageLicense   String?        @map("image_license") @db.VarChar(100)
+  imageSourceUrl String?        @map("image_source_url")
+  contentStatus  ContentStatus  @default(SAMPLE) @map("content_status")
   /// Stable display order (matches the app's current list order).
-  sortOrder     Int           @unique @map("sort_order")
-  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt     DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  sortOrder      Int            @unique @map("sort_order")
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   @@index([categoryId, sortOrder])
+  @@index([sourceId])
   @@map("dream")
 }

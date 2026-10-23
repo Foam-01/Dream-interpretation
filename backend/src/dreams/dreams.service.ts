@@ -25,6 +25,7 @@ export class DreamsService {
       categoryId: query.category,
       skip: (page - 1) * limit,
       take: limit,
+      sort: query.sort,
     });
     return { data: items.map(toDreamSummary), meta: { page, limit, total, totalPages: totalPages(total, limit) } };
   }

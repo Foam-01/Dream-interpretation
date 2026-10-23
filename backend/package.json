@@ -22,6 +22,9 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:seed": "ts-node prisma/seed.ts",
     "db:local": "node scripts/local-postgres.mjs",
+    "content:import": "ts-node prisma/import/import-dreams.ts",
+    "content:publish": "ts-node prisma/import/content-admin.ts publish",
+    "content:remove-sample": "ts-node prisma/import/content-admin.ts remove-sample",
     "postinstall": "prisma generate"
   },
   "dependencies": {

@@ -19,6 +19,8 @@ for release builds; only debug builds may use `http://`. No secrets belong in th
 ### `GET /dreams`
 
 Query: `page` (≥1, default 1), `limit` (1–100, default 20), `q` (≤50 chars), `category` (id from `/dream-categories`).
+`sort`: `catalogue` (default, curated order) or `name` (Thai dictionary order ก–ฮ, computed with ICU collation).
+`q` also matches an exact alias.
 Unknown parameters → 400.
 
 Search semantics match the app today: `q` is trimmed, then matched as a **case-sensitive substring** of the
@@ -69,6 +71,30 @@ Malformed id (not a lowercase slug) → 400 `VALIDATION_ERROR`.
 ### `GET /dream-categories`
 
 `{"data":[{"id":"animal","name":"สัตว์"},{"id":"body","name":"ร่างกาย"},{"id":"nature","name":"ธรรมชาติ"},{"id":"person","name":"บุคคล"},{"id":"object","name":"สิ่งของ"}]}`
+
+### Content metadata (added with migration `0002_content_metadata`)
+
+These changes are additive and backward compatible: the existing fields keep their meaning.
+
+| Field | Where | Type | Notes |
+|---|---|---|---|
+| `image` | list + detail | object or `null` | `{url (https), alt?, credit, license, sourceUrl?}`; credit and license are always present with an image |
+| `source` | detail | object or `null` | `{id, title, author?, publisher?, edition?, year?, url?, locator?}`: citation of the text |
+| `aliases` | detail | string[] | extra search keywords |
+| `isGoodOmen` | list + detail | boolean or **`null`** | null when the source does not say |
+| `noLuckyNumbers` | list + detail | boolean | `true` = the source says "ไม่ควรเสี่ยง"; both number lists are then empty (absent in the first API version = false) |
+| `advice` | detail | string or **`null`** | |
+| `luckForecast` | detail | object or **`null`** | scores exist only in SAMPLE data |
+| `digits` | detail | string[] (**may be empty**) | |
+
+- The app's offline (bundled) data is the real หมวด ก content, not sample data any more.
+- `contentStatus` is still `SAMPLE` or `VERIFIED` in responses. `DRAFT` rows are never served (list, search,
+  count and detail all exclude them).
+- The Flutter parser accepts responses without `image`/`source`/`aliases` (the first API version).
+- The Flutter parser requires `advice`, `isGoodOmen` and `luckForecast` to be present, with `null` allowed.
+- Older app builds without these changes still parse SAMPLE-only responses unchanged. A record with
+  `null` advice/forecast/omen or empty digits would fail in those builds. No such build was released.
+- How content gets in: [content-import.md](content-import.md).
 
 ## Mapping to the current Flutter model (`lib/data/design_data.dart`)
 

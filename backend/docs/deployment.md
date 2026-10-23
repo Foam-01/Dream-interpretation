@@ -49,7 +49,20 @@ without changes. The Docker `HEALTHCHECK` follows `PORT` as well.
 ## Database migrations (Prisma)
 
 Migrations are **never** run by the image or at container start. Seeds are never run in production. Neon
-already holds the reviewed `20261023062740_init` migration and the SAMPLE catalogue.
+already holds the reviewed init migration and the SAMPLE catalogue.
+
+**Migration folders were renamed** (`20261023062740_init` → `0001_init`; the newer ones were created as
+`0002_…`, `0003_…`). Neon still records the old name, so before the next `migrate deploy` against Neon run this once
+(with approval; it renames one history row, the SQL content and checksum are unchanged):
+
+```sql
+UPDATE "_prisma_migrations" SET migration_name = '0001_init' WHERE migration_name = '20261023062740_init';
+```
+
+Then `npx prisma migrate status` must list only `0002_…` and `0003_…` as pending.
+**Pending for Neon (not applied):** `0002_content_metadata` and `0003_no_lucky_numbers_owner_approval` (additive: sources, images, aliases, DRAFT, ไม่ควรเสี่ยง flag,
+optional advice/omen/forecast). Apply it with the procedure below before deploying an API build that includes it,
+because that build queries the new columns.
 
 For a future release that adds a migration:
 

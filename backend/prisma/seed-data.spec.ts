@@ -3,9 +3,9 @@ import { join } from 'node:path';
 import { isLocalDatabase } from './seed';
 import { seedCategories, seedDreams } from './seed-data';
 
-// The seed must stay identical to the Flutter app's sample data (lib/data/design_data.dart).
+// The sample fixtures must stay identical to the Flutter test fixture (test/fixtures/legacy_sample_data.dart).
 // This re-parses the Dart source instead of trusting the hand-maintained TypeScript copy.
-const dart = readFileSync(join(__dirname, '..', '..', 'lib', 'data', 'design_data.dart'), 'utf8');
+const dart = readFileSync(join(__dirname, '..', '..', 'test', 'fixtures', 'legacy_sample_data.dart'), 'utf8');
 
 function list(raw: string): string[] {
   return raw.split(',').map((v) => v.trim().replace(/^'|'$/g, ''));
@@ -57,7 +57,7 @@ describe('seed data vs Flutter source', () => {
   });
 
   it('matches the app category list (excluding the "all" filter value)', () => {
-    const cats = /const dreamCats = \[([^\]]*)\]/.exec(dart)![1];
+    const cats = /const legacySampleCats = \[([^\]]*)\]/.exec(dart)![1];
     expect(seedCategories.map((c) => c.name)).toEqual(list(cats).slice(1));
   });
 });

@@ -34,6 +34,16 @@ export const seedCategories: SeedCategory[] = [
   { id: 'object', name: 'สิ่งของ', sortOrder: 5 },
 ];
 
+/**
+ * Categories for real (sourced) content, organised by initial letter. Not part of the app's bundled
+ * SAMPLE data, so they are kept apart from seedCategories (which must mirror the Flutter sample list).
+ * The seed creates them so imports can reference them; it adds no dreams to them.
+ */
+export const contentCategories: SeedCategory[] = [{ id: 'letter-k', name: 'หมวด ก', sortOrder: 6 }];
+
+/** Every category the seed creates. */
+export const allCategories: SeedCategory[] = [...seedCategories, ...contentCategories];
+
 export const seedDreams: SeedDream[] = [
   {
     id: 'snake',

@@ -2,10 +2,10 @@ import { ApiException } from '../common/errors/api-error';
 import { ListDreamsQueryDto } from './dto/list-dreams-query.dto';
 import { DreamsRepository } from './dreams.repository';
 import { DreamsService, totalPages } from './dreams.service';
-import type { DreamWithCategory } from './mappers/dream.mapper';
+import type { DreamWithRelations } from './mappers/dream.mapper';
 
 const category = { id: 'body', name: 'ร่างกาย', sortOrder: 2, createdAt: new Date(0), updatedAt: new Date(0) };
-const tooth: DreamWithCategory = {
+const tooth: DreamWithRelations = {
   id: 'tooth-falling-out',
   name: 'ฟันหลุด',
   categoryId: 'body',
@@ -17,9 +17,19 @@ const tooth: DreamWithCategory = {
   digits: ['0', '8'],
   twoDigit: ['08', '80'],
   threeDigit: ['098', '809'],
+  noLuckyNumbers: false,
   luckMoney: 45,
   luckLove: 40,
   luckHealth: 58,
+  aliases: [],
+  sourceId: null,
+  source: null,
+  sourceLocator: null,
+  imageUrl: null,
+  imageAlt: null,
+  imageCredit: null,
+  imageLicense: null,
+  imageSourceUrl: null,
   contentStatus: 'SAMPLE',
   sortOrder: 3,
   createdAt: new Date(0),
@@ -46,7 +56,13 @@ describe('DreamsService', () => {
 
   it('translates page/limit into skip/take', async () => {
     await service.list(query({ page: 3, limit: 5 }));
-    expect(repo.findPage).toHaveBeenCalledWith({ q: undefined, categoryId: undefined, skip: 10, take: 5 });
+    expect(repo.findPage).toHaveBeenCalledWith({
+      q: undefined,
+      categoryId: undefined,
+      skip: 10,
+      take: 5,
+      sort: 'catalogue',
+    });
   });
 
   it('returns pagination metadata', async () => {
@@ -80,6 +96,8 @@ describe('DreamsService', () => {
       short: 'ระวังเรื่องญาติผู้ใหญ่ สุขภาพ',
       isGoodOmen: false,
       numbers: { twoDigit: ['08', '80'], threeDigit: ['098', '809'] },
+      noLuckyNumbers: false,
+      image: null,
       contentStatus: 'SAMPLE',
     });
     expect(res.data[0]).not.toHaveProperty('luckMoney');
