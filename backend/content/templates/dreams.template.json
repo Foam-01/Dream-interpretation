@@ -1,0 +1,54 @@
+{
+  "format": "dreamapp-dreams/v1",
+  "sources": [
+    {
+      "id": "template-source",
+      "title": "<<ชื่อหนังสือ/ตำราที่ใช้อ้างอิง ตามที่พิมพ์บนปก>>",
+      "author": "<<ผู้แต่งหรือผู้เรียบเรียง>>",
+      "publisher": "<<สำนักพิมพ์>>",
+      "edition": "<<ครั้งที่พิมพ์>>",
+      "year": 2500,
+      "note": "PLACEHOLDER: ข้อมูลทดสอบสำหรับตรวจ importer เท่านั้น ไม่ใช่แหล่งอ้างอิงจริง ระบุใน note ว่าปีเป็น พ.ศ. หรือ ค.ศ."
+    }
+  ],
+  "dreams": [
+    {
+      "id": "template-test-crow",
+      "name": "กา (ข้อมูลทดสอบ)",
+      "categoryId": "animal",
+      "aliases": ["อีกา (ข้อมูลทดสอบ)"],
+      "short": "<<สรุปหนึ่งบรรทัดจากคำทำนายในตำรา>>",
+      "meaning": "<<คัดลอกคำทำนายจากตำราตามต้นฉบับ — ข้อมูลทดสอบ ไม่ใช่คำทำนายจริง>>",
+      "numbers": { "twoDigit": ["01", "10"], "threeDigit": ["001", "010"] },
+      "source": { "id": "template-source", "locator": "<<หน้า/หัวข้อ เช่น หน้า 12>>" },
+      "contentStatus": "SAMPLE"
+    },
+    {
+      "id": "template-test-tiger",
+      "name": "เสือ (ข้อมูลทดสอบ)",
+      "categoryId": "animal",
+      "short": "<<สรุปหนึ่งบรรทัด>>",
+      "meaning": "<<คำทำนาย — ข้อมูลทดสอบ>>",
+      "numbers": { "twoDigit": ["07"], "threeDigit": ["070"] },
+      "digits": ["0", "7"],
+      "source": { "id": "template-source" },
+      "image": {
+        "url": "https://images.example.org/template/tiger.jpg",
+        "alt": "<<คำบรรยายภาพสำหรับผู้พิการทางสายตา>>",
+        "credit": "<<ชื่อเจ้าของภาพ/ผู้วาด>>",
+        "license": "<<สัญญาอนุญาต เช่น CC BY 4.0 หรือ ได้รับอนุญาตเป็นลายลักษณ์อักษร>>",
+        "sourceUrl": "https://images.example.org/template/tiger"
+      },
+      "contentStatus": "SAMPLE"
+    },
+    {
+      "id": "template-test-gold",
+      "name": "ทอง (ข้อมูลทดสอบ)",
+      "categoryId": "object",
+      "short": "<<สรุปหนึ่งบรรทัด>>",
+      "meaning": "<<คำทำนาย — ข้อมูลทดสอบ>>",
+      "numbers": { "twoDigit": ["09", "90"], "threeDigit": ["009"] },
+      "contentStatus": "SAMPLE"
+    }
+  ]
+}
