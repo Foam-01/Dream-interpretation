@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:maha_dream/data/design_data.dart';
 import 'package:maha_dream/data/formulas.dart';
 import 'package:maha_dream/main.dart';
+import 'package:maha_dream/screens/home_screen.dart' show DreamCard;
 import 'package:maha_dream/widgets/ui.dart';
 
 Future<void> pumpApp(WidgetTester tester, {double textScale = 1.0}) async {
@@ -131,7 +132,8 @@ void main() {
       await openSearch(tester);
       await tapPill(tester, 'สัตว์');
       await tapTab(tester, 'หน้าแรก');
-      await tester.tap(find.text('ทำนายฝัน').first); // first match = home quick link
+      // App title, quick link and tab share the label; target the quick-link grid.
+      await tester.tap(find.descendant(of: find.byType(ContentGrid), matching: find.text('ทำนายฝัน')));
       await tester.pump();
       expect(find.text('พบ 10 รายการ'), findsOneWidget);
     });
@@ -256,7 +258,8 @@ void main() {
       expect(find.text('ตำราทำนาย'), findsOneWidget);
 
       await systemBack(tester);
-      expect(find.text('มหาทำนายฝัน'), findsOneWidget);
+      // Home header title (the label also appears on the quick link and tab).
+      expect(find.descendant(of: find.byType(RedHeader), matching: find.text('ทำนายฝัน')), findsOneWidget);
       expect(find.text('หมวดยอดนิยม'), findsOneWidget);
 
       // At home root PopScope allows the pop; the test harness has no
@@ -408,5 +411,23 @@ void main() {
         await expectClean(tester, 'feature $k');
       }
     });
+  });
+
+  group('H. Home hot-dream cards are not clipped (M0.2)', () {
+    for (final scale in [1.0, 1.3]) {
+      testWidgets('card content fits inside the card at text scale $scale', (tester) async {
+        await pumpApp(tester, textScale: scale);
+        // Home is a lazy list: scroll the page until the hot row is built.
+        await scrollTo(tester, find.text('ฝันเห็นงู'));
+        final card = find.ancestor(of: find.text('ฝันเห็นงู').first, matching: find.byType(DreamCard));
+        final cardRect = tester.getRect(card);
+        for (final f in [find.text('ฝันเห็นงู').first, find.text(dreams[0].firstTwo).first]) {
+          final r = tester.getRect(f);
+          expect(r.bottom, lessThanOrEqualTo(cardRect.bottom), reason: 'text bottom inside card');
+          expect(r.top, greaterThanOrEqualTo(cardRect.top));
+        }
+        expect(tester.takeException(), isNull);
+      });
+    }
   });
 }

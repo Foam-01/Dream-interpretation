@@ -12,7 +12,7 @@ class MahaDreamApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'มหาทำนายฝัน',
+      title: 'ทำนายฝัน',
       debugShowCheckedModeBanner: false,
       theme: buildTheme(),
       locale: const Locale('th'),

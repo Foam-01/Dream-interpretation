@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(thaiDateLong(now), style: sans(13, color: C.gold)),
                 const SizedBox(height: 2),
-                Text('มหาทำนายฝัน', style: serif(26, weight: FontWeight.w800, color: C.goldLight)),
+                Text('ทำนายฝัน', style: serif(26, weight: FontWeight.w800, color: C.goldLight)),
               ]),
             ),
             Container(
@@ -64,7 +64,7 @@ class HomeScreen extends StatelessWidget {
                   border: Border.all(color: C.gold, width: 1.5),
                 ),
                 child: Row(children: [
-                  Text('⌕', style: sans(18, color: C.redBright, height: 1)),
+                  const Icon(Icons.search, size: 18, color: C.redBright),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text('เมื่อคืนคุณฝันเห็นอะไร...',
@@ -113,12 +113,11 @@ class HomeScreen extends StatelessWidget {
       const SectionLabel('หมวดยอดนิยม'),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: GridView(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4, mainAxisSpacing: 10, crossAxisSpacing: 10, mainAxisExtent: 98),
+        child: ContentGrid(
+          columns: 4,
+          spacing: 10,
+          runSpacing: 10,
+          minRowHeight: 98,
           children: [
             for (final (g, t, k) in _quick)
               Semantics(
@@ -143,14 +142,17 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       const SectionLabel('ฝันยอดฮิตวันนี้'),
-      SizedBox(
-        height: 152,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          itemCount: 5,
-          separatorBuilder: (_, _) => const SizedBox(width: 10),
-          itemBuilder: (_, i) => DreamCard(index: i, width: 120, number: dreams[i].firstTwo),
+      // Row sizes to the tallest card instead of a fixed height that clipped it.
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: IntrinsicHeight(
+          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            for (var i = 0; i < 5; i++) ...[
+              if (i > 0) const SizedBox(width: 10),
+              DreamCard(index: i, width: 120, number: dreams[i].firstTwo),
+            ],
+          ]),
         ),
       ),
       const SizedBox(height: 24),

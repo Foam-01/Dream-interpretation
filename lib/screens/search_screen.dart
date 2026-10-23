@@ -53,7 +53,7 @@ class _SearchScreenState extends State<SearchScreen> {
               border: Border.all(color: C.gold, width: 1.5),
             ),
             child: Row(children: [
-              Text('⌕', style: sans(18, color: C.redBright, height: 1)),
+              const Icon(Icons.search, size: 18, color: C.redBright),
               const SizedBox(width: 8),
               Expanded(
                 child: TextField(

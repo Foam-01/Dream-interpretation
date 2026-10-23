@@ -181,7 +181,8 @@ class ImagePlaceholder extends StatelessWidget {
             child: Center(
               child: Text(label,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'monospace', fontSize: fontSize, color: C.imgText)),
+                  // Bundled Thai font (not the system 'monospace') so tests and devices match.
+                  style: sans(fontSize, color: C.imgText)),
             ),
           ),
         ),
@@ -283,4 +284,41 @@ class SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(padding: padding, child: Text(text, style: serif(size)));
+}
+
+/// Fixed-column grid whose rows size to their content, so cells grow with the
+/// user's text scale instead of overflowing a fixed `mainAxisExtent`.
+/// [minRowHeight] keeps the original look at the default text scale.
+class ContentGrid extends StatelessWidget {
+  final int columns;
+  final double spacing, runSpacing, minRowHeight;
+  final List<Widget> children;
+  const ContentGrid({
+    super.key,
+    required this.columns,
+    required this.children,
+    this.spacing = 0,
+    this.runSpacing = 0,
+    this.minRowHeight = 0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = <Widget>[];
+    for (var start = 0; start < children.length; start += columns) {
+      if (rows.isNotEmpty) rows.add(SizedBox(height: runSpacing));
+      rows.add(ConstrainedBox(
+        constraints: BoxConstraints(minHeight: minRowHeight),
+        child: IntrinsicHeight(
+          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            for (var c = 0; c < columns; c++) ...[
+              if (c > 0) SizedBox(width: spacing),
+              Expanded(child: start + c < children.length ? children[start + c] : const SizedBox()),
+            ],
+          ]),
+        ),
+      ));
+    }
+    return Column(children: rows);
+  }
 }

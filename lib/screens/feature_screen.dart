@@ -249,22 +249,23 @@ class _FeatureScreenState extends State<FeatureScreen> {
   List<Widget> _paeBody() {
     final cur = paeOf(_pae);
     return [
-      SizedBox(
-        height: 48,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
-          itemCount: 10,
-          separatorBuilder: (_, _) => const SizedBox(width: 6),
-          itemBuilder: (_, i) => SelectPill(
-            text: '${i}00–${i}99',
-            selected: _hund == i,
-            onTap: () => setState(() {
-              _hund = i;
-              _pae = i * 100;
-            }),
-          ),
-        ),
+      // Row height follows the pills (was a fixed 48 that clipped text at large scale).
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+        child: Row(children: [
+          for (var i = 0; i < 10; i++) ...[
+            if (i > 0) const SizedBox(width: 6),
+            SelectPill(
+              text: '${i}00–${i}99',
+              selected: _hund == i,
+              onTap: () => setState(() {
+                _hund = i;
+                _pae = i * 100;
+              }),
+            ),
+          ],
+        ]),
       ),
       Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -289,43 +290,42 @@ class _FeatureScreenState extends State<FeatureScreen> {
       ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-        child: GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5, mainAxisSpacing: 6, crossAxisSpacing: 6, mainAxisExtent: 52),
-          itemCount: 100,
-          itemBuilder: (_, i) {
-            final n = _hund * 100 + i;
-            final p = paeOf(n);
-            final sel = n == _pae;
-            return Semantics(
-              button: true,
-              selected: sel,
-              child: GestureDetector(
-                onTap: () => setState(() => _pae = n),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-                  decoration: BoxDecoration(
-                    color: sel ? C.red : C.card,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: C.goldBorder),
-                  ),
-                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Text(p.num, style: serif(16, color: sel ? C.goldLight : C.red, height: 1.2)),
-                    Text(p.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: sans(10, color: sel ? C.onRedMuted : C.caption, height: 1.2)),
-                  ]),
-                ),
-              ),
-            );
-          },
+        child: ContentGrid(
+          columns: 5,
+          spacing: 6,
+          runSpacing: 6,
+          minRowHeight: 52,
+          children: [for (var i = 0; i < 100; i++) _paeCell(_hund * 100 + i)],
         ),
       ),
     ];
+  }
+
+  Widget _paeCell(int n) {
+    final p = paeOf(n);
+    final sel = n == _pae;
+    return Semantics(
+      button: true,
+      selected: sel,
+      child: GestureDetector(
+        onTap: () => setState(() => _pae = n),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+          decoration: BoxDecoration(
+            color: sel ? C.red : C.card,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: C.goldBorder),
+          ),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text(p.num, style: serif(16, color: sel ? C.goldLight : C.red, height: 1.2)),
+            Text(p.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: sans(10, color: sel ? C.onRedMuted : C.caption, height: 1.2)),
+          ]),
+        ),
+      ),
+    );
   }
 
   // ---- Lucky digits 0-9 summary (2) ----
