@@ -122,7 +122,10 @@ const _tabs = [
 ];
 
 class AppShell extends StatefulWidget {
-  const AppShell({super.key});
+  const AppShell({super.key, this.clock = DateTime.now});
+
+  /// Called once per screen build to give date-dependent screens a single instant.
+  final DateTime Function() clock;
   @override
   State<AppShell> createState() => _AppShellState();
 }
@@ -137,11 +140,11 @@ class _AppShellState extends State<AppShell> {
   }
 
   Widget _screenFor(AppPage page) => switch (page) {
-        HomePage() => const HomeScreen(),
+        HomePage() => HomeScreen(now: widget.clock()),
         SearchPage() => const SearchScreen(),
         ResultPage(:final dreamId) => ResultScreen(dreamId: dreamId),
         MenuPage(:final tab) => MenuScreen(tab: tab),
-        FeaturePage(:final key) => FeatureScreen(featKey: key),
+        FeaturePage(:final key) => FeatureScreen(featKey: key, now: widget.clock()),
       };
 
   @override

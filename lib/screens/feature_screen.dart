@@ -9,14 +9,18 @@ import 'home_screen.dart' show DreamCard;
 
 class FeatureScreen extends StatefulWidget {
   final String featKey;
-  const FeatureScreen({super.key, required this.featKey});
+
+  /// Reference time: initial weekday of day-based features and draw dates (feature 8).
+  final DateTime now;
+  const FeatureScreen({super.key, required this.featKey, required this.now});
 
   @override
   State<FeatureScreen> createState() => _FeatureScreenState();
 }
 
 class _FeatureScreenState extends State<FeatureScreen> {
-  int _day = weekdayIndex(DateTime.now());
+  // Initialised once per State from the injected time (same lifecycle as before).
+  late int _day = weekdayIndex(widget.now);
   int _digit = 5;
   int _hund = 0;
   int _pae = 59;
@@ -426,7 +430,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
 
   // ---- Draw formulas (8) ----
   List<Widget> _drawBody() {
-    final first = nextDrawDate(DateTime.now());
+    final first = nextDrawDate(widget.now);
     final d1 = first.day == 1 ? first : DateTime(first.year, first.month + 1, 1);
     final d16 = first.day == 16 ? first : DateTime(d1.year, d1.month, 16);
     final draws = [

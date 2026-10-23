@@ -12,7 +12,11 @@ void main() {
 }
 
 class MahaDreamApp extends StatelessWidget {
-  const MahaDreamApp({super.key});
+  const MahaDreamApp({super.key, this.clock = DateTime.now});
+
+  /// Source of the current time; injectable so date-dependent screens can be
+  /// tested with a fixed date. Defaults to the real clock.
+  final DateTime Function() clock;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,7 @@ class MahaDreamApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: const AppShell(),
+      home: AppShell(clock: clock),
     );
   }
 }

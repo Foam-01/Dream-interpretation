@@ -18,12 +18,14 @@ const _quick = [
 ];
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.now});
+
+  /// Reference time for the date header, daily lock card and next draw date.
+  final DateTime now;
 
   @override
   Widget build(BuildContext context) {
     final app = AppScope.of(context);
-    final now = DateTime.now();
     final wd = weekdayIndex(now);
     final locked = dayData('7', wd);
     final sound = dayData('9', wd);
