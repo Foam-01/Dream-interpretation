@@ -81,40 +81,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ]),
       ),
-      Stack(children: [
-        // Continues the header behind the overlapping card.
-        const Positioned(top: 0, left: 0, right: 0, height: 44, child: ColoredBox(color: C.redBright)),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: CreamCard(
-            radius: 18,
-            borderWidth: 1.5,
-            shadow: const [BoxShadow(color: Color(0x26781E0A), blurRadius: 24, offset: Offset(0, 8))],
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                Expanded(child: Text('เลขล็อคประจำวัน${dayFull[wd]}', style: serif(16, color: C.red))),
-                Text('งวด ${thaiDateShort(nextDrawDate(now))}', style: sans(12, color: C.caption)),
-              ]),
-              const SizedBox(height: 12),
-              Row(children: [
-                Expanded(child: _LockTile(label: 'บน', value: locked.tiles[0].value, dark: true)),
-                const SizedBox(width: 10),
-                Expanded(child: _LockTile(label: 'ล่าง', value: locked.tiles[1].value, dark: false)),
-              ]),
-              const SizedBox(height: 12),
-              Wrap(spacing: 8, runSpacing: 4, crossAxisAlignment: WrapCrossAlignment.center, children: [
-                Text('ตัวเด่น', style: sans(13, color: C.inkSoft)),
-                _Badge(sound.tiles[0].value, bg: C.redBright, fg: Colors.white),
-                Text('ตัวกัน', style: sans(13, color: C.inkSoft)),
-                _Badge(sound.tiles[1].value, bg: C.chipGrey, fg: C.ink),
-                Text('เลขวิ่ง', style: sans(13, color: C.inkSoft)),
-                Text(running.tiles.map((t) => t.value).join(' · '),
-                    style: sans(13, weight: FontWeight.w700, color: C.redBright)),
-              ]),
-            ]),
-          ),
-        ),
-      ]),
       const SectionLabel('หมวดยอดนิยม'),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -148,6 +114,38 @@ class HomeScreen extends StatelessWidget {
       ),
       const SectionLabel('ฝันยอดฮิตวันนี้'),
       const _HotDreams(),
+      const SizedBox(height: 24),
+      // Daily lock numbers, at the bottom of the page (owner request).
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: CreamCard(
+            radius: 18,
+            borderWidth: 1.5,
+            shadow: const [BoxShadow(color: Color(0x26781E0A), blurRadius: 24, offset: Offset(0, 8))],
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Expanded(child: Text('เลขล็อคประจำวัน${dayFull[wd]}', style: serif(16, color: C.red))),
+                Text('งวด ${thaiDateShort(nextDrawDate(now))}', style: sans(12, color: C.caption)),
+              ]),
+              const SizedBox(height: 12),
+              Row(children: [
+                Expanded(child: _LockTile(label: 'บน', value: locked.tiles[0].value, dark: true)),
+                const SizedBox(width: 10),
+                Expanded(child: _LockTile(label: 'ล่าง', value: locked.tiles[1].value, dark: false)),
+              ]),
+              const SizedBox(height: 12),
+              Wrap(spacing: 8, runSpacing: 4, crossAxisAlignment: WrapCrossAlignment.center, children: [
+                Text('ตัวเด่น', style: sans(13, color: C.inkSoft)),
+                _Badge(sound.tiles[0].value, bg: C.redBright, fg: Colors.white),
+                Text('ตัวกัน', style: sans(13, color: C.inkSoft)),
+                _Badge(sound.tiles[1].value, bg: C.chipGrey, fg: C.ink),
+                Text('เลขวิ่ง', style: sans(13, color: C.inkSoft)),
+                Text(running.tiles.map((t) => t.value).join(' · '),
+                    style: sans(13, weight: FontWeight.w700, color: C.redBright)),
+              ]),
+            ]),
+          ),
+      ),
       const SizedBox(height: 24),
     ]);
   }
