@@ -47,7 +47,7 @@ void main() {
       var source = File('$incoming/dreams-source.md').readAsStringSync().replaceAll('\r\n', '\n');
       final fixes = ((jsonDecode(File('$incoming/corrections.json').readAsStringSync()) as Map)['corrections'] as List)
           .cast<Map<String, Object?>>();
-      expect(fixes, hasLength(19));
+      expect(fixes, hasLength(20));
       for (final f in fixes) {
         final from = f['from'] as String;
         expect(from.allMatches(source), hasLength(1), reason: from);

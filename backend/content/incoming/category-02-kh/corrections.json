@@ -8,6 +8,13 @@
       "to": "พบกับเนื้อคู่"
     },
     {
+      "id": "kh-lost-belongings",
+      "field": "name",
+      "from": "ของ ฝันว่าของท่านหาย",
+      "to": "ของหาย ฝันว่าของท่านหาย",
+      "note": "name ของ -> ของหาย (owner request); 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
       "id": "kh-floating-log",
       "field": "meaning",
       "from": "ได้การชะอนไม่มีข้ามฟาก",

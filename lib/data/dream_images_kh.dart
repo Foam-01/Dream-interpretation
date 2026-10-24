@@ -8,7 +8,7 @@ const dreamImagesKh = <String, DreamImage>{
   'kh-dessert': DreamImage.asset('assets/dreams/kh-dessert.jpg', alt: 'ภาพประกอบ: ขนม'),
   'kh-turmeric': DreamImage.asset('assets/dreams/kh-turmeric.jpg', alt: 'ภาพประกอบ: ขมิ้น'),
   'kh-thief': DreamImage.asset('assets/dreams/kh-thief.jpg', alt: 'ภาพประกอบ: ขโมย'),
-  'kh-lost-belongings': DreamImage.asset('assets/dreams/kh-lost-belongings.jpg', alt: 'ภาพประกอบ: ของ'),
+  'kh-lost-belongings': DreamImage.asset('assets/dreams/kh-lost-belongings.jpg', alt: 'ภาพประกอบ: ของหาย'),
   'kh-valuables': DreamImage.asset('assets/dreams/kh-valuables.jpg', alt: 'ภาพประกอบ: ของมีค่า'),
   'kh-private-parts': DreamImage.asset('assets/dreams/kh-private-parts.jpg', alt: 'ภาพประกอบ: ของลับ'),
   'kh-floating-log': DreamImage.asset('assets/dreams/kh-floating-log.jpg', alt: 'ภาพประกอบ: ขอนไม้'),

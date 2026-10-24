@@ -14,7 +14,7 @@
 | 1 | ขนม | `kh-dessert.jpg` | 22, 44, 224, 244 |
 | 2 | ขมิ้น | `kh-turmeric.jpg` | 25, 26, 251, 256 |
 | 3 | ขโมย | `kh-thief.jpg` | ไม่มีเลข (ไม่ควรเสี่ยง) |
-| 4 | ของ | `kh-lost-belongings.jpg` | ไม่มีเลข (ไม่ควรเสี่ยง) |
+| 4 | ของหาย | `kh-lost-belongings.jpg` | ไม่มีเลข (ไม่ควรเสี่ยง) |
 | 5 | ของมีค่า | `kh-valuables.jpg` | ไม่มีเลข (ไม่ควรเสี่ยง) |
 | 6 | ของลับ | `kh-private-parts.jpg` | ไม่มีเลข (ไม่ควรเสี่ยง) |
 | 7 | ขอนไม้ | `kh-floating-log.jpg` | 11, 12, 181, 182 |
@@ -67,7 +67,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a masked thief climbing in through the window of a wooden Thai house at night, carrying a cloth sack. Do not draw any numbers, words or letters anywhere in the picture.
 ```
 
-### 4. ของ — `kh-lost-belongings`
+### 4. ของหาย — `kh-lost-belongings`
 
 - ไฟล์ที่ต้องได้: `images/kh-lost-belongings.jpg`
 - เลข: **ไม่ควรเสี่ยง** — ไม่มีเลขในภาพ
