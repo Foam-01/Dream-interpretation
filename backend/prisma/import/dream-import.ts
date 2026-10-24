@@ -348,7 +348,8 @@ export function validateImportFile(raw: unknown, options: ValidationOptions): Va
           });
       }
 
-      const short = c.text(d.short, `${p}.short`, { required: true, max: 300 });
+      // Real content uses the full verbatim meaning as short (no summary is written for it), so allow 500.
+      const short = c.text(d.short, `${p}.short`, { required: true, max: 500 });
       const meaning = c.text(d.meaning, `${p}.meaning`, { required: true, max: 5000 });
       const advice = c.text(d.advice, `${p}.advice`, { required: false, max: 2000 });
       if (d.isGoodOmen !== undefined && d.isGoodOmen !== null && typeof d.isGoodOmen !== 'boolean') {

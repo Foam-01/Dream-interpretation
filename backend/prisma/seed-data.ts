@@ -39,7 +39,10 @@ export const seedCategories: SeedCategory[] = [
  * SAMPLE data, so they are kept apart from seedCategories (which must mirror the Flutter sample list).
  * The seed creates them so imports can reference them; it adds no dreams to them.
  */
-export const contentCategories: SeedCategory[] = [{ id: 'letter-k', name: 'หมวด ก', sortOrder: 6 }];
+export const contentCategories: SeedCategory[] = [
+  { id: 'letter-k', name: 'หมวด ก', sortOrder: 6 },
+  { id: 'letter-kh', name: 'หมวด ข', sortOrder: 7 },
+];
 
 /** Every category the seed creates. */
 export const allCategories: SeedCategory[] = [...seedCategories, ...contentCategories];

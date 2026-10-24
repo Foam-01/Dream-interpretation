@@ -1,16 +1,20 @@
 import 'package:flutter/foundation.dart';
 
 import 'category_k.dart';
+import 'category_kh.dart';
 import 'design_data.dart';
 import 'dream_repository.dart';
 
 /// Categories of the bundled data, in app order. Must match `dreamCats` (minus "ทั้งหมด") and the
 /// backend's content categories (backend/prisma/seed-data.ts); both are checked by tests.
-const sampleCategories = [DreamCategory(letterKCategoryId, 'หมวด ก')];
+const sampleCategories = [
+  DreamCategory(letterKCategoryId, 'หมวด ก'),
+  DreamCategory(letterKhCategoryId, 'หมวด ข'),
+];
 
 final _slug = RegExp(r'^[a-z0-9-]{1,64}$');
 
-/// Serves the bundled data (the real หมวด ก content; tests may pass other data) with the same rules as
+/// Serves the bundled data (the real หมวด ก and ข content; tests may pass other data) with the same rules as
 /// the backend API (validation, search, filtering, paging). Results complete synchronously
 /// ([SynchronousFuture]) so screens using it render on the first frame. The class keeps its original
 /// name; it is the offline repository, used when no API_BASE_URL is configured.

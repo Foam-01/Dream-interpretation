@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app_shell.dart';
 import '../data/category_k.dart';
+import '../data/category_kh.dart';
 import '../data/design_data.dart';
 import '../data/formulas.dart';
 import '../theme.dart';
@@ -41,7 +42,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
       FeatType.table => _tableBody(),
       FeatType.draw => _drawBody(),
       FeatType.letter => [
-          const LetterCategorySection(categoryId: letterKCategoryId),
+          LetterCategorySection(categoryId: k == '14' ? letterKhCategoryId : letterKCategoryId),
         ],
     };
     return ListView(padding: EdgeInsets.zero, children: [

@@ -10,6 +10,7 @@ import 'package:maha_dream/data/category_k.dart';
 import 'package:maha_dream/data/design_data.dart';
 import 'package:maha_dream/data/dream_images_k.dart';
 import 'package:maha_dream/data/dream_repository.dart';
+import 'package:maha_dream/data/dreams_k.dart';
 import 'package:maha_dream/main.dart';
 import 'package:maha_dream/widgets/ui.dart';
 
@@ -140,7 +141,7 @@ void main() {
     });
 
     test('every dream has a picture; กางร่ม and แก่ use the regenerated ones', () {
-      expect(dreams.where((d) => dreamImageFor(d.id) == null), isEmpty);
+      expect(dreamsK.where((d) => dreamImageFor(d.id) == null), isEmpty);
       // Not k-06 (shows 157) / k-10 left (smoking): the regenerated pictures.
       expect(dreamImagesK['k-umbrella']!.url, 'assets/dreams/k-umbrella.jpg');
       expect(dreamImagesK['k-growing-old']!.url, 'assets/dreams/k-growing-old.jpg');
@@ -221,10 +222,10 @@ void main() {
   group('bundled real content (replaces the former sample data)', () {
     test('lib/data/dreams_k.dart is in sync with the import file', () {
       final json = importDreams();
-      expect(dreams, hasLength(json.length));
+      expect(dreamsK, hasLength(json.length));
       for (var i = 0; i < json.length; i++) {
         final j = json[i];
-        final d = dreams[i];
+        final d = dreamsK[i];
         final n = (j['numbers'] as Map?) ?? const {};
         expect(
           (d.id, d.name, d.meaning, d.short, d.cat),
@@ -240,8 +241,9 @@ void main() {
     });
 
     test('no sample data is left in the app', () {
-      expect(dreams.map((d) => d.id).where((id) => !id.startsWith('k-')), isEmpty);
-      expect(dreamCats, ['ทั้งหมด', 'หมวด ก']);
+      expect(dreams.map((d) => d.id).where((id) => !id.startsWith('k-') && !id.startsWith('kh-')), isEmpty);
+      expect(dreams.take(dreamsK.length).map((d) => d.id), dreamsK.map((d) => d.id), reason: 'หมวด ก comes first');
+      expect(dreamCats, ['ทั้งหมด', 'หมวด ก', 'หมวด ข']);
       expect(debugValidateDreams(), isTrue);
     });
 
