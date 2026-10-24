@@ -261,7 +261,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-limping.jpg`
 - เลข: **ไม่ควรเสี่ยง** — ไม่มีเลขในภาพ
-- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่า เดินเขย่งเขยก ขาพิการ ความฝันนี้ขอให้ท่านจงระวังตัวจะพบกับการใส่ร้ายป้ายสีจากผู้อื่น ทำให้ท่านได้รับความอับอายในชีวิต แต่ในที่เดียวกันอันตราย
+- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่าเดินเขย่ง หรือ ขาพิการ ความฝันนี้ขอให้ท่านจงระวังตัวจะพบกับการใส่ร้ายป้ายสีจากผู้อื่น ทำให้ท่านได้รับความอับอายในชีวิต แต่ไม่เกี่ยวกับอันตราย
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a person walking on tiptoe and limping with a crutch along a path. Do not draw any numbers, words or letters anywhere in the picture.
