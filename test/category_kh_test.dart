@@ -9,6 +9,7 @@ import 'package:maha_dream/data/category_kh.dart';
 import 'package:maha_dream/data/design_data.dart';
 import 'package:maha_dream/data/dream_images_k.dart';
 import 'package:maha_dream/data/dream_images_kh.dart';
+import 'package:maha_dream/data/dreams_k.dart';
 import 'package:maha_dream/data/dreams_kh.dart';
 import 'package:maha_dream/data/sample_dream_repository.dart';
 import 'package:maha_dream/main.dart';
@@ -47,7 +48,7 @@ void main() {
       var source = File('$incoming/dreams-source.md').readAsStringSync().replaceAll('\r\n', '\n');
       final fixes = ((jsonDecode(File('$incoming/corrections.json').readAsStringSync()) as Map)['corrections'] as List)
           .cast<Map<String, Object?>>();
-      expect(fixes, hasLength(20));
+      expect(fixes, hasLength(25));
       for (final f in fixes) {
         final from = f['from'] as String;
         expect(from.allMatches(source), hasLength(1), reason: from);
@@ -69,7 +70,7 @@ void main() {
       }
     });
 
-    test('11 "ไม่ควรเสี่ยง" items have no numbers; same-name entries stay separate', () {
+    test('11 "ไม่ควรเสี่ยง" items have no numbers; names are unique', () {
       final dreams = importDreams();
       final none = dreams.where((d) => d['noLuckyNumbers'] == true).toList();
       expect(none, hasLength(11));
@@ -77,8 +78,8 @@ void main() {
         expect(d['numbers'], {'twoDigit': <String>[], 'threeDigit': <String>[]}, reason: d['id'] as String);
       }
       final names = dreams.map((d) => d['name']).toList();
-      expect(names.where((n) => n == 'ขา'), hasLength(2));
-      expect(names.where((n) => n == 'เขา'), hasLength(2));
+      expect(names.toSet(), hasLength(names.length), reason: 'same-name entries were renamed apart');
+      expect(names, containsAll(['ขาหัก', 'ขาใส่ตรวน', 'เที่ยวเขา', 'ตกเขา']));
     });
   });
 
@@ -101,7 +102,7 @@ void main() {
     });
 
     test('is part of the app data, after หมวด ก', () {
-      expect(dreams.skip(dreams.length - dreamsKh.length).map((d) => d.id), dreamsKh.map((d) => d.id));
+      expect(dreams.skip(dreamsK.length).take(dreamsKh.length).map((d) => d.id), dreamsKh.map((d) => d.id));
       expect(dreams.map((d) => d.id).toSet(), hasLength(dreams.length), reason: 'ids unique across categories');
       expect(debugValidateDreams(), isTrue);
     });
@@ -112,7 +113,7 @@ void main() {
       final block = ts.substring(start, ts.indexOf('];', start));
       expect(block, contains("{ id: 'letter-kh', name: 'หมวด ข', sortOrder: 7 }"));
       expect(letterKhCategoryId, 'letter-kh');
-      expect(sampleCategories.map((c) => (c.id, c.name)), [('letter-k', 'หมวด ก'), ('letter-kh', 'หมวด ข')]);
+      expect(sampleCategories.map((c) => (c.id, c.name)), contains(('letter-kh', 'หมวด ข')));
       expect(dreamCats.skip(1), sampleCategories.map((c) => c.name));
     });
   });
@@ -150,7 +151,8 @@ void main() {
       await openPage(tester);
       expect(find.text('พบ 25 รายการ'), findsOneWidget);
       expect(find.text('ไม่ควรเสี่ยง'), findsNWidgets(11));
-      expect(find.text('เขา'), findsNWidgets(2));
+      expect(find.text('เที่ยวเขา'), findsOneWidget);
+      expect(find.text('ตกเขา'), findsOneWidget);
       expect(find.text('กบ'), findsNothing);
       expect(find.byType(CircularProgressIndicator), findsNothing);
     });

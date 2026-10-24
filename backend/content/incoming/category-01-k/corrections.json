@@ -1,0 +1,80 @@
+{
+  "note": "Fixes and clearer names approved by the content owner on 2026-10-24 ('ไปดูหมวดอื่นด้วย แล้วจัดการได้เลย'). dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source).",
+  "corrections": [
+    {
+      "id": "k-frog",
+      "field": "meaning",
+      "from": "ให้ท่านรู้ว่าจะ มีลาภมาก",
+      "to": "ให้ท่านรู้ว่าจะมีลาภมาก"
+    },
+    {
+      "id": "k-bird-cage",
+      "field": "meaning",
+      "from": "ฝันว่าได้ตั๋ว กรงนก",
+      "to": "ฝันว่าได้กรงนก"
+    },
+    {
+      "id": "k-kris",
+      "field": "meaning",
+      "from": "ก็จะได้รับข่าว ถ้าหาก",
+      "to": "ก็จะได้รับข่าวดี ถ้าหาก"
+    },
+    {
+      "id": "k-wishing-tree",
+      "field": "meaning",
+      "from": "ต้นกัลปพฤกษ์ทายว่า",
+      "to": "ต้นกัลปพฤกษ์ ทายว่า"
+    },
+    {
+      "id": "k-wishing-tree",
+      "field": "meaning",
+      "from": "ทำไปแล้วก็จะได้",
+      "to": "ทำไปแล้วก็จะได้ผลดี"
+    },
+    {
+      "id": "k-eating-rice",
+      "field": "meaning",
+      "from": "มียศถาบรรดาศักดิ์",
+      "to": "มียศฐาบรรดาศักดิ์"
+    },
+    {
+      "id": "k-eating-moon",
+      "field": "meaning",
+      "from": "ได้ยศถาบรรดาศักดิ์",
+      "to": "ได้ยศฐาบรรดาศักดิ์"
+    },
+    {
+      "id": "k-eating-food-with-relatives",
+      "field": "name",
+      "from": "กินอาหาร ฝันว่าได้ร่วมกินอาหาร",
+      "to": "กินอาหารกับญาติ ฝันว่าได้ร่วมกินอาหาร",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "k-key",
+      "field": "meaning",
+      "from": "เงินทอง มากมาย",
+      "to": "เงินทองมากมาย"
+    },
+    {
+      "id": "k-cart-riding",
+      "field": "name",
+      "from": "เกวียน ฝันว่าได้นั่งเกวียน",
+      "to": "นั่งเกวียน ฝันว่าได้นั่งเกวียน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "k-cart-passing",
+      "field": "name",
+      "from": "เกวียน ฝันเห็นเกวียนกำลัง",
+      "to": "เกวียนผ่าน ฝันเห็นเกวียนกำลัง",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "k-chicken",
+      "field": "meaning",
+      "from": "หรือคู่ และบุตร",
+      "to": "หรือคู่ครอง และบุตร"
+    }
+  ]
+}

@@ -121,6 +121,40 @@
       "field": "meaning",
       "from": "แต่ในที่เดียวกันอันตราย",
       "to": "แต่ไม่เกี่ยวกับอันตราย"
+    },
+    {
+      "id": "kh-floating-log",
+      "field": "meaning",
+      "from": "หรือถ้าท่านค้าขาย",
+      "to": "หรือถ้าท่านฝันว่า"
+    },
+    {
+      "id": "kh-broken-leg",
+      "field": "name",
+      "from": "ขา ฝันว่าขาของท่านหัก",
+      "to": "ขาหัก ฝันว่าขาของท่านหัก",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "kh-shackled-leg",
+      "field": "name",
+      "from": "ขา ถ้าฝันว่าขาของท่าน",
+      "to": "ขาใส่ตรวน ถ้าฝันว่าขาของท่าน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "kh-mountain-trip",
+      "field": "name",
+      "from": "เขา ฝันว่าได้เข้าไป",
+      "to": "เที่ยวเขา ฝันว่าได้เข้าไป",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "kh-falling-from-mountain",
+      "field": "name",
+      "from": "เขา ถ้าท่านฝันว่าตก",
+      "to": "ตกเขา ถ้าท่านฝันว่าตก",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
     }
   ]
 }

@@ -1,0 +1,106 @@
+{
+  "note": "Fixes and clearer names approved by the content owner on 2026-10-24 ('แก้ให้เลย ให้เข้ากับเนื้อหา'). dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source).",
+  "corrections": [
+    {
+      "id": "khw-dead-person",
+      "field": "name",
+      "from": "คน ถ้าท่านฝันเห็นคนที่ตาย",
+      "to": "คนตาย ถ้าท่านฝันเห็นคนที่ตาย",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "khw-person-in-black",
+      "field": "name",
+      "from": "คน ถ้าท่านฝันว่า ท่านเห็นคนแต่งกาย",
+      "to": "คนชุดดำ ถ้าท่านฝันว่า ท่านเห็นคนแต่งกาย",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "khw-person-in-black",
+      "field": "meaning",
+      "from": "ต้องระวังไว้ห่วงหนัก",
+      "to": "ต้องระวังไว้ให้มาก"
+    },
+    {
+      "id": "khw-pregnancy",
+      "field": "meaning",
+      "from": "ท่านจะเป็นผู้ขาดคู่ที่แท้จริงของท่าน และจะอภัยในการสมรส",
+      "to": "ท่านจะพลาดคู่ที่แท้จริงของท่าน และจะอาภัพในการสมรส"
+    },
+    {
+      "id": "khw-pregnancy",
+      "field": "meaning",
+      "from": "ที่สมรสสั้นแล้ว",
+      "to": "ที่สมรสกันแล้ว"
+    },
+    {
+      "id": "khw-giving-birth",
+      "field": "meaning",
+      "from": "ถ่านคิดอะไรไว้",
+      "to": "ท่านคิดอะไรไว้"
+    },
+    {
+      "id": "khw-court-case",
+      "field": "name",
+      "from": "ความ ถ้าท่านฝันว่าได้ขึ้นศาล",
+      "to": "คดีความ ถ้าท่านฝันว่าได้ขึ้นศาล",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "khw-buffalo",
+      "field": "meaning",
+      "from": "จะมีทุกข์ลาภ",
+      "to": "จะมีทุกขลาภ"
+    },
+    {
+      "id": "khw-beheaded",
+      "field": "name",
+      "from": "คอ ถ้าท่านฝันว่า ท่านถูกฟันคอขาด",
+      "to": "คอขาด ถ้าท่านฝันว่า ท่านถูกฟันคอขาด",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "khw-beheaded",
+      "field": "meaning",
+      "from": "เคราะห์ที่หนักพอกะจะเป็นได้",
+      "to": "เคราะห์ที่หนักก็จะเบาลงได้"
+    },
+    {
+      "id": "khw-tied-neck",
+      "field": "name",
+      "from": "คอ ถ้าท่านฝันว่า ตัวของท่านได้ถูกผูกคอ",
+      "to": "ผูกคอ ถ้าท่านฝันว่า ตัวของท่านได้ถูกผูกคอ",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "khw-starry-night",
+      "field": "meaning",
+      "from": "เนื้อคู่ทีมีฐานะดี",
+      "to": "เนื้อคู่ที่มีฐานะดี"
+    },
+    {
+      "id": "khw-fine-clothes",
+      "field": "meaning",
+      "from": "ได้แต่งแต่งกายภรณ์อันมีค่า",
+      "to": "ได้แต่งกายด้วยอาภรณ์อันมีค่า"
+    },
+    {
+      "id": "khw-fine-clothes",
+      "field": "meaning",
+      "from": "ถ้ายืนเป็นโสดอยู่",
+      "to": "ถ้ายังเป็นโสดอยู่"
+    },
+    {
+      "id": "khw-fine-clothes",
+      "field": "meaning",
+      "from": "จะได้บุตรที่ดิ",
+      "to": "จะได้บุตรที่ดี"
+    },
+    {
+      "id": "khw-mud",
+      "field": "meaning",
+      "from": "อย่างกระทันหัน",
+      "to": "อย่างกะทันหัน"
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../app_shell.dart';
 import '../data/category_k.dart';
 import '../data/category_kh.dart';
+import '../data/category_khw.dart';
 import '../data/design_data.dart';
 import '../data/formulas.dart';
 import '../theme.dart';
@@ -10,6 +11,9 @@ import '../widgets/ui.dart';
 import 'home_screen.dart' show DreamCard;
 import 'letter_category_section.dart';
 
+
+/// Category shown by each FeatType.letter feature.
+const _letterCategories = {'13': letterKCategoryId, '14': letterKhCategoryId, '15': letterKhwCategoryId};
 class FeatureScreen extends StatefulWidget {
   final String featKey;
 
@@ -42,7 +46,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
       FeatType.table => _tableBody(),
       FeatType.draw => _drawBody(),
       FeatType.letter => [
-          LetterCategorySection(categoryId: k == '14' ? letterKhCategoryId : letterKCategoryId),
+          LetterCategorySection(categoryId: _letterCategories[k]!),
         ],
     };
     return ListView(padding: EdgeInsets.zero, children: [

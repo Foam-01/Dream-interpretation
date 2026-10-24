@@ -86,8 +86,16 @@ void main() {
       expect(dreams.every((d) => d['contentStatus'] == 'DRAFT'), isTrue, reason: 'never VERIFIED without review');
     });
 
-    test('every prediction text is verbatim from the source file', () {
-      final source = File('$incoming/dreams-source.md').readAsStringSync();
+    test('every prediction text is verbatim from the source file plus the approved corrections', () {
+      var source = File('$incoming/dreams-source.md').readAsStringSync();
+      final fixes = ((jsonDecode(File('$incoming/corrections.json').readAsStringSync()) as Map)['corrections'] as List)
+          .cast<Map<String, Object?>>();
+      expect(fixes, hasLength(12));
+      for (final f in fixes) {
+        final from = f['from'] as String;
+        expect(from.allMatches(source), hasLength(1), reason: from);
+        source = source.replaceFirst(from, f['to'] as String);
+      }
       for (final d in importDreams()) {
         expect(source.contains(d['meaning'] as String), isTrue, reason: d['id'] as String);
         expect(source.contains(d['name'] as String), isTrue, reason: d['id'] as String);
@@ -111,10 +119,10 @@ void main() {
       }
     });
 
-    test('same-name entries stay separate records', () {
+    test('same-name entries were renamed apart', () {
       final names = importDreams().map((d) => d['name']).toList();
-      expect(names.where((n) => n == 'กินอาหาร'), hasLength(2));
-      expect(names.where((n) => n == 'เกวียน'), hasLength(2));
+      expect(names.toSet(), hasLength(names.length), reason: 'same-name entries were renamed apart');
+      expect(names, containsAll(['กินอาหาร', 'กินอาหารกับญาติ', 'นั่งเกวียน', 'เกวียนผ่าน']));
     });
 
     test('no prediction carries an image or refers to an image file', () {
@@ -173,7 +181,8 @@ void main() {
       expect(find.byKey(const ValueKey('decorative-strip')), findsNothing);
       expect(find.text('ภาพตกแต่งประจำหมวด ไม่ใช่เลขเสี่ยงโชค'), findsNothing);
       expect(find.text('พบ 29 รายการ'), findsOneWidget);
-      expect(find.text('กินอาหาร'), findsNWidgets(2));
+      expect(find.text('กินอาหาร'), findsOneWidget);
+      expect(find.text('กินอาหารกับญาติ'), findsOneWidget);
       Finder rowOf(String name) => find.ancestor(of: find.text(name), matching: find.byType(CreamCard)).first;
       expect(find.descendant(of: rowOf('กบ'), matching: find.byType(Image)), findsOneWidget);
       expect(find.descendant(of: rowOf('กอด'), matching: find.byType(Image)), findsOneWidget);
@@ -241,9 +250,9 @@ void main() {
     });
 
     test('no sample data is left in the app', () {
-      expect(dreams.map((d) => d.id).where((id) => !id.startsWith('k-') && !id.startsWith('kh-')), isEmpty);
+      expect(dreams.map((d) => d.id).where((id) => !id.startsWith('k-') && !id.startsWith('kh-') && !id.startsWith('khw-')), isEmpty);
       expect(dreams.take(dreamsK.length).map((d) => d.id), dreamsK.map((d) => d.id), reason: 'หมวด ก comes first');
-      expect(dreamCats, ['ทั้งหมด', 'หมวด ก', 'หมวด ข']);
+      expect(dreamCats, ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค']);
       expect(debugValidateDreams(), isTrue);
     });
 

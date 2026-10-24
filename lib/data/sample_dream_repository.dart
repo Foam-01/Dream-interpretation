@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'category_k.dart';
 import 'category_kh.dart';
+import 'category_khw.dart';
 import 'design_data.dart';
 import 'dream_repository.dart';
 
@@ -10,11 +11,12 @@ import 'dream_repository.dart';
 const sampleCategories = [
   DreamCategory(letterKCategoryId, 'หมวด ก'),
   DreamCategory(letterKhCategoryId, 'หมวด ข'),
+  DreamCategory(letterKhwCategoryId, 'หมวด ค'),
 ];
 
 final _slug = RegExp(r'^[a-z0-9-]{1,64}$');
 
-/// Serves the bundled data (the real หมวด ก and ข content; tests may pass other data) with the same rules as
+/// Serves the bundled data (the real หมวด ก, ข and ค content; tests may pass other data) with the same rules as
 /// the backend API (validation, search, filtering, paging). Results complete synchronously
 /// ([SynchronousFuture]) so screens using it render on the first frame. The class keeps its original
 /// name; it is the offline repository, used when no API_BASE_URL is configured.

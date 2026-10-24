@@ -19,8 +19,8 @@
 | 6 | ของลับ | `kh-private-parts.jpg` | ไม่มีเลข (ไม่ควรเสี่ยง) |
 | 7 | ขอนไม้ | `kh-floating-log.jpg` | 11, 12, 181, 182 |
 | 8 | ขัง | `kh-imprisoned.jpg` | 42, 44, 421, 442 |
-| 9 | ขา | `kh-broken-leg.jpg` | ไม่มีเลข (ไม่ควรเสี่ยง) |
-| 10 | ขา | `kh-shackled-leg.jpg` | 22, 24, 240, 262 |
+| 9 | ขาหัก | `kh-broken-leg.jpg` | ไม่มีเลข (ไม่ควรเสี่ยง) |
+| 10 | ขาใส่ตรวน | `kh-shackled-leg.jpg` | 22, 24, 240, 262 |
 | 11 | ขาด | `kh-severed.jpg` | 22, 24, 122, 124 |
 | 12 | ขาย | `kh-selling-goods.jpg` | 23, 25, 27, 235, 237 |
 | 13 | ข้าว | `kh-cooking-rice.jpg` | 19, 29, 119, 229 |
@@ -34,8 +34,8 @@
 | 21 | ขึ้น | `kh-climbing.jpg` | ไม่มีเลข (ไม่ควรเสี่ยง) |
 | 22 | ขุด | `kh-digging.jpg` | 10, 12, 101, 121 |
 | 23 | เขย่ง | `kh-limping.jpg` | ไม่มีเลข (ไม่ควรเสี่ยง) |
-| 24 | เขา | `kh-mountain-trip.jpg` | 91, 92, 291, 292 |
-| 25 | เขา | `kh-falling-from-mountain.jpg` | ไม่มีเลข (ไม่ควรเสี่ยง) |
+| 24 | เที่ยวเขา | `kh-mountain-trip.jpg` | 91, 92, 291, 292 |
+| 25 | ตกเขา | `kh-falling-from-mountain.jpg` | ไม่มีเลข (ไม่ควรเสี่ยง) |
 
 ### 1. ขนม — `kh-dessert`
 
@@ -101,7 +101,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-floating-log.jpg`
 - เลข: 11, 12, 181, 182
-- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่า เห็นขอนไม้ลอยน้ำมา ความฝันนี้จะทำให้ท่านได้รับลาภลอย โดยมิได้คิดฝันมาก่อน หรือถ้าท่านค้าขาย ได้อาศัยขอนไม้ข้ามฟากไปอีกฝั่งหนึ่ง หมายความว่าการงานที่ท่านติดต่อไว้ จะได้รับความสำเร็จ
+- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่า เห็นขอนไม้ลอยน้ำมา ความฝันนี้จะทำให้ท่านได้รับลาภลอย โดยมิได้คิดฝันมาก่อน หรือถ้าท่านฝันว่า ได้อาศัยขอนไม้ข้ามฟากไปอีกฝั่งหนึ่ง หมายความว่าการงานที่ท่านติดต่อไว้ จะได้รับความสำเร็จ
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a large log floating down a river, and a person crossing the river to the far bank holding on to the log. Draw exactly 4 numbers in bold rounded dark-brown digits around the subject, each number exactly once, no repeats: 11, 12, 181, 182. Do not draw any other numbers, words or letters.
@@ -117,7 +117,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a calm person sitting behind wooden jail bars, a beam of light falling through a small window. Draw exactly 4 numbers in bold rounded dark-brown digits around the subject, each number exactly once, no repeats: 42, 44, 421, 442. Do not draw any other numbers, words or letters.
 ```
 
-### 9. ขา — `kh-broken-leg`
+### 9. ขาหัก — `kh-broken-leg`
 
 - ไฟล์ที่ต้องได้: `images/kh-broken-leg.jpg`
 - เลข: **ไม่ควรเสี่ยง** — ไม่มีเลขในภาพ
@@ -127,7 +127,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a person sitting with one leg in a wooden splint and bandages, a walking stick beside them (no blood). Do not draw any numbers, words or letters anywhere in the picture.
 ```
 
-### 10. ขา — `kh-shackled-leg`
+### 10. ขาใส่ตรวน — `kh-shackled-leg`
 
 - ไฟล์ที่ต้องได้: `images/kh-shackled-leg.jpg`
 - เลข: 22, 24, 240, 262
@@ -267,7 +267,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a person walking on tiptoe and limping with a crutch along a path. Do not draw any numbers, words or letters anywhere in the picture.
 ```
 
-### 24. เขา — `kh-mountain-trip`
+### 24. เที่ยวเขา — `kh-mountain-trip`
 
 - ไฟล์ที่ต้องได้: `images/kh-mountain-trip.jpg`
 - เลข: 91, 92, 291, 292
@@ -277,7 +277,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: two people walking happily together into a cave entrance on a forested mountain. Draw exactly 4 numbers in bold rounded dark-brown digits around the subject, each number exactly once, no repeats: 91, 92, 291, 292. Do not draw any other numbers, words or letters.
 ```
 
-### 25. เขา — `kh-falling-from-mountain`
+### 25. ตกเขา — `kh-falling-from-mountain`
 
 - ไฟล์ที่ต้องได้: `images/kh-falling-from-mountain.jpg`
 - เลข: **ไม่ควรเสี่ยง** — ไม่มีเลขในภาพ
