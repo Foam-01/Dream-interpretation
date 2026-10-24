@@ -125,9 +125,9 @@ void main() {
   });
 
   group('dream pictures (per dream)', () {
-    test('12 pictures, each for an existing dream, bundled and registered', () {
+    test('33 pictures — every dream has one, bundled and registered', () {
       final ids = dreams.map((d) => d.id).toSet();
-      expect(dreamImagesK, hasLength(12));
+      expect(dreamImagesK, hasLength(33));
       expect(ids.containsAll(dreamImagesK.keys), isTrue);
       final onDisk = Directory('assets/dreams').listSync().whereType<File>().map((f) => f.uri.pathSegments.last);
       expect(onDisk.toSet(), {for (final id in dreamImagesK.keys) '$id.jpg'});
@@ -139,10 +139,11 @@ void main() {
       expect(File('pubspec.yaml').readAsStringSync(), contains('- assets/dreams/'));
     });
 
-    test('owner decisions: no picture for กางร่ม (157 not in the source) or แก่', () {
-      expect(dreamImagesK.containsKey('k-umbrella'), isFalse);
-      expect(dreamImagesK.containsKey('k-growing-old'), isFalse);
-      expect(dreams.where((d) => dreamImageFor(d.id) == null), hasLength(21));
+    test('every dream has a picture; กางร่ม and แก่ use the regenerated ones', () {
+      expect(dreams.where((d) => dreamImageFor(d.id) == null), isEmpty);
+      // Not k-06 (shows 157) / k-10 left (smoking): the regenerated pictures.
+      expect(dreamImagesK['k-umbrella']!.url, 'assets/dreams/k-umbrella.jpg');
+      expect(dreamImagesK['k-growing-old']!.url, 'assets/dreams/k-growing-old.jpg');
     });
 
     test('an API image wins over the bundled one', () {
@@ -174,8 +175,7 @@ void main() {
       expect(find.text('กินอาหาร'), findsNWidgets(2));
       Finder rowOf(String name) => find.ancestor(of: find.text(name), matching: find.byType(CreamCard)).first;
       expect(find.descendant(of: rowOf('กบ'), matching: find.byType(Image)), findsOneWidget);
-      expect(find.descendant(of: rowOf('กอด'), matching: find.byType(Image)), findsNothing);
-      expect(find.descendant(of: rowOf('กอด'), matching: find.text('ภาพ')), findsOneWidget);
+      expect(find.descendant(of: rowOf('กอด'), matching: find.byType(Image)), findsOneWidget);
     });
 
     testWidgets('tapping a row opens that prediction', (tester) async {
