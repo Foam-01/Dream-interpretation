@@ -10,14 +10,14 @@ import '../theme.dart';
 import '../widgets/ui.dart';
 
 const _quick = [
-  ('ฝ', 'ทำนายฝัน', 'dream'),
-  ('ส', 'ตารางสัตว์', '5'),
-  ('ป', 'แป๊ะกง 1000', '6'),
-  ('๙', 'เลขเสียงโชค', '9'),
-  ('๑๖', 'เลขเด่นงวด', '8'),
-  ('ว', 'เลขวิ่ง', '10'),
-  ('ร', 'แก้ฝันร้าย', '3'),
-  ('ส', 'บทสวด', '11'),
+  ('ทำนายฝัน', 'dream'),
+  ('ตารางสัตว์', '5'),
+  ('แป๊ะกง 1000', '6'),
+  ('เลขเสียงโชค', '9'),
+  ('เลขเด่นงวด', '8'),
+  ('เลขวิ่ง', '10'),
+  ('แก้ฝันร้าย', '3'),
+  ('บทสวด', '11'),
 ];
 
 class HomeScreen extends StatelessWidget {
@@ -124,7 +124,7 @@ class HomeScreen extends StatelessWidget {
           runSpacing: 10,
           minRowHeight: 98,
           children: [
-            for (final (g, t, k) in _quick)
+            for (final (t, k) in _quick)
               Semantics(
                 button: true,
                 label: t,
@@ -132,7 +132,7 @@ class HomeScreen extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () => k == 'dream' ? app.goSearch(resetCat: true) : app.openFeat(k),
                   child: Column(children: [
-                    GlyphTile(g),
+                    GlyphTile(featureIcon(k)),
                     const SizedBox(height: 6),
                     Text(t,
                         textAlign: TextAlign.center,

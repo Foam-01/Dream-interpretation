@@ -121,11 +121,11 @@ class AppScope extends InheritedNotifier<AppController> {
 }
 
 const _tabs = [
-  ('home', 'หน้าแรก', 'บ'),
-  ('dream', 'ทำนายฝัน', 'ฝ'),
-  ('lucky', 'เลขเด็ด', '๙'),
-  ('ritual', 'แก้ฝัน', 'ธ'),
-  ('book', 'ตำรา', 'ต'),
+  ('home', 'หน้าแรก', Icons.home_rounded),
+  ('dream', 'ทำนายฝัน', Icons.nightlight_round),
+  ('lucky', 'เลขเด็ด', Icons.stars_rounded),
+  ('ritual', 'แก้ฝัน', Icons.spa_rounded),
+  ('book', 'ตำรา', Icons.menu_book_rounded),
 ];
 
 class AppShell extends StatefulWidget {
@@ -225,7 +225,7 @@ class _BottomTabs extends StatelessWidget {
       ),
       padding: EdgeInsets.fromLTRB(4, 6, 4, 6 + (bottom > 0 ? bottom : 8)),
       child: Row(children: [
-        for (final (key, label, glyph) in _tabs)
+        for (final (key, label, icon) in _tabs)
           Expanded(
             child: Semantics(
               button: true,
@@ -245,8 +245,7 @@ class _BottomTabs extends StatelessWidget {
                         color: key == current ? C.gold : Colors.transparent,
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Text(glyph,
-                          style: serif(15, color: key == current ? C.redDeep : C.tabInactive, height: 1.2)),
+                      child: Icon(icon, size: 20, color: key == current ? C.redDeep : C.tabInactive),
                     ),
                     const SizedBox(height: 3),
                     Flexible(

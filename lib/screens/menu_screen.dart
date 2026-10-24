@@ -37,7 +37,7 @@ class MenuScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(14),
                 onTap: () => app.openFeat(item.key),
                 child: Row(children: [
-                  GlyphTile(item.glyph, size: 46, radius: 12, fontSize: 18, borderWidth: 1),
+                  GlyphTile(featureIcon(item.key), size: 46, radius: 12, borderWidth: 1),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

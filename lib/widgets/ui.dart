@@ -210,12 +210,30 @@ class DigitBox extends StatelessWidget {
       );
 }
 
-/// Red gradient square holding a glyph (menu / quick links).
+/// Icon for a feature key ('dream' or a FeatDef key) on menu / quick-link tiles.
+IconData featureIcon(String key) => switch (key) {
+      'dream' => Icons.nightlight_round,
+      '1' => Icons.auto_awesome_rounded,
+      '2' => Icons.grid_view_rounded,
+      '3' => Icons.shield_moon_rounded,
+      '4' => Icons.volunteer_activism_rounded,
+      '5' => Icons.pets_rounded,
+      '6' => Icons.auto_stories_rounded,
+      '7' => Icons.lock_rounded,
+      '8' => Icons.event_available_rounded,
+      '9' => Icons.stars_rounded,
+      '10' => Icons.trending_up_rounded,
+      '11' => Icons.self_improvement_rounded,
+      '12' => Icons.pin_rounded,
+      '13' => Icons.sort_by_alpha_rounded,
+      _ => Icons.star_rounded,
+    };
+
+/// Red gradient square holding a gold icon (menu / quick links).
 class GlyphTile extends StatelessWidget {
-  final String glyph;
-  final double size, radius, fontSize, borderWidth;
-  const GlyphTile(this.glyph,
-      {super.key, this.size = 58, this.radius = 16, this.fontSize = 20, this.borderWidth = 1.5});
+  final IconData icon;
+  final double size, radius, borderWidth;
+  const GlyphTile(this.icon, {super.key, this.size = 58, this.radius = 16, this.borderWidth = 1.5});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -227,8 +245,9 @@ class GlyphTile extends StatelessWidget {
           gradient: const LinearGradient(
               begin: Alignment(-0.35, -1), end: Alignment(0.35, 1), colors: [C.redTile, C.red]),
           border: Border.all(color: C.goldBorder, width: borderWidth),
+          boxShadow: const [BoxShadow(color: Color(0x33781E0A), blurRadius: 8, offset: Offset(0, 3))],
         ),
-        child: Text(glyph, style: serif(fontSize, color: C.goldLight)),
+        child: Icon(icon, size: size * .5, color: C.goldLight),
       );
 }
 
