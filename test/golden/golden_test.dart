@@ -114,7 +114,7 @@ void main() {
     testWidgets('detail: กบ (lucky numbers, no source cited)', (tester) async {
       await pumpApp(tester);
       await openSearch(tester);
-      await tap(tester, _text('ฝันเห็นกบ'));
+      await tap(tester, _text('กบ'));
       await precacheDreamImages(tester);
       await expectGolden(tester, 'detail_frog');
     });
@@ -122,7 +122,7 @@ void main() {
     testWidgets('detail: กราม (ไม่ควรเสี่ยง)', (tester) async {
       await pumpApp(tester);
       await openSearch(tester);
-      await tap(tester, _text('ฝันเห็นกราม'));
+      await tap(tester, _text('กราม'));
       await expectGolden(tester, 'detail_jaw');
     });
   });

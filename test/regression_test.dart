@@ -79,7 +79,8 @@ void main() {
       await tapPill(tester, 'สัตว์');
       await typeQuery(tester, 'ช้าง');
       expect(find.text('พบ 1 รายการ'), findsOneWidget);
-      expect(find.text('ฝันเห็นช้าง'), findsOneWidget);
+      // The query field shows "ช้าง" too; count result rows only.
+      expect(find.descendant(of: find.byType(CreamCard), matching: find.text('ช้าง')), findsOneWidget);
 
       // Matches the query but not the category -> excluded.
       await typeQuery(tester, 'ไฟไหม้');
@@ -102,7 +103,7 @@ void main() {
       await openSearch(tester);
       await typeQuery(tester, 'ลาภก้อนเล็ก'); // only in ปลา.short
       expect(find.text('พบ 1 รายการ'), findsOneWidget);
-      expect(find.text('ฝันเห็นปลา'), findsOneWidget);
+      expect(find.text('ปลา'), findsOneWidget);
     });
 
     testWidgets('clear button restores results for the selected category', (tester) async {
@@ -146,12 +147,12 @@ void main() {
       await pumpApp(tester);
       await openSearch(tester);
       await typeQuery(tester, 'ฟันหลุด');
-      await tapText(tester, 'ฝันเห็นฟันหลุด');
+      await tapText(tester, 'ฟันหลุด', last: true); // the row, not the query field
     }
 
     testWidgets('ฟันหลุด shows numbers 08 and 098 · 809', (tester) async {
       await openToothDream(tester);
-      expect(find.text('ฝันเห็นฟันหลุด'), findsOneWidget);
+      expect(find.text('ฟันหลุด'), findsOneWidget);
       expect(find.text('08 · 80'), findsOneWidget);
       expect(find.text('098 · 809'), findsOneWidget);
       // Lucky digit boxes keep the leading zero digit.
@@ -169,7 +170,7 @@ void main() {
     testWidgets('good-omen dream shows "เคล็ดลับขอโชค"', (tester) async {
       await pumpApp(tester);
       await openSearch(tester);
-      await tapText(tester, 'ฝันเห็นงู');
+      await tapText(tester, 'งู');
       await scrollTo(tester, find.text('เคล็ดลับขอโชค'));
       expect(find.text('เคล็ดลับแก้ฝันร้าย'), findsNothing);
     });
@@ -179,7 +180,7 @@ void main() {
       await tapText(tester, 'อ่านบทสวด ›');
       expect(find.text('แก้ฝัน & ขอโชค'), findsOneWidget);
       expect(find.text('บทสวดมนต์ความฝัน'), findsOneWidget);
-      expect(find.text('ฝันเห็นฟันหลุด'), findsNothing);
+      expect(find.text('ฟันหลุด'), findsNothing);
     });
 
     testWidgets('"‹ กลับ" returns to search keeping the query', (tester) async {
@@ -194,7 +195,7 @@ void main() {
     testWidgets('toggling save twice returns to initial state', (tester) async {
       await pumpApp(tester);
       await openSearch(tester);
-      await tapText(tester, 'ฝันเห็นงู');
+      await tapText(tester, 'งู');
       expect(find.text('บันทึก'), findsOneWidget);
       expect(find.byIcon(Icons.star_border), findsOneWidget);
       await tapText(tester, 'บันทึก');
@@ -208,14 +209,14 @@ void main() {
     testWidgets('saving one dream does not change another', (tester) async {
       await pumpApp(tester);
       await openSearch(tester);
-      await tapText(tester, 'ฝันเห็นงู');
+      await tapText(tester, 'งู');
       await tapText(tester, 'บันทึก');
       await tapText(tester, '‹ กลับ');
-      await tapText(tester, 'ฝันเห็นช้าง');
+      await tapText(tester, 'ช้าง');
       expect(find.text('บันทึก'), findsOneWidget);
       expect(find.text('บันทึกแล้ว'), findsNothing);
       await tapText(tester, '‹ กลับ');
-      await tapText(tester, 'ฝันเห็นงู');
+      await tapText(tester, 'งู');
       expect(find.text('บันทึกแล้ว'), findsOneWidget);
     });
   });
@@ -235,7 +236,7 @@ void main() {
     testWidgets('tapping the current tab on detail resets to search', (tester) async {
       await pumpApp(tester);
       await openSearch(tester);
-      await tapText(tester, 'ฝันเห็นงู');
+      await tapText(tester, 'งู');
       await tapTab(tester, 'ทำนายฝัน');
       expect(find.text('ค้นหาความฝัน'), findsOneWidget);
       expect(find.text('เลขนำโชคจากความฝัน'), findsNothing);
@@ -273,7 +274,7 @@ void main() {
     testWidgets('system back on detail returns to search', (tester) async {
       await pumpApp(tester);
       await openSearch(tester);
-      await tapText(tester, 'ฝันเห็นงู');
+      await tapText(tester, 'งู');
       await systemBack(tester);
       expect(find.text('ค้นหาความฝัน'), findsOneWidget);
       await systemBack(tester);
@@ -389,7 +390,7 @@ void main() {
       await pumpApp(tester, textScale: 1.3);
       await openSearch(tester);
       await expectClean(tester, 'search');
-      await tapText(tester, 'ฝันเห็นงู');
+      await tapText(tester, 'งู');
       await expectClean(tester, 'detail');
       await tester.drag(find.byType(Scrollable).first, const Offset(0, -1200));
       await tester.pump();
@@ -416,10 +417,10 @@ void main() {
       testWidgets('card content fits inside the card at text scale $scale', (tester) async {
         await pumpApp(tester, textScale: scale);
         // Home is a lazy list: scroll the page until the hot row is built.
-        await scrollTo(tester, find.text('ฝันเห็นงู'));
-        final card = find.ancestor(of: find.text('ฝันเห็นงู').first, matching: find.byType(DreamCard));
+        await scrollTo(tester, find.text('งู'));
+        final card = find.ancestor(of: find.text('งู').first, matching: find.byType(DreamCard));
         final cardRect = tester.getRect(card);
-        for (final f in [find.text('ฝันเห็นงู').first, find.text(legacySampleDreams[0].firstTwo).first]) {
+        for (final f in [find.text('งู').first, find.text(legacySampleDreams[0].firstTwo).first]) {
           final r = tester.getRect(f);
           expect(r.bottom, lessThanOrEqualTo(cardRect.bottom), reason: 'text bottom inside card');
           expect(r.top, greaterThanOrEqualTo(cardRect.top));

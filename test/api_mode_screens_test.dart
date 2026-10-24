@@ -114,9 +114,9 @@ void main() {
       call.complete(pageOf([remote('a', 'แมวเซิร์ฟเวอร์'), remote('b', 'นกเซิร์ฟเวอร์', two: '09')]));
       await tester.pump();
       expect(spinner, findsNothing);
-      expect(find.text('ฝันเห็นแมวเซิร์ฟเวอร์'), findsOneWidget);
+      expect(find.text('แมวเซิร์ฟเวอร์'), findsOneWidget);
       expect(find.text('09'), findsOneWidget);
-      expect(find.text('ฝันเห็นงู'), findsNothing, reason: 'no sample data in API mode');
+      expect(find.text('งู'), findsNothing, reason: 'no sample data in API mode');
     });
 
     testWidgets('error shows retry (no sample fallback); retry succeeds', (tester) async {
@@ -124,14 +124,14 @@ void main() {
       repo.of('list').single.fail(DreamRepositoryErrorKind.network);
       await tester.pump();
       expect(find.text('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาตรวจสอบอินเทอร์เน็ต'), findsOneWidget);
-      expect(find.text('ฝันเห็นงู'), findsNothing);
+      expect(find.text('งู'), findsNothing);
       await tester.tap(retry);
       await tester.pump();
       expect(spinner, findsOneWidget);
       expect(repo.of('list'), hasLength(2));
       repo.of('list').last.complete(pageOf([remote('a', 'แมวเซิร์ฟเวอร์')]));
       await tester.pump();
-      expect(find.text('ฝันเห็นแมวเซิร์ฟเวอร์'), findsOneWidget);
+      expect(find.text('แมวเซิร์ฟเวอร์'), findsOneWidget);
     });
 
     testWidgets('empty result', (tester) async {
@@ -172,7 +172,7 @@ void main() {
       expect(find.text('ทั้งหมด'), findsOneWidget);
       expect(find.text('ร่างกาย'), findsOneWidget);
       expect(find.text('พบ 1 รายการ'), findsOneWidget);
-      expect(find.text('ฝันเห็นแมวเซิร์ฟเวอร์'), findsOneWidget);
+      expect(find.text('แมวเซิร์ฟเวอร์'), findsOneWidget);
     });
 
     testWidgets('typing is debounced; only the last query is sent', (tester) async {
@@ -204,8 +204,8 @@ void main() {
       await tester.pump();
       initial.complete(pageOf([remote('old', 'ผลเก่า')]));
       await tester.pump();
-      expect(find.text('ฝันเห็นงูเซิร์ฟเวอร์'), findsOneWidget);
-      expect(find.text('ฝันเห็นผลเก่า'), findsNothing);
+      expect(find.text('งูเซิร์ฟเวอร์'), findsOneWidget);
+      expect(find.text('ผลเก่า'), findsNothing);
     });
 
     testWidgets('category tap searches at once with the category id', (tester) async {
@@ -221,7 +221,7 @@ void main() {
       expect(call.args['category'], 'animal');
       call.complete(pageOf([remote('cat', 'เสือเซิร์ฟเวอร์', category: animal)]));
       await tester.pump();
-      expect(find.text('ฝันเห็นเสือเซิร์ฟเวอร์'), findsOneWidget);
+      expect(find.text('เสือเซิร์ฟเวอร์'), findsOneWidget);
     });
 
     testWidgets('no results vs. connection error are distinct; retry', (tester) async {
@@ -271,7 +271,7 @@ void main() {
       expect(repo.of('byId').single.args['id'], 'tooth-falling-out');
       repo.of('byId').single.complete(toothDetail);
       await tester.pump();
-      expect(find.text('ฝันเห็นฟันหลุดจากเซิร์ฟเวอร์'), findsOneWidget);
+      expect(find.text('ฟันหลุดจากเซิร์ฟเวอร์'), findsOneWidget);
       expect(find.text('08 · 80'), findsOneWidget);
       expect(find.text('098 · 809'), findsOneWidget);
       expect(find.text('0'), findsOneWidget);
@@ -290,7 +290,7 @@ void main() {
       repo.of('byId').single.fail(DreamRepositoryErrorKind.server);
       await tester.pump();
       expect(find.text('เซิร์ฟเวอร์ขัดข้องชั่วคราว'), findsOneWidget);
-      expect(find.text('ฝันเห็นงู'), findsNothing);
+      expect(find.text('งู'), findsNothing);
       await tester.tap(retry);
       await tester.pump();
       expect(repo.of('byId'), hasLength(2));
@@ -309,8 +309,8 @@ void main() {
       await tester.pump();
       first.complete(dreamById('snake', legacySampleDreams));
       await tester.pump();
-      expect(find.text('ฝันเห็นฟันหลุดจากเซิร์ฟเวอร์'), findsOneWidget);
-      expect(find.text('ฝันเห็นงู'), findsNothing);
+      expect(find.text('ฟันหลุดจากเซิร์ฟเวอร์'), findsOneWidget);
+      expect(find.text('งู'), findsNothing);
       expect(tester.takeException(), isNull);
     });
   });

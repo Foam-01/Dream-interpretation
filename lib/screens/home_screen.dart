@@ -283,7 +283,7 @@ class DreamCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('ฝันเห็น$name',
+              Text(name,
                   maxLines: 1, overflow: TextOverflow.ellipsis, style: sans(14, weight: FontWeight.w600)),
               Text(number, style: serif(numberSize, color: C.redBright, height: 1.3)),
             ]),

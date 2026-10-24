@@ -104,7 +104,8 @@ class _ResultScreenState extends State<ResultScreen> {
             Text(credit, style: sans(11, color: C.onRedMuted)),
           ],
           const SizedBox(height: 14),
-          Text('ฝันเห็น${d.name}', style: serif(26, weight: FontWeight.w800, color: C.goldLight)),
+          // The name as written in the source (no added "ฝันเห็น": many names are actions, e.g. กินข้าว).
+          Text(d.name, style: serif(26, weight: FontWeight.w800, color: C.goldLight)),
           // Sourced content names its source; the bundled SAMPLE data keeps the original design text.
           // Only a cited source is named; no source → no claim about where the text comes from.
           Text(

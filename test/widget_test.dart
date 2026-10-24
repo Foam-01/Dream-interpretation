@@ -72,7 +72,7 @@ void main() {
     await tester.enterText(find.byType(TextField), 'งู');
     await tester.pump();
     expect(find.text('พบ 1 รายการ'), findsOneWidget);
-    await tester.tap(find.text('ฝันเห็นงู'));
+    await tester.tap(find.text('งู').last); // the row, not the query field
     await tester.pump();
     expect(find.text('เลขนำโชคจากความฝัน'), findsOneWidget);
     await tester.tap(find.text('บันทึก'));

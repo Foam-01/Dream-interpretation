@@ -217,7 +217,7 @@ class _ResultRow extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('ฝันเห็น${d.name}', style: sans(16, weight: FontWeight.w600)),
+            Text(d.name, style: sans(16, weight: FontWeight.w600)),
             Text(d.short, maxLines: 1, overflow: TextOverflow.ellipsis, style: sans(13, color: C.inkMuted)),
           ]),
         ),

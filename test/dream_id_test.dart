@@ -78,7 +78,7 @@ void main() {
 
     testWidgets('shows the dream for a known id', (tester) async {
       await pumpResult(tester, 'tooth-falling-out');
-      expect(find.text('ฝันเห็นฟันหลุด'), findsOneWidget);
+      expect(find.text('ฟันหลุด'), findsOneWidget);
       expect(find.text('098 · 809'), findsOneWidget);
     });
 
@@ -86,7 +86,7 @@ void main() {
       await pumpResult(tester, 'no-such-dream');
       expect(find.text('ไม่พบความฝันนี้'), findsOneWidget);
       for (final d in legacySampleDreams) {
-        expect(find.text('ฝันเห็น${d.name}'), findsNothing, reason: d.id);
+        expect(find.text(d.name), findsNothing, reason: d.id);
       }
       expect(tester.takeException(), isNull);
     });
