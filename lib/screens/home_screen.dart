@@ -186,7 +186,9 @@ class _Badge extends StatelessWidget {
 }
 
 /// Card with image placeholder + dream name + number (home hot list, digit screen).
-/// "ฝันยอดฮิตวันนี้": the first five dreams in catalogue order, from the repository.
+/// "ฝันยอดฮิตวันนี้": the first ten dreams in catalogue order, as two scrolling rows.
+const _perRow = 5;
+
 class _HotDreams extends StatefulWidget {
   const _HotDreams();
   @override
@@ -204,7 +206,7 @@ class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMix
     if (_started) return;
     _started = true;
     final repo = AppScope.of(context).repository;
-    _request.run(() => repo.list(limit: 5));
+    _request.run(() => repo.list(limit: _perRow * 2));
     _request.addListener(_changed);
   }
 
@@ -230,23 +232,29 @@ class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMix
           padding: const EdgeInsets.symmetric(vertical: 24),
           child: Text('ยังไม่มีความฝันยอดฮิต', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
         ),
-      // Row sizes to the tallest card instead of a fixed height that clipped it.
+      // Two rows of _perRow cards; each row sizes to its tallest card.
+      // Both rows scroll together horizontally.
       LoadStatus.success => SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: IntrinsicHeight(
-            child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              for (var i = 0; i < items.length; i++) ...[
-                if (i > 0) const SizedBox(width: 10),
-                DreamCard(
-                    dreamId: items[i].id,
-                    name: items[i].name,
-                    image: items[i].image,
-                    width: 120,
-                    number: items[i].firstTwo),
-              ],
-            ]),
-          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            for (var r = 0; r * _perRow < items.length; r++) ...[
+              if (r > 0) const SizedBox(height: 10),
+              IntrinsicHeight(
+                child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  for (var c = 0; c < _perRow && r * _perRow + c < items.length; c++) ...[
+                    if (c > 0) const SizedBox(width: 10),
+                    DreamCard(
+                        dreamId: items[r * _perRow + c].id,
+                        name: items[r * _perRow + c].name,
+                        image: items[r * _perRow + c].image,
+                        width: 120,
+                        number: items[r * _perRow + c].firstTwo),
+                  ],
+                ]),
+              ),
+            ],
+          ]),
         ),
     };
   }

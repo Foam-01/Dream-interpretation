@@ -110,7 +110,7 @@ void main() {
       final repo = await pumpApp(tester);
       expect(spinner, findsOneWidget);
       final call = repo.of('list').single;
-      expect(call.args['limit'], 5);
+      expect(call.args['limit'], 10);
       call.complete(pageOf([remote('a', 'แมวเซิร์ฟเวอร์'), remote('b', 'นกเซิร์ฟเวอร์', two: '09')]));
       await tester.pump();
       expect(spinner, findsNothing);
