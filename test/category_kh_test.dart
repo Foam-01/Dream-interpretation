@@ -7,6 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:maha_dream/app_shell.dart';
 import 'package:maha_dream/data/category_kh.dart';
 import 'package:maha_dream/data/design_data.dart';
+import 'package:maha_dream/data/dream_images_k.dart';
+import 'package:maha_dream/data/dream_images_kh.dart';
 import 'package:maha_dream/data/dreams_kh.dart';
 import 'package:maha_dream/data/sample_dream_repository.dart';
 import 'package:maha_dream/main.dart';
@@ -112,6 +114,25 @@ void main() {
       expect(letterKhCategoryId, 'letter-kh');
       expect(sampleCategories.map((c) => (c.id, c.name)), [('letter-k', 'หมวด ก'), ('letter-kh', 'หมวด ข')]);
       expect(dreamCats.skip(1), sampleCategories.map((c) => c.name));
+    });
+  });
+
+  group('dream pictures (per dream)', () {
+    test('25 checked pictures — every dream has one, bundled and registered', () {
+      expect(dreamImagesKh, hasLength(25));
+      expect(dreamImagesKh.keys, dreamsKh.map((d) => d.id));
+      final onDisk = Directory('assets/dreams').listSync().whereType<File>().map((f) => f.uri.pathSegments.last);
+      expect(onDisk.where((f) => f.startsWith('kh-')).toSet(), {for (final id in dreamImagesKh.keys) '$id.jpg'});
+      for (final MapEntry(:key, :value) in dreamImagesKh.entries) {
+        expect(value.url, 'assets/dreams/$key.jpg');
+        expect(value.isAsset, isTrue);
+        expect(value.attribution, isNull, reason: 'no invented credit or licence');
+      }
+    });
+
+    test('dreamImageFor finds หมวด ข pictures', () {
+      expect(dreamsKh.where((d) => dreamImageFor(d.id) == null), isEmpty);
+      expect(dreamImageFor('kh-dessert')!.url, 'assets/dreams/kh-dessert.jpg');
     });
   });
 

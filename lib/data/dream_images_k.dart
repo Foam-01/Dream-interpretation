@@ -1,4 +1,5 @@
 import 'design_data.dart';
+import 'dream_images_kh.dart';
 
 /// Bundled illustrations of หมวด ก dreams, by stable dream id. Resized from the owner-supplied images in
 /// backend/content/incoming/category-01-k/images (the originals are unchanged).
@@ -45,4 +46,4 @@ const dreamImagesK = <String, DreamImage>{
 
 /// The image to show for a dream: the API's image when it has one, else the bundled one, else null
 /// (the placeholder). Works the same in offline and API mode.
-DreamImage? dreamImageFor(String id, [DreamImage? remote]) => remote ?? dreamImagesK[id];
+DreamImage? dreamImageFor(String id, [DreamImage? remote]) => remote ?? dreamImagesK[id] ?? dreamImagesKh[id];

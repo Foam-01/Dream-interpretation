@@ -131,7 +131,7 @@ void main() {
       expect(dreamImagesK, hasLength(33));
       expect(ids.containsAll(dreamImagesK.keys), isTrue);
       final onDisk = Directory('assets/dreams').listSync().whereType<File>().map((f) => f.uri.pathSegments.last);
-      expect(onDisk.toSet(), {for (final id in dreamImagesK.keys) '$id.jpg'});
+      expect(onDisk.where((f) => f.startsWith('k-')).toSet(), {for (final id in dreamImagesK.keys) '$id.jpg'});
       for (final MapEntry(:key, :value) in dreamImagesK.entries) {
         expect(value.url, 'assets/dreams/$key.jpg');
         expect(value.isAsset, isTrue);
