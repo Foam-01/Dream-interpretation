@@ -41,8 +41,16 @@ void main() {
       expect(dreams.every((d) => d['source'] == null && d['image'] == null), isTrue);
     });
 
-    test('names, words and numbers are verbatim from the source file', () {
-      final source = File('$incoming/dreams-source.md').readAsStringSync().replaceAll('\r\n', '\n');
+    test('names, words and numbers are verbatim from the source file plus the approved corrections', () {
+      var source = File('$incoming/dreams-source.md').readAsStringSync().replaceAll('\r\n', '\n');
+      final fixes = ((jsonDecode(File('$incoming/corrections.json').readAsStringSync()) as Map)['corrections'] as List)
+          .cast<Map<String, Object?>>();
+      expect(fixes, hasLength(17));
+      for (final f in fixes) {
+        final from = f['from'] as String;
+        expect(from.allMatches(source), hasLength(1), reason: from);
+        source = source.replaceFirst(from, f['to'] as String);
+      }
       for (final d in importDreams()) {
         final id = d['id'] as String;
         expect(source.contains('${d['name']} '), isTrue, reason: id);

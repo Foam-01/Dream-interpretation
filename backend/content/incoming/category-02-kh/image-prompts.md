@@ -22,7 +22,7 @@
 | 9 | ขา | `kh-broken-leg.jpg` | ไม่มีเลข (ไม่ควรเสี่ยง) |
 | 10 | ขา | `kh-shackled-leg.jpg` | 22, 24, 240, 262 |
 | 11 | ขาด | `kh-severed.jpg` | 22, 24, 122, 124 |
-| 12 | ชาย | `kh-selling-goods.jpg` | 23, 25, 27, 235, 237 |
+| 12 | ขาย | `kh-selling-goods.jpg` | 23, 25, 27, 235, 237 |
 | 13 | ข้าว | `kh-cooking-rice.jpg` | 19, 29, 119, 229 |
 | 14 | ข้าวสาร | `kh-uncooked-rice.jpg` | 20, 64, 66, 609, 660 |
 | 15 | ขี่ | `kh-riding-mighty-animal.jpg` | 21, 41, 142, 144 |
@@ -41,7 +41,7 @@
 
 - ไฟล์ที่ต้องได้: `images/kh-dessert.jpg`
 - เลข: 22, 44, 224, 244
-- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่าได้บริโภคขนมที่มีรสอร่อย ทายว่าจะพบคืนเนื้อคู่ ท่านมีความสุขสบายทั้งครอบครัว
+- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่าได้บริโภคขนมที่มีรสอร่อย ทายว่าจะพบกับเนื้อคู่ ท่านมีความสุขสบายทั้งครอบครัว
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a person happily eating Thai desserts (kanom) from a tray, with a family smiling around a low table. Draw exactly 4 numbers in bold rounded dark-brown digits around the subject, each number exactly once, no repeats: 22, 44, 224, 244. Do not draw any other numbers, words or letters.
@@ -101,7 +101,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-floating-log.jpg`
 - เลข: 11, 12, 181, 182
-- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่า เห็นขอนไม้ลอยน้ำมา ความฝันนี้จะทำให้ท่านได้รับลาภลอย โดยมิได้คิดฝันมาก่อน หรือถ้าท่านค้าขาย ได้การชะอนไม่มีข้ามฟากไปอีกฝั่งหนึ่ง หมายความว่าการงานที่ท่านติดต่อไว้ จะได้รับความสำเร็จ
+- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่า เห็นขอนไม้ลอยน้ำมา ความฝันนี้จะทำให้ท่านได้รับลาภลอย โดยมิได้คิดฝันมาก่อน หรือถ้าท่านค้าขาย ได้อาศัยขอนไม้ข้ามฟากไปอีกฝั่งหนึ่ง หมายความว่าการงานที่ท่านติดต่อไว้ จะได้รับความสำเร็จ
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a large log floating down a river, and a person crossing the river to the far bank holding on to the log. Draw exactly 4 numbers in bold rounded dark-brown digits around the subject, each number exactly once, no repeats: 11, 12, 181, 182. Do not draw any other numbers, words or letters.
@@ -121,7 +121,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-broken-leg.jpg`
 - เลข: **ไม่ควรเสี่ยง** — ไม่มีเลขในภาพ
-- คำทำนาย (ต้นฉบับ): ฝันว่าขาของท่านหัก หรือโลหิตตก ข้อข้อเท้า ความฝันนี้จะต้องทำให้ท่านเกิดความเจ็บป่วยขึ้น หรือต้องเสียทรัพย์สินเงินตรา
+- คำทำนาย (ต้นฉบับ): ฝันว่าขาของท่านหัก หรือโลหิตตก ข้อเท้า ความฝันนี้จะต้องทำให้ท่านเกิดความเจ็บป่วยขึ้น หรือต้องเสียทรัพย์สินเงินตรา
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a person sitting with one leg in a wooden splint and bandages, a walking stick beside them (no blood). Do not draw any numbers, words or letters anywhere in the picture.
@@ -141,17 +141,17 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-severed.jpg`
 - เลข: 22, 24, 122, 124
-- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่า ถูกตัดมือ หรืออวัยวะส่วนใดในร่างกายของท่าน จะทำให้ท่านได้รับสีเสื้อหรือเลื่อนตำแหน่งในด้านการงาน ถ้าทำการค้าขายจะได้รับกำไรงาม
+- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่า ถูกตัดมือ หรืออวัยวะส่วนใดในร่างกายของท่าน จะทำให้ท่านได้รับยศหรือเลื่อนตำแหน่งในด้านการงาน ถ้าทำการค้าขายจะได้รับกำไรงาม
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: SYMBOLIC, no gore: a person with a bandaged wrist receiving a new uniform jacket and a rank badge from an elder. Draw exactly 4 numbers in bold rounded dark-brown digits around the subject, each number exactly once, no repeats: 22, 24, 122, 124. Do not draw any other numbers, words or letters.
 ```
 
-### 12. ชาย — `kh-selling-goods`
+### 12. ขาย — `kh-selling-goods`
 
 - ไฟล์ที่ต้องได้: `images/kh-selling-goods.jpg`
 - เลข: 23, 25, 27, 235, 237
-- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่ายืนดินแร่ขายของ ความฝันนี้ทายว่าจะทำให้ท่านพบกับโชคดี ได้รับการช่วยเหลือจากญาติมิตรผู้ใหญ่ การงานจะสำเร็จลุล่วงไปโดยได้รับการช่วยเหลือเป็นอย่างดี
+- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่าเดินเร่ขายของ ความฝันนี้ทายว่าจะทำให้ท่านพบกับโชคดี ได้รับการช่วยเหลือจากญาติมิตรผู้ใหญ่ การงานจะสำเร็จลุล่วงไปโดยได้รับการช่วยเหลือเป็นอย่างดี
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a street vendor standing beside a basket of goods, selling to friendly relatives and an elder. Draw exactly 5 numbers in bold rounded dark-brown digits around the subject, each number exactly once, no repeats: 23, 25, 27, 235, 237. Do not draw any other numbers, words or letters.
@@ -161,7 +161,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-cooking-rice.jpg`
 - เลข: 19, 29, 119, 229
-- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่าได้หุงข้าว ความฝันนี้จะทำให้ท่านได้รับรองกำเนิดจากญาติมิตร ผู้ใหญ่ หรือเป็นข่าวดีจากทางไกล
+- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่าได้หุงข้าว ความฝันนี้จะทำให้ท่านได้รับของกำนัลจากญาติมิตร ผู้ใหญ่ หรือเป็นข่าวดีจากทางไกล
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a person cooking rice in a clay pot over a charcoal stove, steam rising. Draw exactly 4 numbers in bold rounded dark-brown digits around the subject, each number exactly once, no repeats: 19, 29, 119, 229. Do not draw any other numbers, words or letters.
@@ -171,7 +171,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-uncooked-rice.jpg`
 - เลข: 20, 64, 66, 609, 660
-- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่า เห็นข้าวสารอยู่ภายในบ้านหรือความทาง ความฝันนี้จะทำให้ท่านพบกับญาติมิตรหรือลูกหลานที่จากกันไปช้านานโดยไม่นึกฝัน
+- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่า เห็นข้าวสารอยู่ภายในบ้านหรือตามทาง ความฝันนี้จะทำให้ท่านพบกับญาติมิตรหรือลูกหลานที่จากกันไปช้านานโดยไม่นึกฝัน
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a large sack of uncooked rice in a house, with a relative arriving at the door after a long journey. Draw exactly 5 numbers in bold rounded dark-brown digits around the subject, each number exactly once, no repeats: 20, 64, 66, 609, 660. Do not draw any other numbers, words or letters.
@@ -201,7 +201,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-riding-shoulders.jpg`
 - เลข: 14, 18, 148, 181
-- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่าขี่คอคน ความฝันนี้ท่านจะได้รับสบายความสุขสำราญ
+- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่าขี่คอคน ความฝันนี้ท่านจะได้รับความสุขสบายสำราญ
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a child riding happily on the shoulders of an adult. Draw exactly 4 numbers in bold rounded dark-brown digits around the subject, each number exactly once, no repeats: 14, 18, 148, 181. Do not draw any other numbers, words or letters.
@@ -221,7 +221,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-excrement.jpg`
 - เลข: 13, 15, 17, 137, 157
-- คำทำนาย (ต้นฉบับ): ฝันว่าลูกเปื้อนร่างกาย หรือปัสสาวะ และอุจจาระ ความฝันท่านได้ฝันนี้ ทายว่าท่านจะประสบโชคลาภเงินทองข้าวของ
+- คำทำนาย (ต้นฉบับ): ฝันว่าขี้เปื้อนร่างกาย หรือปัสสาวะ และอุจจาระ ความฝันท่านได้ฝันนี้ ทายว่าท่านจะประสบโชคลาภเงินทองข้าวของ
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: SYMBOLIC, tasteful, no bodily detail: a person washing a muddy stain off their clothes beside a water jar, coins scattered on the ground nearby. Draw exactly 5 numbers in bold rounded dark-brown digits around the subject, each number exactly once, no repeats: 13, 15, 17, 137, 157. Do not draw any other numbers, words or letters.
@@ -231,7 +231,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-ashes.jpg`
 - เลข: **ไม่ควรเสี่ยง** — ไม่มีเลขในภาพ
-- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันนั่งเถ้าซื้ออยู่ในเตาไฟ ทายว่าท่านจะประสบกับความเดือดร้อน หรือจะได้รับข่าวร้ายจากทางไกล
+- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันนั่งเขี่ยขี้เถ้าอยู่ในเตาไฟ ทายว่าท่านจะประสบกับความเดือดร้อน หรือจะได้รับข่าวร้ายจากทางไกล
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a person sitting in front of a traditional clay stove, stirring grey ashes with a stick. Do not draw any numbers, words or letters anywhere in the picture.
@@ -241,7 +241,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-climbing.jpg`
 - เลข: **ไม่ควรเสี่ยง** — ไม่มีเลขในภาพ
-- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่าได้ขึ้นต้นไม้ หรือขึ้นเขา ขึ้นเครื่องบิน หรือขับเกี่ยวกับพาหนะใด ๆ ความฝันนี้จะทำให้ท่านได้รับผลสำเร็จในด้านการงาน การเงิน ได้รับเกียรติยศชื่อเสียงเลื่อนตำแหน่ง ความฝันนี้ตรงกับบ้าน ถ้าท่านตกจากต้นไม้หรือยานพาหนะ ท่านจะต้องประสบกับความเคราะห์ร้าย เดือดร้อน คนใส่ร้าย ท่านต้องระวังตัวใส่บาตร ทำบุญบูชาพระ สะเคราะห์เสงบ้าง
+- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่าได้ขึ้นต้นไม้ หรือขึ้นเขา ขึ้นเครื่องบิน หรือขับขี่ยานพาหนะใด ๆ ความฝันนี้จะทำให้ท่านได้รับผลสำเร็จในด้านการงาน การเงิน ได้รับเกียรติยศชื่อเสียงเลื่อนตำแหน่ง ความฝันนี้ตรงกันข้าม ถ้าท่านตกจากต้นไม้หรือยานพาหนะ ท่านจะต้องประสบกับความเคราะห์ร้าย เดือดร้อน คนใส่ร้าย ท่านต้องระวังตัวใส่บาตร ทำบุญบูชาพระ สะเดาะเคราะห์เสียบ้าง
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a person climbing up a tall tree, with a mountain and a small aeroplane in the distance. Do not draw any numbers, words or letters anywhere in the picture.
@@ -251,7 +251,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-digging.jpg`
 - เลข: 10, 12, 101, 121
-- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่า ขุดดิน ถ้าเป็นพื้นดินที่สะอาดจะทำให้ท่านได้รับโชคลาภ ยาวดี ถ้าเป็นพื้นดินสกปรกจะทำให้พบกับความยุ่งยากร้อนใจจากมิตร
+- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่า ขุดดิน ถ้าเป็นพื้นดินที่สะอาดจะทำให้ท่านได้รับโชคลาภอย่างดี ถ้าเป็นพื้นดินสกปรกจะทำให้พบกับความยุ่งยากร้อนใจจากมิตร
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a person digging into clean earth with a hoe, the soil turned over beside a shallow hole. Draw exactly 4 numbers in bold rounded dark-brown digits around the subject, each number exactly once, no repeats: 10, 12, 101, 121. Do not draw any other numbers, words or letters.
@@ -261,7 +261,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-limping.jpg`
 - เลข: **ไม่ควรเสี่ยง** — ไม่มีเลขในภาพ
-- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่า เดินเขย่งเขยก ขาพิการ ความฝันนี้ขอให้ท่านจงระวังตัวจะพบกับการใส่ร้ายป้ายสีจากผู้ื่น ทำให้ท่านได้รับความอับอายในชีวิต แต่ในที่เดียวกันอันตราย
+- คำทำนาย (ต้นฉบับ): ถ้าท่านฝันว่า เดินเขย่งเขยก ขาพิการ ความฝันนี้ขอให้ท่านจงระวังตัวจะพบกับการใส่ร้ายป้ายสีจากผู้อื่น ทำให้ท่านได้รับความอับอายในชีวิต แต่ในที่เดียวกันอันตราย
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: a person walking on tiptoe and limping with a crutch along a path. Do not draw any numbers, words or letters anywhere in the picture.
@@ -271,7 +271,7 @@ Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper
 
 - ไฟล์ที่ต้องได้: `images/kh-mountain-trip.jpg`
 - เลข: 91, 92, 291, 292
-- คำทำนาย (ต้นฉบับ): ฝันว่าได้เข้าไปเที่ยวตาเขา หรือตามถ้ำในไพรป่า ฝันนี้ท่านจะได้พบเนื้อคู่ หรือมิตรสหายเพื่อนฝูงที่ถูกใจ
+- คำทำนาย (ต้นฉบับ): ฝันว่าได้เข้าไปเที่ยวตามเขา หรือตามถ้ำในไพรป่า ฝันนี้ท่านจะได้พบเนื้อคู่ หรือมิตรสหายเพื่อนฝูงที่ถูกใจ
 
 ```text
 Hand-drawn sepia / dark-brown ink line illustration on warm cream textured paper, vintage Thai storybook style, clean outlines with light hatching, faint pencil construction lines left visible, plenty of empty paper space, no colour fills, no frame, 16:9 landscape (2752×1536). Scene: two people walking happily together into a cave entrance on a forested mountain. Draw exactly 4 numbers in bold rounded dark-brown digits around the subject, each number exactly once, no repeats: 91, 92, 291, 292. Do not draw any other numbers, words or letters.

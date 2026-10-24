@@ -1,0 +1,22 @@
+{
+  "note": "Typo fixes approved by the content owner on 2026-10-24. dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in its dream).",
+  "corrections": [
+    { "id": "kh-dessert", "field": "meaning", "from": "พบคืนเนื้อคู่", "to": "พบกับเนื้อคู่" },
+    { "id": "kh-floating-log", "field": "meaning", "from": "ได้การชะอนไม่มีข้ามฟาก", "to": "ได้อาศัยขอนไม้ข้ามฟาก" },
+    { "id": "kh-broken-leg", "field": "meaning", "from": "ข้อข้อเท้า", "to": "ข้อเท้า" },
+    { "id": "kh-severed", "field": "meaning", "from": "ได้รับสีเสื้อ", "to": "ได้รับยศ" },
+    { "id": "kh-selling-goods", "field": "name", "from": "ชาย", "to": "ขาย" },
+    { "id": "kh-selling-goods", "field": "meaning", "from": "ยืนดินแร่ขายของ", "to": "เดินเร่ขายของ" },
+    { "id": "kh-cooking-rice", "field": "meaning", "from": "ได้รับรองกำเนิด", "to": "ได้รับของกำนัล" },
+    { "id": "kh-uncooked-rice", "field": "meaning", "from": "หรือความทาง", "to": "หรือตามทาง" },
+    { "id": "kh-riding-shoulders", "field": "meaning", "from": "ได้รับสบายความสุขสำราญ", "to": "ได้รับความสุขสบายสำราญ" },
+    { "id": "kh-excrement", "field": "meaning", "from": "ฝันว่าลูกเปื้อนร่างกาย", "to": "ฝันว่าขี้เปื้อนร่างกาย" },
+    { "id": "kh-ashes", "field": "meaning", "from": "ฝันนั่งเถ้าซื้ออยู่ในเตาไฟ", "to": "ฝันนั่งเขี่ยขี้เถ้าอยู่ในเตาไฟ" },
+    { "id": "kh-climbing", "field": "meaning", "from": "หรือขับเกี่ยวกับพาหนะใด ๆ", "to": "หรือขับขี่ยานพาหนะใด ๆ" },
+    { "id": "kh-climbing", "field": "meaning", "from": "ตรงกับบ้าน", "to": "ตรงกันข้าม" },
+    { "id": "kh-climbing", "field": "meaning", "from": "สะเคราะห์เสงบ้าง", "to": "สะเดาะเคราะห์เสียบ้าง" },
+    { "id": "kh-digging", "field": "meaning", "from": "โชคลาภ ยาวดี", "to": "โชคลาภอย่างดี" },
+    { "id": "kh-limping", "field": "meaning", "from": "ผู้ื่น", "to": "ผู้อื่น" },
+    { "id": "kh-mountain-trip", "field": "meaning", "from": "เที่ยวตาเขา", "to": "เที่ยวตามเขา" }
+  ]
+}
