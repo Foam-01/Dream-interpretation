@@ -10,7 +10,6 @@ import 'package:maha_dream/data/category_ng.dart';
 import 'package:maha_dream/data/design_data.dart';
 import 'package:maha_dream/data/dream_images_k.dart';
 import 'package:maha_dream/data/dream_images_ng.dart';
-import 'package:maha_dream/data/dreams_ch.dart';
 import 'package:maha_dream/data/dreams_ng.dart';
 import 'package:maha_dream/data/sample_dream_repository.dart';
 import 'package:maha_dream/main.dart';
@@ -100,9 +99,10 @@ void main() {
       }
     });
 
-    test('is part of the app data, before หมวด จ; all bundled data validates', () {
-      expect(dreams.skip(dreams.length - dreamsCh.length - dreamsNg.length).take(dreamsNg.length).map((d) => d.id),
-          dreamsNg.map((d) => d.id));
+    test('is part of the app data, in one block right after หมวด ฆ; all bundled data validates', () {
+      final start = dreams.indexWhere((d) => d.id == dreamsNg.first.id);
+      expect(dreams.skip(start).take(dreamsNg.length).map((d) => d.id), dreamsNg.map((d) => d.id));
+      expect(dreams[start - 1].cat, 'หมวด ฆ');
       expect(dreams.map((d) => d.id).toSet(), hasLength(dreams.length), reason: 'ids unique across categories');
       expect(debugValidateDreams(), isTrue);
     });

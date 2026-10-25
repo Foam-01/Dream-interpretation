@@ -2,6 +2,7 @@
 // Lottery numbers are kept as String to preserve leading zeros ("08").
 
 import 'dreams_ch.dart';
+import 'dreams_chg.dart';
 import 'dreams_k.dart';
 import 'dreams_kh.dart';
 import 'dreams_khr.dart';
@@ -177,9 +178,9 @@ class Dream {
       ];
 }
 
-/// The app's bundled dreams: the real letter-category content (หมวด ก, ข, ค, ฆ, ง, จ), generated from the import
+/// The app's bundled dreams: the real letter-category content (หมวด ก–ฉ), generated from the import
 /// files (see lib/data/dreams_*.dart). The former SAMPLE design data lives in test/fixtures only.
-const dreams = [...dreamsK, ...dreamsKh, ...dreamsKhw, ...dreamsKhr, ...dreamsNg, ...dreamsCh];
+const dreams = [...dreamsK, ...dreamsKh, ...dreamsKhw, ...dreamsKhr, ...dreamsNg, ...dreamsCh, ...dreamsChg];
 
 /// Looks a dream up by its stable [id]; null when no dream has that id.
 Dream? dreamById(String id, [List<Dream> source = dreams]) {
@@ -202,7 +203,7 @@ bool debugValidateDreams([List<Dream> source = dreams]) {
   return true;
 }
 
-const dreamCats = ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ', 'หมวด ง', 'หมวด จ'];
+const dreamCats = ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ', 'หมวด ง', 'หมวด จ', 'หมวด ฉ'];
 
 class MenuItem {
   final String key, title, desc;
@@ -239,6 +240,7 @@ const menus = <String, MenuDef>{
     MenuItem('16', 'ทำนายฝันหมวด ฆ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฆ'),
     MenuItem('17', 'ทำนายฝันหมวด ง', 'คำทำนายความฝันที่ขึ้นต้นด้วย ง'),
     MenuItem('18', 'ทำนายฝันหมวด จ', 'คำทำนายความฝันที่ขึ้นต้นด้วย จ'),
+    MenuItem('19', 'ทำนายฝันหมวด ฉ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฉ'),
   ]),
 };
 
@@ -269,12 +271,13 @@ const feats = <String, FeatDef>{
   '16': FeatDef('ทำนายฝันหมวด ฆ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฆ', FeatType.letter),
   '17': FeatDef('ทำนายฝันหมวด ง', 'คำทำนายความฝันที่ขึ้นต้นด้วย ง', FeatType.letter),
   '18': FeatDef('ทำนายฝันหมวด จ', 'คำทำนายความฝันที่ขึ้นต้นด้วย จ', FeatType.letter),
+  '19': FeatDef('ทำนายฝันหมวด ฉ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฉ', FeatType.letter),
 };
 
 /// Which bottom tab a feature belongs to.
 String tabOf(String k) => const ['3', '4', '11'].contains(k)
     ? 'ritual'
-    : const ['1', '5', '6', '12', '13', '14', '15', '16', '17', '18'].contains(k)
+    : const ['1', '5', '6', '12', '13', '14', '15', '16', '17', '18', '19'].contains(k)
         ? 'book'
         : 'lucky';
 

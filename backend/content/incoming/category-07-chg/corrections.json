@@ -1,0 +1,11 @@
+{
+  "note": "Fixes, same rules the content owner approved for ก–จ ('แก้ให้เลย ให้เข้ากับเนื้อหา'). dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source).",
+  "corrections": [
+    {
+      "id": "chg-royal-umbrella",
+      "field": "meaning",
+      "from": "ได้รับการอุปการะ จากท่านผู้ใหญ่ต่อ ๆ ไปท่านจะ",
+      "to": "ได้รับการอุปการะจากท่านผู้ใหญ่ ต่อ ๆ ไปท่านจะ"
+    }
+  ]
+}

@@ -99,8 +99,10 @@ void main() {
       }
     });
 
-    test('is part of the app data, last; all bundled data validates', () {
-      expect(dreams.skip(dreams.length - dreamsCh.length).map((d) => d.id), dreamsCh.map((d) => d.id));
+    test('is part of the app data, in one block right after หมวด ง; all bundled data validates', () {
+      final start = dreams.indexWhere((d) => d.id == dreamsCh.first.id);
+      expect(dreams.skip(start).take(dreamsCh.length).map((d) => d.id), dreamsCh.map((d) => d.id));
+      expect(dreams[start - 1].cat, 'หมวด ง');
       expect(dreams.map((d) => d.id).toSet(), hasLength(dreams.length), reason: 'ids unique across categories');
       expect(debugValidateDreams(), isTrue);
     });
@@ -111,14 +113,7 @@ void main() {
       final block = ts.substring(start, ts.indexOf('];', start));
       expect(block, contains("{ id: 'letter-ch', name: 'หมวด จ', sortOrder: 11 }"));
       expect(letterChCategoryId, 'letter-ch');
-      expect(sampleCategories.map((c) => (c.id, c.name)), [
-        ('letter-k', 'หมวด ก'),
-        ('letter-kh', 'หมวด ข'),
-        ('letter-khw', 'หมวด ค'),
-        ('letter-khr', 'หมวด ฆ'),
-        ('letter-ng', 'หมวด ง'),
-        ('letter-ch', 'หมวด จ'),
-      ]);
+      expect(sampleCategories.map((c) => (c.id, c.name)), contains(('letter-ch', 'หมวด จ')));
       expect(dreamCats.skip(1), sampleCategories.map((c) => c.name));
     });
   });
