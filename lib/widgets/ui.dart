@@ -225,7 +225,7 @@ IconData featureIcon(String key) => switch (key) {
       '10' => Icons.trending_up_rounded,
       '11' => Icons.self_improvement_rounded,
       '12' => Icons.pin_rounded,
-      '13' || '14' || '15' => Icons.sort_by_alpha_rounded,
+      '13' || '14' || '15' || '16' => Icons.sort_by_alpha_rounded,
       _ => Icons.star_rounded,
     };
 

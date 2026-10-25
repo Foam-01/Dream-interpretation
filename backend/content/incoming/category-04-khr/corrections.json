@@ -1,0 +1,31 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ค ('แก้ให้เลย ให้เข้ากับเนื้อหา'). dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source).",
+  "corrections": [
+    {
+      "id": "khr-gong",
+      "field": "meaning",
+      "from": "ได้รับเกียรติศชื่อเสียง",
+      "to": "ได้รับเกียรติยศชื่อเสียง"
+    },
+    {
+      "id": "khr-killed-and-revived",
+      "field": "name",
+      "from": "ฆ่า ฝันว่าตัวของเราได้ถูก",
+      "to": "ถูกฆ่า ฝันว่าตัวของเราได้ถูก",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "khr-killing-oneself",
+      "field": "name",
+      "from": "ฆ่า ฝันว่าท่านฆ่าตัว",
+      "to": "ฆ่าตัวเอง ฝันว่าท่านฆ่าตัว",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "khr-whipping",
+      "field": "meaning",
+      "from": "จนกระทั่ง เป็นปากเสียง",
+      "to": "จนกระทั่งเป็นปากเสียง"
+    }
+  ]
+}

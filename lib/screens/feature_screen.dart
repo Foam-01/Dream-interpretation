@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../app_shell.dart';
 import '../data/category_k.dart';
 import '../data/category_kh.dart';
+import '../data/category_khr.dart';
 import '../data/category_khw.dart';
 import '../data/design_data.dart';
 import '../data/formulas.dart';
@@ -13,7 +14,12 @@ import 'letter_category_section.dart';
 
 
 /// Category shown by each FeatType.letter feature.
-const _letterCategories = {'13': letterKCategoryId, '14': letterKhCategoryId, '15': letterKhwCategoryId};
+const _letterCategories = {
+  '13': letterKCategoryId,
+  '14': letterKhCategoryId,
+  '15': letterKhwCategoryId,
+  '16': letterKhrCategoryId,
+};
 class FeatureScreen extends StatefulWidget {
   final String featKey;
 

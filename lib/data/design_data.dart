@@ -3,6 +3,7 @@
 
 import 'dreams_k.dart';
 import 'dreams_kh.dart';
+import 'dreams_khr.dart';
 import 'dreams_khw.dart';
 
 /// Two- and three-digit lucky numbers of a dream, stored as literal strings so
@@ -174,9 +175,9 @@ class Dream {
       ];
 }
 
-/// The app's bundled dreams: the real หมวด ก, ข and ค content, generated from the import files
-/// (see lib/data/dreams_k.dart, dreams_kh.dart and dreams_khw.dart). The former SAMPLE design data lives in test/fixtures only.
-const dreams = [...dreamsK, ...dreamsKh, ...dreamsKhw];
+/// The app's bundled dreams: the real letter-category content (หมวด ก, ข, ค, ฆ), generated from the import
+/// files (see lib/data/dreams_*.dart). The former SAMPLE design data lives in test/fixtures only.
+const dreams = [...dreamsK, ...dreamsKh, ...dreamsKhw, ...dreamsKhr];
 
 /// Looks a dream up by its stable [id]; null when no dream has that id.
 Dream? dreamById(String id, [List<Dream> source = dreams]) {
@@ -199,7 +200,7 @@ bool debugValidateDreams([List<Dream> source = dreams]) {
   return true;
 }
 
-const dreamCats = ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค'];
+const dreamCats = ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ'];
 
 class MenuItem {
   final String key, title, desc;
@@ -233,6 +234,7 @@ const menus = <String, MenuDef>{
     MenuItem('13', 'ทำนายฝันหมวด ก', 'คำทำนายความฝันที่ขึ้นต้นด้วย ก'),
     MenuItem('14', 'ทำนายฝันหมวด ข', 'คำทำนายความฝันที่ขึ้นต้นด้วย ข'),
     MenuItem('15', 'ทำนายฝันหมวด ค', 'คำทำนายความฝันที่ขึ้นต้นด้วย ค'),
+    MenuItem('16', 'ทำนายฝันหมวด ฆ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฆ'),
   ]),
 };
 
@@ -260,12 +262,13 @@ const feats = <String, FeatDef>{
   '13': FeatDef('ทำนายฝันหมวด ก', 'คำทำนายความฝันที่ขึ้นต้นด้วย ก', FeatType.letter),
   '14': FeatDef('ทำนายฝันหมวด ข', 'คำทำนายความฝันที่ขึ้นต้นด้วย ข', FeatType.letter),
   '15': FeatDef('ทำนายฝันหมวด ค', 'คำทำนายความฝันที่ขึ้นต้นด้วย ค', FeatType.letter),
+  '16': FeatDef('ทำนายฝันหมวด ฆ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฆ', FeatType.letter),
 };
 
 /// Which bottom tab a feature belongs to.
 String tabOf(String k) => const ['3', '4', '11'].contains(k)
     ? 'ritual'
-    : const ['1', '5', '6', '12', '13', '14', '15'].contains(k)
+    : const ['1', '5', '6', '12', '13', '14', '15', '16'].contains(k)
         ? 'book'
         : 'lucky';
 
