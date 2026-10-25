@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app_shell.dart';
+import '../data/category_ch.dart';
 import '../data/category_k.dart';
 import '../data/category_kh.dart';
 import '../data/category_khr.dart';
@@ -21,6 +22,7 @@ const _letterCategories = {
   '15': letterKhwCategoryId,
   '16': letterKhrCategoryId,
   '17': letterNgCategoryId,
+  '18': letterChCategoryId,
 };
 class FeatureScreen extends StatefulWidget {
   final String featKey;

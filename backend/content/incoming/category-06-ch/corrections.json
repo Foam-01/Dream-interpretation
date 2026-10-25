@@ -1,0 +1,72 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ง ('แก้ให้เลย ให้เข้ากับเนื้อหา'). dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). 'ยังไม่มีโชคในการเสี่ยง' (จันทรคราส) is stored as noLuckyNumbers like 'ไม่ควรเสี่ยง'.",
+  "corrections": [
+    {
+      "id": "ch-crocodile-attack",
+      "field": "name",
+      "from": "จระเข้ ฝันว่าจระเข้ตรงรี่",
+      "to": "จระเข้กัด ฝันว่าจระเข้ตรงรี่",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "ch-catching-crocodile",
+      "field": "name",
+      "from": "จระเข้ ฝันว่าจับจระเข้",
+      "to": "จับจระเข้ ฝันว่าจับจระเข้",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "ch-bound",
+      "field": "meaning",
+      "from": "หรืออาจ ได้รับ",
+      "to": "หรืออาจได้รับ"
+    },
+    {
+      "id": "ch-full-moon",
+      "field": "name",
+      "from": "จันทร์ ฝันว่าได้เห็นพระจันทร์",
+      "to": "จันทร์เต็มดวง ฝันว่าได้เห็นพระจันทร์",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "ch-full-moon",
+      "field": "meaning",
+      "from": "ความสำเร็จ ในด้านที่ท่านคิดไว้โดยทุกประการ",
+      "to": "ความสำเร็จในด้านที่ท่านคิดไว้ทุกประการ"
+    },
+    {
+      "id": "ch-holding-moon",
+      "field": "name",
+      "from": "จันทร์ ฝันว่าได้จับดวงจันทร์",
+      "to": "จับดวงจันทร์ ฝันว่าได้จับดวงจันทร์",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "ch-gecko-chirping",
+      "field": "name",
+      "from": "จิ้งจก ฝันเห็นจิ้งจกร้องทัก",
+      "to": "จิ้งจกร้องทัก ฝันเห็นจิ้งจกร้องทัก",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "ch-gecko-chirping",
+      "field": "meaning",
+      "from": "ได้รับเคราะห์จากผู้ที่ใกล้ชิดจะทำร้ายแก่ท่าน",
+      "to": "ได้รับเคราะห์ ผู้ที่ใกล้ชิดจะทำร้ายแก่ท่าน"
+    },
+    {
+      "id": "ch-gecko-falling",
+      "field": "name",
+      "from": "จิ้งจก ฝันว่าจิ้งจกตก",
+      "to": "จิ้งจกตกใส่ ฝันว่าจิ้งจกตก",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "ch-king",
+      "field": "name",
+      "from": "เจ้า ฝันว่าได้เห็น หรือได้พูดกับพระเจ้าแผ่นดิน",
+      "to": "เจ้าแผ่นดิน ฝันว่าได้เห็น หรือได้พูดกับพระเจ้าแผ่นดิน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    }
+  ]
+}

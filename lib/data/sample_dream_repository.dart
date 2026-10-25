@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import 'category_ch.dart';
 import 'category_k.dart';
 import 'category_kh.dart';
 import 'category_khr.dart';
@@ -16,6 +17,7 @@ const sampleCategories = [
   DreamCategory(letterKhwCategoryId, 'หมวด ค'),
   DreamCategory(letterKhrCategoryId, 'หมวด ฆ'),
   DreamCategory(letterNgCategoryId, 'หมวด ง'),
+  DreamCategory(letterChCategoryId, 'หมวด จ'),
 ];
 
 final _slug = RegExp(r'^[a-z0-9-]{1,64}$');

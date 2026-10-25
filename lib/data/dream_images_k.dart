@@ -1,4 +1,5 @@
 import 'design_data.dart';
+import 'dream_images_ch.dart';
 import 'dream_images_kh.dart';
 import 'dream_images_khr.dart';
 import 'dream_images_khw.dart';
@@ -49,4 +50,4 @@ const dreamImagesK = <String, DreamImage>{
 
 /// The image to show for a dream: the API's image when it has one, else the bundled one, else null
 /// (the placeholder). Works the same in offline and API mode.
-DreamImage? dreamImageFor(String id, [DreamImage? remote]) => remote ?? dreamImagesK[id] ?? dreamImagesKh[id] ?? dreamImagesKhw[id] ?? dreamImagesKhr[id] ?? dreamImagesNg[id];
+DreamImage? dreamImageFor(String id, [DreamImage? remote]) => remote ?? dreamImagesK[id] ?? dreamImagesKh[id] ?? dreamImagesKhw[id] ?? dreamImagesKhr[id] ?? dreamImagesNg[id] ?? dreamImagesCh[id];

@@ -1,5 +1,5 @@
 // Generates the app's bundled letter-category data (lib/data/dreams_k.dart = หมวด ก, dreams_kh.dart = หมวด ข,
-// dreams_khw.dart = หมวด ค, dreams_khr.dart = หมวด ฆ, dreams_ng.dart = หมวด ง)
+// dreams_khw.dart = หมวด ค, dreams_khr.dart = หมวด ฆ, dreams_ng.dart = หมวด ง, dreams_ch.dart = หมวด จ)
 // from the import files, so the app and the database are filled from one source.
 // Run from backend/:  node scripts/generate-flutter-content.mjs
 // The test/category_*_test.dart files fail if a generated file is out of date.
@@ -14,6 +14,7 @@ const categories = [
   { dir: 'category-03-khw', file: 'dreams_khw.dart', cat: 'หมวด ค', constName: 'dreamsKhw' },
   { dir: 'category-04-khr', file: 'dreams_khr.dart', cat: 'หมวด ฆ', constName: 'dreamsKhr' },
   { dir: 'category-05-ng', file: 'dreams_ng.dart', cat: 'หมวด ง', constName: 'dreamsNg' },
+  { dir: 'category-06-ch', file: 'dreams_ch.dart', cat: 'หมวด จ', constName: 'dreamsCh' },
 ];
 
 const dart = (s) => `'${s.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\$/g, '\\$').replace(/\n/g, '\\n')}'`;

@@ -10,6 +10,7 @@ import 'package:maha_dream/data/category_ng.dart';
 import 'package:maha_dream/data/design_data.dart';
 import 'package:maha_dream/data/dream_images_k.dart';
 import 'package:maha_dream/data/dream_images_ng.dart';
+import 'package:maha_dream/data/dreams_ch.dart';
 import 'package:maha_dream/data/dreams_ng.dart';
 import 'package:maha_dream/data/sample_dream_repository.dart';
 import 'package:maha_dream/main.dart';
@@ -99,8 +100,9 @@ void main() {
       }
     });
 
-    test('is part of the app data, last; all bundled data validates', () {
-      expect(dreams.skip(dreams.length - dreamsNg.length).map((d) => d.id), dreamsNg.map((d) => d.id));
+    test('is part of the app data, before หมวด จ; all bundled data validates', () {
+      expect(dreams.skip(dreams.length - dreamsCh.length - dreamsNg.length).take(dreamsNg.length).map((d) => d.id),
+          dreamsNg.map((d) => d.id));
       expect(dreams.map((d) => d.id).toSet(), hasLength(dreams.length), reason: 'ids unique across categories');
       expect(debugValidateDreams(), isTrue);
     });
@@ -111,13 +113,7 @@ void main() {
       final block = ts.substring(start, ts.indexOf('];', start));
       expect(block, contains("{ id: 'letter-ng', name: 'หมวด ง', sortOrder: 10 }"));
       expect(letterNgCategoryId, 'letter-ng');
-      expect(sampleCategories.map((c) => (c.id, c.name)), [
-        ('letter-k', 'หมวด ก'),
-        ('letter-kh', 'หมวด ข'),
-        ('letter-khw', 'หมวด ค'),
-        ('letter-khr', 'หมวด ฆ'),
-        ('letter-ng', 'หมวด ง'),
-      ]);
+      expect(sampleCategories.map((c) => (c.id, c.name)), contains(('letter-ng', 'หมวด ง')));
       expect(dreamCats.skip(1), sampleCategories.map((c) => c.name));
     });
 
