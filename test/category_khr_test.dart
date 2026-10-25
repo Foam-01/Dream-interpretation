@@ -9,7 +9,10 @@ import 'package:maha_dream/data/category_khr.dart';
 import 'package:maha_dream/data/design_data.dart';
 import 'package:maha_dream/data/dream_images_k.dart';
 import 'package:maha_dream/data/dream_images_khr.dart';
+import 'package:maha_dream/data/dreams_k.dart';
+import 'package:maha_dream/data/dreams_kh.dart';
 import 'package:maha_dream/data/dreams_khr.dart';
+import 'package:maha_dream/data/dreams_khw.dart';
 import 'package:maha_dream/data/sample_dream_repository.dart';
 import 'package:maha_dream/main.dart';
 import 'package:maha_dream/widgets/ui.dart';
@@ -101,8 +104,9 @@ void main() {
       }
     });
 
-    test('is part of the app data, last', () {
-      expect(dreams.skip(dreams.length - dreamsKhr.length).map((d) => d.id), dreamsKhr.map((d) => d.id));
+    test('is part of the app data, after หมวด ค', () {
+      expect(dreams.skip(dreamsK.length + dreamsKh.length + dreamsKhw.length).take(dreamsKhr.length).map((d) => d.id),
+          dreamsKhr.map((d) => d.id));
       expect(dreams.map((d) => d.id).toSet(), hasLength(dreams.length), reason: 'ids unique across categories');
       expect(debugValidateDreams(), isTrue);
     });
@@ -113,8 +117,7 @@ void main() {
       final block = ts.substring(start, ts.indexOf('];', start));
       expect(block, contains("{ id: 'letter-khr', name: 'หมวด ฆ', sortOrder: 9 }"));
       expect(letterKhrCategoryId, 'letter-khr');
-      expect(sampleCategories.map((c) => (c.id, c.name)),
-          [('letter-k', 'หมวด ก'), ('letter-kh', 'หมวด ข'), ('letter-khw', 'หมวด ค'), ('letter-khr', 'หมวด ฆ')]);
+      expect(sampleCategories.map((c) => (c.id, c.name)), contains(('letter-khr', 'หมวด ฆ')));
       expect(dreamCats.skip(1), sampleCategories.map((c) => c.name));
     });
   });

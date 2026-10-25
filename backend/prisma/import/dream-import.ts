@@ -381,7 +381,11 @@ export function validateImportFile(raw: unknown, options: ValidationOptions): Va
       } else {
         c.unknownKeys(d.numbers, new Set(['twoDigit', 'threeDigit']), `${p}.numbers`);
         twoDigit = c.digitStrings(d.numbers.twoDigit, `${p}.numbers.twoDigit`, 2, { required: true });
-        threeDigit = c.digitStrings(d.numbers.threeDigit, `${p}.numbers.threeDigit`, 3, { required: true });
+        // Some sources give only two-digit numbers; the three-digit list must still be given, but may be [].
+        if (d.numbers.threeDigit === undefined || d.numbers.threeDigit === null) {
+          c.error(`${p}.numbers.threeDigit`, 'is required (use [] when the source gives only two-digit numbers)');
+        }
+        threeDigit = c.digitStrings(d.numbers.threeDigit, `${p}.numbers.threeDigit`, 3, { required: false });
       }
       const digits = c.digitStrings(d.digits, `${p}.digits`, 1, { required: false });
       if (noLuckyNumbers && digits.length > 0) c.error(`${p}.digits`, 'must be empty when noLuckyNumbers is true');

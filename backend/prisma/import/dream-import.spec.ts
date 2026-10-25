@@ -109,6 +109,15 @@ describe('validateImportFile', () => {
     expect(validate([dream()]).dreams[0].noLuckyNumbers).toBe(false);
   });
 
+  it('accepts two-digit-only numbers but never an empty two-digit list', () => {
+    const twoOnly = validate([dream({ numbers: { twoDigit: ['33'], threeDigit: [] } })]);
+    expect(errors(twoOnly)).toEqual([]);
+    expect(twoOnly.dreams[0]).toMatchObject({ noLuckyNumbers: false, twoDigit: ['33'], threeDigit: [] });
+    expect(errors(validate([dream({ numbers: { twoDigit: [], threeDigit: ['123'] } })]))[0]).toMatch(
+      /twoDigit: must not be empty/,
+    );
+  });
+
   it('accepts a source that already exists in the database', () => {
     const v = validateImportFile(
       { format: IMPORT_FORMAT, dreams: [dream({ source: { id: 'in-db' } })] },

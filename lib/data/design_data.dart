@@ -5,6 +5,7 @@ import 'dreams_k.dart';
 import 'dreams_kh.dart';
 import 'dreams_khr.dart';
 import 'dreams_khw.dart';
+import 'dreams_ng.dart';
 
 /// Two- and three-digit lucky numbers of a dream, stored as literal strings so
 /// leading zeros survive ("08", "098"). Never derived from other fields.
@@ -48,12 +49,12 @@ class LuckyNumbers {
   String get firstTwo => isNone ? noLuckyNumbersText : _twoDigit.first;
 
   /// Problems with the data; empty when valid. Each value must be exactly 2
-  /// (or 3) ASCII digits 0-9: rejects empty lists, empty strings, spaces,
-  /// non-digit characters (incl. Thai digits) and wrong lengths. Never fixes data.
-  /// [LuckyNumbers.none] ("ไม่ควรเสี่ยง") is valid; one empty list on its own is not.
+  /// (or 3) ASCII digits 0-9: rejects empty strings, spaces, non-digit
+  /// characters (incl. Thai digits) and wrong lengths. Never fixes data.
+  /// [LuckyNumbers.none] ("ไม่ควรเสี่ยง") is valid. Otherwise two-digit numbers are
+  /// required; the three-digit list may be empty (some sources give only two-digit numbers).
   List<String> validate() => isNone ? const [] : [
         if (_twoDigit.isEmpty) 'twoDigit is empty',
-        if (_threeDigit.isEmpty) 'threeDigit is empty',
         for (final n in _twoDigit)
           if (!RegExp(r'^\d{2}$').hasMatch(n)) 'twoDigit "$n" is not 2 digits',
         for (final n in _threeDigit)
@@ -175,9 +176,9 @@ class Dream {
       ];
 }
 
-/// The app's bundled dreams: the real letter-category content (หมวด ก, ข, ค, ฆ), generated from the import
+/// The app's bundled dreams: the real letter-category content (หมวด ก, ข, ค, ฆ, ง), generated from the import
 /// files (see lib/data/dreams_*.dart). The former SAMPLE design data lives in test/fixtures only.
-const dreams = [...dreamsK, ...dreamsKh, ...dreamsKhw, ...dreamsKhr];
+const dreams = [...dreamsK, ...dreamsKh, ...dreamsKhw, ...dreamsKhr, ...dreamsNg];
 
 /// Looks a dream up by its stable [id]; null when no dream has that id.
 Dream? dreamById(String id, [List<Dream> source = dreams]) {
@@ -200,7 +201,7 @@ bool debugValidateDreams([List<Dream> source = dreams]) {
   return true;
 }
 
-const dreamCats = ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ'];
+const dreamCats = ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ', 'หมวด ง'];
 
 class MenuItem {
   final String key, title, desc;
@@ -235,6 +236,7 @@ const menus = <String, MenuDef>{
     MenuItem('14', 'ทำนายฝันหมวด ข', 'คำทำนายความฝันที่ขึ้นต้นด้วย ข'),
     MenuItem('15', 'ทำนายฝันหมวด ค', 'คำทำนายความฝันที่ขึ้นต้นด้วย ค'),
     MenuItem('16', 'ทำนายฝันหมวด ฆ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฆ'),
+    MenuItem('17', 'ทำนายฝันหมวด ง', 'คำทำนายความฝันที่ขึ้นต้นด้วย ง'),
   ]),
 };
 
@@ -263,12 +265,13 @@ const feats = <String, FeatDef>{
   '14': FeatDef('ทำนายฝันหมวด ข', 'คำทำนายความฝันที่ขึ้นต้นด้วย ข', FeatType.letter),
   '15': FeatDef('ทำนายฝันหมวด ค', 'คำทำนายความฝันที่ขึ้นต้นด้วย ค', FeatType.letter),
   '16': FeatDef('ทำนายฝันหมวด ฆ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฆ', FeatType.letter),
+  '17': FeatDef('ทำนายฝันหมวด ง', 'คำทำนายความฝันที่ขึ้นต้นด้วย ง', FeatType.letter),
 };
 
 /// Which bottom tab a feature belongs to.
 String tabOf(String k) => const ['3', '4', '11'].contains(k)
     ? 'ritual'
-    : const ['1', '5', '6', '12', '13', '14', '15', '16'].contains(k)
+    : const ['1', '5', '6', '12', '13', '14', '15', '16', '17'].contains(k)
         ? 'book'
         : 'lucky';
 

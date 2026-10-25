@@ -3,6 +3,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import request from 'supertest';
 import { PrismaClient } from '../generated/prisma/client';
 import { isLocalDatabase, seedSampleFixtures } from '../prisma/seed';
+import { allCategories } from '../prisma/seed-data';
 import { createApp } from './helpers';
 
 // Runs against the isolated PostgreSQL started by test/setup/global-setup.ts (migrations applied).
@@ -41,7 +42,7 @@ describe('Dreams API (e2e, real PostgreSQL)', () => {
 
     it('seed is idempotent', async () => {
       expect(await prisma.dream.count()).toBe(10);
-      expect(await prisma.dreamCategory.count()).toBe(6); // 5 sample categories + หมวด ก
+      expect(await prisma.dreamCategory.count()).toBe(allCategories.length); // sample + letter categories
     });
 
     it('GET /dreams returns all 10 in app order with default pagination', async () => {
@@ -136,13 +137,18 @@ describe('Dreams API (e2e, real PostgreSQL)', () => {
         { id: 'person', name: 'บุคคล' },
         { id: 'object', name: 'สิ่งของ' },
         { id: 'letter-k', name: 'หมวด ก' },
+        { id: 'letter-kh', name: 'หมวด ข' },
+        { id: 'letter-khw', name: 'หมวด ค' },
+        { id: 'letter-khr', name: 'หมวด ฆ' },
+        { id: 'letter-ng', name: 'หมวด ง' },
       ]);
     });
 
     it('database CHECK constraints reject malformed numbers and scores', async () => {
       const base = (await prisma.dream.findUniqueOrThrow({ where: { id: 'snake' } })) as Record<string, unknown>;
       await expect(prisma.dream.update({ where: { id: 'snake' }, data: { twoDigit: ['8'] } })).rejects.toThrow();
-      await expect(prisma.dream.update({ where: { id: 'snake' }, data: { threeDigit: [] } })).rejects.toThrow();
+      // Numbers are required unless no_lucky_numbers; three-digit numbers alone may be empty (two-digit-only sources).
+      await expect(prisma.dream.update({ where: { id: 'snake' }, data: { twoDigit: [] } })).rejects.toThrow();
       await expect(prisma.dream.update({ where: { id: 'snake' }, data: { luckMoney: 101 } })).rejects.toThrow();
       await expect(
         prisma.dream.create({ data: { ...(base as object), id: 'Bad Id', sortOrder: 999 } as never }),

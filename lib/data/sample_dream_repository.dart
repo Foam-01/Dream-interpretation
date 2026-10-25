@@ -4,6 +4,7 @@ import 'category_k.dart';
 import 'category_kh.dart';
 import 'category_khr.dart';
 import 'category_khw.dart';
+import 'category_ng.dart';
 import 'design_data.dart';
 import 'dream_repository.dart';
 
@@ -14,6 +15,7 @@ const sampleCategories = [
   DreamCategory(letterKhCategoryId, 'หมวด ข'),
   DreamCategory(letterKhwCategoryId, 'หมวด ค'),
   DreamCategory(letterKhrCategoryId, 'หมวด ฆ'),
+  DreamCategory(letterNgCategoryId, 'หมวด ง'),
 ];
 
 final _slug = RegExp(r'^[a-z0-9-]{1,64}$');

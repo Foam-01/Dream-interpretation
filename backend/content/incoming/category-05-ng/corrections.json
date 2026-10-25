@@ -1,0 +1,49 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ฆ ('แก้ให้เลย ให้เข้ากับเนื้อหา'). dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source).",
+  "corrections": [
+    {
+      "id": "ng-snake",
+      "field": "meaning",
+      "from": "ท่านก็ได้ตึงนั้นตาย",
+      "to": "ท่านก็ได้ตีงูนั้นตาย"
+    },
+    {
+      "id": "ng-snake-bite",
+      "field": "meaning",
+      "from": "ท่านจะประสบในด้านของหาย",
+      "to": "ท่านจะประสบโชคในด้านของหายได้คืน"
+    },
+    {
+      "id": "ng-snake-eating",
+      "field": "meaning",
+      "from": "เห็นงากำลังกิน",
+      "to": "เห็นงูกำลังกิน"
+    },
+    {
+      "id": "ng-snake-coiling",
+      "field": "meaning",
+      "from": "ในระยะเวลากระทันหัน",
+      "to": "ในระยะเวลากะทันหัน"
+    },
+    {
+      "id": "ng-silver-gold",
+      "field": "name",
+      "from": "เงิน ฝันเห็นเงินหรือทอง",
+      "to": "เงินทอง ฝันเห็นเงินหรือทอง",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "ng-silver-gold",
+      "field": "meaning",
+      "from": "ได้รับโชคลอย",
+      "to": "ได้รับลาภลอย"
+    },
+    {
+      "id": "ng-given-money",
+      "field": "name",
+      "from": "เงิน ฝันว่าจะมีคนนำเงิน",
+      "to": "เงินที่ได้รับ ฝันว่าจะมีคนนำเงิน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    }
+  ]
+}

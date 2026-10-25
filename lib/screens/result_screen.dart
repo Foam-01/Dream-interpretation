@@ -134,6 +134,9 @@ class _ResultScreenState extends State<ResultScreen> {
                 width: double.infinity,
                 child: _NumTile(label: 'เลขเสี่ยงโชค', value: LuckyNumbers.noLuckyNumbersText),
               )
+            else if (d.numbers.threeDigit.isEmpty)
+              // The source gives only two-digit numbers.
+              SizedBox(width: double.infinity, child: _NumTile(label: 'สองตัว', value: d.two))
             else
               Row(children: [
                 Expanded(child: _NumTile(label: 'สองตัว', value: d.two)),

@@ -147,13 +147,16 @@ void main() {
     });
 
     test('reports empty lists and wrong digit counts without fixing data', () {
-      // Both lists empty = "ไม่ควรเสี่ยง" (LuckyNumbers.none), which is valid; one empty list is not.
+      // Both lists empty = "ไม่ควรเสี่ยง" (LuckyNumbers.none), which is valid. Two-digit numbers are required
+      // otherwise; an empty three-digit list is valid (the source gives only two-digit numbers).
       const none = LuckyNumbers(twoDigit: [], threeDigit: []);
       expect(none.validate(), isEmpty);
       expect(none.isNone, isTrue);
       expect((none.twoDisplay, none.threeDisplay, none.firstTwo), ('ไม่ควรเสี่ยง', 'ไม่ควรเสี่ยง', 'ไม่ควรเสี่ยง'));
       expect(const LuckyNumbers(twoDigit: [], threeDigit: ['123']).validate(), ['twoDigit is empty']);
-      expect(const LuckyNumbers(twoDigit: ['12'], threeDigit: []).validate(), ['threeDigit is empty']);
+      const twoOnly = LuckyNumbers(twoDigit: ['33'], threeDigit: []);
+      expect(twoOnly.validate(), isEmpty);
+      expect((twoOnly.isNone, twoOnly.twoDisplay, twoOnly.firstTwo), (false, '33', '33'));
       const bad = LuckyNumbers(twoDigit: ['8', '123', 'ab'], threeDigit: ['12', '1234']);
       expect(bad.validate(), hasLength(5));
       expect(bad.twoDigit, ['8', '123', 'ab']); // untouched
@@ -238,7 +241,7 @@ void main() {
     test('Dream.validate prefixes problems by part and debugValidateDreams names the dream id', () {
       const broken = Dream('broken-sample', 'x', 'x', LuckyNumbers(twoDigit: ['8'], threeDigit: []), ['8'], 'x', 'x',
           LuckForecast(money: 1, love: 1, health: 1), true, 'x');
-      expect(broken.validate(), ['numbers: threeDigit is empty', 'numbers: twoDigit "8" is not 2 digits']);
+      expect(broken.validate(), ['numbers: twoDigit "8" is not 2 digits']);
       expect(
           () => debugValidateDreams([legacySampleDreams.first, broken]),
           throwsA(isA<StateError>().having((e) => e.message, 'message',
