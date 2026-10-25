@@ -8,6 +8,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:maha_dream/app_shell.dart';
 import 'package:maha_dream/data/category_ng.dart';
 import 'package:maha_dream/data/design_data.dart';
+import 'package:maha_dream/data/dream_images_k.dart';
+import 'package:maha_dream/data/dream_images_ng.dart';
 import 'package:maha_dream/data/dreams_ng.dart';
 import 'package:maha_dream/data/sample_dream_repository.dart';
 import 'package:maha_dream/main.dart';
@@ -122,6 +124,21 @@ void main() {
     test('backend migration allows two-digit-only numbers', () {
       final sql = File('backend/prisma/migrations/0004_two_digit_only_numbers/migration.sql').readAsStringSync();
       expect(sql, contains('ELSE cardinality("two_digit") > 0 END'));
+    });
+  });
+
+  group('dream pictures (per dream)', () {
+    test('12 checked pictures — every dream has one, bundled and registered', () {
+      expect(dreamImagesNg.keys, dreamsNg.map((d) => d.id));
+      final onDisk = Directory('assets/dreams').listSync().whereType<File>().map((f) => f.uri.pathSegments.last);
+      expect(onDisk.where((f) => f.startsWith('ng-')).toSet(), {for (final id in dreamImagesNg.keys) '$id.jpg'});
+      for (final MapEntry(:key, :value) in dreamImagesNg.entries) {
+        expect(value.url, 'assets/dreams/$key.jpg');
+        expect(value.isAsset, isTrue);
+        expect(value.attribution, isNull, reason: 'no invented credit or licence');
+        expect(value.alt, 'ภาพประกอบ: ${dreamsNg.firstWhere((d) => d.id == key).name}');
+      }
+      expect(dreamsNg.where((d) => dreamImageFor(d.id) == null), isEmpty);
     });
   });
 
