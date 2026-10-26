@@ -69,22 +69,32 @@ void main() {
     await tester.pumpAndSettle(const Duration(seconds: 1));
   }
 
+  final results = find.byKey(const ValueKey('search-results'));
+  final resultsScrollable = find.descendant(of: results, matching: find.byType(Scrollable));
+
+  /// Scrolls down to the pager and checks its label.
+  Future<void> expectPager(WidgetTester tester, String label) async {
+    await tester.scrollUntilVisible(find.text(label).hitTestable(), 600, scrollable: resultsScrollable);
+    expect(find.text(label), findsOneWidget);
+  }
+
+  /// The pager sits at the end of the list: scroll down to it, then tap.
   Future<void> tapButton(WidgetTester tester, String label) async {
+    await tester.scrollUntilVisible(find.bySemanticsLabel(label).hitTestable(), 600, scrollable: resultsScrollable);
     await tester.tap(find.bySemanticsLabel(label));
     await tester.pumpAndSettle();
   }
 
-  final results = find.byKey(const ValueKey('search-results'));
   final pages = (dreams.length + 19) ~/ 20;
 
   for (final remote in [false, true]) {
     final mode = remote ? 'API' : 'bundled';
 
-    testWidgets('search shows 20 per page; scrolling never loads more ($mode)', (tester) async {
+    testWidgets('search shows 20 per page; the pager appears only at the end of the list ($mode)', (tester) async {
       final repo = remote ? _PagedRepo() : null;
       await openSearch(tester, repo);
       expect(find.text('พบ ${dreams.length} รายการ'), findsOneWidget);
-      expect(find.text('หน้า 1 / $pages'), findsOneWidget);
+      expect(find.text('หน้า 1 / $pages').hitTestable(), findsNothing, reason: 'not on screen before scrolling');
       await tester.scrollUntilVisible(
         find.text(dreams[19].name),
         600,
@@ -93,7 +103,7 @@ void main() {
       await tester.drag(results, const Offset(0, -3000));
       await tester.pumpAndSettle();
       expect(find.text(dreams[20].name, skipOffstage: false), findsNothing);
-      expect(find.text('หน้า 1 / $pages'), findsOneWidget);
+      expect(find.text('หน้า 1 / $pages').hitTestable(), findsOneWidget, reason: 'shown at the end of the list');
       if (repo != null) expect(repo.pages.where((p) => p > 1), isEmpty);
     });
 
@@ -101,21 +111,21 @@ void main() {
       final repo = remote ? _PagedRepo() : null;
       await openSearch(tester, repo);
 
+      // After a jump the list is back at the top: check the first entry, then scroll to the pager.
       await tapButton(tester, 'ไปหน้าถัดไป');
-      expect(find.text('หน้า 2 / $pages'), findsOneWidget);
       expect(find.text(dreams[20].name), findsOneWidget);
-      expect(find.text(dreams[0].name, skipOffstage: false), findsNothing);
+      await expectPager(tester, 'หน้า 2 / $pages');
 
       await tapButton(tester, 'ไปหน้าสุดท้าย');
-      expect(find.text('หน้า $pages / $pages'), findsOneWidget);
       expect(find.text(dreams[(pages - 1) * 20].name), findsOneWidget);
+      await expectPager(tester, 'หน้า $pages / $pages');
 
       await tapButton(tester, 'ไปหน้าก่อนหน้า');
-      expect(find.text('หน้า ${pages - 1} / $pages'), findsOneWidget);
+      await expectPager(tester, 'หน้า ${pages - 1} / $pages');
 
       await tapButton(tester, 'ไปหน้าแรก');
-      expect(find.text('หน้า 1 / $pages'), findsOneWidget);
       expect(find.text(dreams[0].name), findsOneWidget);
+      await expectPager(tester, 'หน้า 1 / $pages');
     });
   }
 
@@ -126,9 +136,9 @@ void main() {
     ctl.setCat('หมวด ฉ');
     await tester.pumpAndSettle();
     expect(find.text('พบ 3 รายการ'), findsOneWidget);
-    expect(find.textContaining('หน้า '), findsNothing);
+    expect(find.textContaining('หน้า ', skipOffstage: false), findsNothing);
     ctl.setCat('ทั้งหมด');
     await tester.pumpAndSettle();
-    expect(find.text('หน้า 1 / $pages'), findsOneWidget);
+    await expectPager(tester, 'หน้า 1 / $pages');
   });
 }

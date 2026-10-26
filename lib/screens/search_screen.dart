@@ -21,7 +21,7 @@ const _allCats = 'ทั้งหมด';
 /// Wait after the last keystroke before searching a remote repository.
 const searchDebounce = Duration(milliseconds: 300);
 
-/// Results per page; the pager bar under the list moves between pages.
+/// Results per page; the pager at the end of the list moves between pages.
 const searchPageSize = 20;
 
 class _SearchScreenState extends State<SearchScreen> {
@@ -210,17 +210,17 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: Text('ไม่พบความฝันนี้ ลองคำอื่น', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
               ),
             if (page.items.isNotEmpty) _BookPage(dreams: page.items),
+            // At the end of the list: seen only after scrolling past the last result.
+            if (page.totalPages > 1) _Pager(page: page.page, pages: page.totalPages, onPage: _goToPage),
           ],
         ]),
       ),
-      if (_results.status == LoadStatus.success && page != null && page.totalPages > 1)
-        _Pager(page: page.page, pages: page.totalPages, onPage: _goToPage),
     ]);
   }
 
 }
 
-/// Pager bar pinned under the results: first, previous, "หน้า X / Y", next, last.
+/// Pager at the end of the results: first, previous, "หน้า X / Y", next, last.
 class _Pager extends StatelessWidget {
   final int page, pages;
   final ValueChanged<int> onPage;
@@ -228,13 +228,8 @@ class _Pager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      decoration: const BoxDecoration(
-        color: C.input,
-        border: Border(top: BorderSide(color: C.goldBorder)),
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         _PagerButton(Icons.first_page_rounded, 'ไปหน้าแรก', page > 1 ? () => onPage(1) : null),
         _PagerButton(Icons.chevron_left_rounded, 'ไปหน้าก่อนหน้า', page > 1 ? () => onPage(page - 1) : null),

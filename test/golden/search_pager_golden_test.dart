@@ -1,5 +1,4 @@
-// Golden of the search pager bar after jumping to the last page. (The default search golden shows the bar
-// on page 1.)
+// Golden of the search pager at the end of the list, after jumping to the last page.
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:maha_dream/app_shell.dart';
@@ -34,7 +33,14 @@ Future<void> openSearch(WidgetTester tester) async {
 void main() {
   testWidgets('search: pager jumped to the last page', (tester) async {
     await openSearch(tester);
+    final results = find.descendant(
+      of: find.byKey(const ValueKey('search-results')),
+      matching: find.byType(Scrollable),
+    );
+    await tester.scrollUntilVisible(find.bySemanticsLabel('ไปหน้าสุดท้าย').hitTestable(), 600, scrollable: results);
     await tap(tester, find.bySemanticsLabel('ไปหน้าสุดท้าย'));
+    await tester.scrollUntilVisible(find.bySemanticsLabel('ไปหน้าแรก').hitTestable(), 600, scrollable: results);
+    await tester.pumpAndSettle();
     await expectGolden(tester, 'search_pager_last');
   });
 }
