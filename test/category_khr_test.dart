@@ -165,13 +165,16 @@ void main() {
       controllerOf(tester).goSearch(resetCat: true);
       await tester.pumpAndSettle();
       // The horizontal Scrollable that holds the "ทั้งหมด" chip.
-      final chipRow = find
+      // Pinned to the widget instance: "ทั้งหมด" scrolls out of view while dragging.
+      final chipRow = find.byWidget(tester.widget(find
           .ancestor(of: find.text('ทั้งหมด').first, matching: find.byType(Scrollable))
-          .first;
+          .first));
       // Not built until scrolled into view (the row is a lazy ListView).
-      await tester.scrollUntilVisible(find.text('หมวด ฆ'), 80, scrollable: chipRow);
+      // Result rows also show "หมวด ฆ" as their category label; target the chip only.
+      final chip = find.descendant(of: chipRow, matching: find.text('หมวด ฆ'));
+      await tester.scrollUntilVisible(chip, 80, scrollable: chipRow);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('หมวด ฆ').first);
+      await tester.tap(chip);
       await tester.pump();
       expect(controllerOf(tester).cat, 'หมวด ฆ');
       expect(find.text('พบ 4 รายการ'), findsOneWidget);

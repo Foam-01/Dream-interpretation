@@ -80,7 +80,7 @@ void main() {
       await typeQuery(tester, 'ช้าง');
       expect(find.text('พบ 1 รายการ'), findsOneWidget);
       // The query field shows "ช้าง" too; count result rows only.
-      expect(find.descendant(of: find.byType(CreamCard), matching: find.text('ช้าง')), findsOneWidget);
+      expect(find.descendant(of: find.byType(InkWell), matching: find.text('ช้าง')), findsOneWidget);
 
       // Matches the query but not the category -> excluded.
       await typeQuery(tester, 'ไฟไหม้');

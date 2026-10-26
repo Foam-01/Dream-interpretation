@@ -14,7 +14,7 @@ import 'package:maha_dream/main.dart';
 
 import 'fixtures/legacy_sample_data.dart';
 
-import 'package:maha_dream/screens/search_screen.dart' show searchDebounce;
+import 'package:maha_dream/screens/search_screen.dart' show searchDebounce, searchPageSize;
 
 class Call {
   final String method;
@@ -161,12 +161,12 @@ void main() {
       return repo;
     }
 
-    testWidgets('loads categories and all results; chips use Thai labels', (tester) async {
+    testWidgets('loads categories and the first results page; chips use Thai labels', (tester) async {
       final repo = await openSearch(tester);
       expect(spinner, findsOneWidget);
       repo.of('categories').single.complete([animal, body]);
       final search = repo.of('list').last;
-      expect(search.args, {'q': '', 'category': null, 'page': 1, 'limit': 100});
+      expect(search.args, {'q': '', 'category': null, 'page': 1, 'limit': searchPageSize});
       search.complete(pageOf([remote('a', 'แมวเซิร์ฟเวอร์', category: animal)]));
       await tester.pump();
       expect(find.text('ทั้งหมด'), findsOneWidget);

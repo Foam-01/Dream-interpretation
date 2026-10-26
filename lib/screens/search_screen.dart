@@ -21,8 +21,8 @@ const _allCats = 'ทั้งหมด';
 /// Wait after the last keystroke before searching a remote repository.
 const searchDebounce = Duration(milliseconds: 300);
 
-/// All matches are shown on one page (the catalogue is small).
-const _resultLimit = DreamRepository.maxPageSize;
+/// Results per page; the pager bar under the list moves between pages.
+const searchPageSize = 20;
 
 class _SearchScreenState extends State<SearchScreen> {
   TextEditingController? _controller;
@@ -31,6 +31,8 @@ class _SearchScreenState extends State<SearchScreen> {
   final _results = LoadRequest<DreamPage>();
   Timer? _debounce;
   (String, String)? _searched;
+
+  final _scroll = ScrollController();
 
   @override
   void didChangeDependencies() {
@@ -72,19 +74,30 @@ class _SearchScreenState extends State<SearchScreen> {
     _searched = (q, cat);
     if (q.length > DreamRepository.maxQueryLength) {
       // Longer than any name or summary; the API would reject it (400).
-      return _results.complete(DreamPage(items: const [], page: 1, limit: _resultLimit, total: 0));
+      return _results.complete(DreamPage(items: const [], page: 1, limit: searchPageSize, total: 0));
     }
-    if (cat == _allCats) return _results.run(() => repo.list(q: q, limit: _resultLimit));
-    _results.run(
-      () => repo.categories().then((cats) {
-        final match = cats.where((c) => c.name == cat).firstOrNull;
-        if (match == null) {
-          throw DreamRepositoryException(DreamRepositoryErrorKind.invalidRequest, 'unknown category');
-        }
-        return repo.list(q: q, categoryId: match.id, limit: _resultLimit);
-      }),
-    );
+    _results.run(() => _fetch(repo, q, cat, 1));
   }
+
+  Future<DreamPage> _fetch(DreamRepository repo, String q, String cat, int page) {
+    if (cat == _allCats) return repo.list(q: q, page: page, limit: searchPageSize);
+    return repo.categories().then((cats) {
+      final match = cats.where((c) => c.name == cat).firstOrNull;
+      if (match == null) {
+        throw DreamRepositoryException(DreamRepositoryErrorKind.invalidRequest, 'unknown category');
+      }
+      return repo.list(q: q, categoryId: match.id, page: page, limit: searchPageSize);
+    });
+  }
+
+  /// Shows [page] of the current search and scrolls back to the first result.
+  void _goToPage(int page) {
+    final (q, cat) = _searched!;
+    final repo = _app!.repository;
+    _results.run(() => _fetch(repo, q, cat, page));
+    if (_scroll.hasClients) _scroll.jumpTo(0);
+  }
+
 
   void _retry() {
     if (_categories.status == LoadStatus.failure) _categories.retry();
@@ -97,6 +110,7 @@ class _SearchScreenState extends State<SearchScreen> {
     _app?.removeListener(_appChanged);
     _categories.dispose();
     _results.dispose();
+    _scroll.dispose();
     _controller?.dispose();
     super.dispose();
   }
@@ -178,7 +192,11 @@ class _SearchScreenState extends State<SearchScreen> {
         ]),
       ),
       Expanded(
-        child: ListView(padding: const EdgeInsets.fromLTRB(16, 12, 16, 24), children: [
+        child: ListView(
+            key: const ValueKey('search-results'),
+            controller: _scroll,
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+            children: [
           if (_results.isLoading || _results.status == LoadStatus.idle)
             const GoldLoading()
           else if (_results.status == LoadStatus.failure || page == null)
@@ -191,12 +209,107 @@ class _SearchScreenState extends State<SearchScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 40),
                 child: Text('ไม่พบความฝันนี้ ลองคำอื่น', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
               ),
-            for (final d in page.items)
-              Padding(padding: const EdgeInsets.only(bottom: 10), child: _ResultRow(dream: d)),
+            if (page.items.isNotEmpty) _BookPage(dreams: page.items),
           ],
         ]),
       ),
+      if (_results.status == LoadStatus.success && page != null && page.totalPages > 1)
+        _Pager(page: page.page, pages: page.totalPages, onPage: _goToPage),
     ]);
+  }
+
+}
+
+/// Pager bar pinned under the results: first, previous, "หน้า X / Y", next, last.
+class _Pager extends StatelessWidget {
+  final int page, pages;
+  final ValueChanged<int> onPage;
+  const _Pager({required this.page, required this.pages, required this.onPage});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: const BoxDecoration(
+        color: C.input,
+        border: Border(top: BorderSide(color: C.goldBorder)),
+      ),
+      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        _PagerButton(Icons.first_page_rounded, 'ไปหน้าแรก', page > 1 ? () => onPage(1) : null),
+        _PagerButton(Icons.chevron_left_rounded, 'ไปหน้าก่อนหน้า', page > 1 ? () => onPage(page - 1) : null),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text('หน้า $page / $pages', style: sans(14, weight: FontWeight.w600, color: C.redDeep)),
+        ),
+        _PagerButton(Icons.chevron_right_rounded, 'ไปหน้าถัดไป', page < pages ? () => onPage(page + 1) : null),
+        _PagerButton(Icons.last_page_rounded, 'ไปหน้าสุดท้าย', page < pages ? () => onPage(pages) : null),
+      ]),
+    );
+  }
+}
+
+/// Round gold page button; greyed out and inert when [onTap] is null.
+class _PagerButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+  const _PagerButton(this.icon, this.label, this.onTap);
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = onTap != null;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      child: Semantics(
+        button: true,
+        enabled: enabled,
+        label: label,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: enabled ? C.gold : C.chipGrey,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 22, color: enabled ? C.redDeep : C.caption),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Results laid out like a printed dream-book page: one parchment sheet with a
+/// double-ruled frame, entries separated by thin rules instead of separate cards.
+class _BookPage extends StatelessWidget {
+  final List<DreamSummary> dreams;
+  const _BookPage({required this.dreams});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: C.input,
+        border: Border.all(color: C.goldDeep, width: 1.5),
+        boxShadow: const [BoxShadow(color: Color(0x22000000), blurRadius: 6, offset: Offset(2, 3))],
+      ),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(14, 4, 14, 12),
+        decoration: BoxDecoration(border: Border.all(color: C.goldBorder, width: 0.8)),
+        child: Column(children: [
+          for (var i = 0; i < dreams.length; i++) ...[
+            if (i > 0) const Divider(height: 1, thickness: 0.6, color: C.goldBorder),
+            _ResultRow(dream: dreams[i]),
+          ],
+          const SizedBox(height: 10),
+          Text('❖', style: sans(12, color: C.goldMuted)),
+        ]),
+      ),
+    );
   }
 }
 
@@ -207,28 +320,34 @@ class _ResultRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final d = dream;
-    return CreamCard(
-      radius: 14,
-      padding: const EdgeInsets.all(10),
+    return InkWell(
       onTap: () => AppScope.of(context).openDream(d.id),
-      child: Row(children: [
-        DreamImageView(
-            image: dreamImageFor(d.id, d.image), placeholderLabel: 'ภาพ', width: 60, height: 60, radius: 10, fontSize: 9),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(d.name, style: sans(16, weight: FontWeight.w600)),
-            Text(d.short, maxLines: 1, overflow: TextOverflow.ellipsis, style: sans(13, color: C.inkMuted)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            decoration: BoxDecoration(border: Border.all(color: C.goldBorder, width: 0.8)),
+            child: DreamImageView(
+                image: dreamImageFor(d.id, d.image), placeholderLabel: 'ภาพ', width: 64, height: 64, radius: 0, fontSize: 9),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(d.name, style: serif(18, color: C.redDeep)),
+              const SizedBox(height: 2),
+              Text(d.short,
+                  maxLines: 2, overflow: TextOverflow.ellipsis, style: sans(13, color: C.inkSoft, height: 1.45)),
+            ]),
+          ),
+          const SizedBox(width: 10),
+          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            d.numbers.isNone
+                ? Text(d.firstTwo, style: sans(13, weight: FontWeight.w600, color: C.redBright, height: 1.6))
+                : Text(d.firstTwo, style: serif(22, weight: FontWeight.w800, color: C.redBright, height: 1.2)),
+            Text(d.cat, style: sans(11, color: C.caption)),
           ]),
-        ),
-        const SizedBox(width: 8),
-        Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          d.numbers.isNone
-              ? Text(d.firstTwo, style: sans(13, weight: FontWeight.w600, color: C.redBright, height: 1.6))
-              : Text(d.firstTwo, style: serif(20, weight: FontWeight.w800, color: C.redBright, height: 1.3)),
-          Text(d.cat, style: sans(11, color: C.caption)),
         ]),
-      ]),
+      ),
     );
   }
 }

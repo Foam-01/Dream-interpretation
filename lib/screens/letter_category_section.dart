@@ -32,11 +32,8 @@ class _LetterCategorySectionState extends State<LetterCategorySection> {
     _remote = repo.isRemote;
     // The API sorts ก–ฮ with ICU; the bundled data keeps the source order (Dart has no Thai collation).
     _request.run(
-      () => repo.list(
-        categoryId: widget.categoryId,
-        limit: DreamRepository.maxPageSize,
-        sort: _remote ? DreamSort.name : DreamSort.catalogue,
-      ),
+      // Every page: a category may hold more than one API page (maxPageSize).
+      () => repo.listAll(categoryId: widget.categoryId, sort: _remote ? DreamSort.name : DreamSort.catalogue),
     );
     _request.addListener(_changed);
   }

@@ -3,6 +3,8 @@
 // list, so the source (bundled sample data or the backend API) can be swapped
 // without touching the UI. The contract mirrors the backend API
 // (backend/docs/flutter-integration.md).
+import 'package:flutter/foundation.dart';
+
 import 'design_data.dart';
 
 /// A dream category as served by `GET /dream-categories`.
@@ -160,4 +162,24 @@ abstract interface class DreamRepository {
   /// Releases resources (e.g. open connections). The repository must not be
   /// used afterwards.
   void close();
+}
+
+extension DreamRepositoryListAll on DreamRepository {
+  /// Every matching dream as one page, fetched [DreamRepository.maxPageSize] at a time (the API caps a page at
+  /// that size). Stays synchronous when the repository answers synchronously (bundled data), so screens still
+  /// render on the first frame.
+  Future<DreamPage> listAll({String? q, String? categoryId, DreamSort sort = DreamSort.catalogue}) {
+    const limit = DreamRepository.maxPageSize;
+    Future<DreamPage> rest(DreamPage acc) {
+      if (acc.items.length >= acc.total) return SynchronousFuture(acc);
+      final next = acc.items.length ~/ limit + 1;
+      return list(q: q, categoryId: categoryId, page: next, limit: limit, sort: sort).then((p) {
+        // A shorter list than promised (rows removed meanwhile): stop instead of looping.
+        if (p.items.isEmpty) return SynchronousFuture(acc);
+        return rest(DreamPage(items: [...acc.items, ...p.items], page: 1, limit: limit, total: p.total));
+      });
+    }
+
+    return list(q: q, categoryId: categoryId, limit: limit, sort: sort).then(rest);
+  }
 }

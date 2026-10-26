@@ -183,7 +183,7 @@ void main() {
       expect(find.text('พบ 29 รายการ'), findsOneWidget);
       expect(find.text('กินอาหาร'), findsOneWidget);
       expect(find.text('กินอาหารกับญาติ'), findsOneWidget);
-      Finder rowOf(String name) => find.ancestor(of: find.text(name), matching: find.byType(CreamCard)).first;
+      Finder rowOf(String name) => find.ancestor(of: find.text(name), matching: find.byType(InkWell)).first;
       expect(find.descendant(of: rowOf('กบ'), matching: find.byType(Image)), findsOneWidget);
       expect(find.descendant(of: rowOf('กอด'), matching: find.byType(Image)), findsOneWidget);
     });
