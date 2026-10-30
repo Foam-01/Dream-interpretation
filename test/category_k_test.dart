@@ -250,9 +250,9 @@ void main() {
     });
 
     test('no sample data is left in the app', () {
-      expect(dreams.map((d) => d.id).where((id) => !id.startsWith('k-') && !id.startsWith('kh-') && !id.startsWith('khw-') && !id.startsWith('khr-') && !id.startsWith('ng-') && !id.startsWith('ch-') && !id.startsWith('chg-') && !id.startsWith('chc-') && !id.startsWith('s-') && !id.startsWith('y-') && !id.startsWith('d-')), isEmpty);
+      expect(dreams.map((d) => d.id).where((id) => !id.startsWith('k-') && !id.startsWith('kh-') && !id.startsWith('khw-') && !id.startsWith('khr-') && !id.startsWith('ng-') && !id.startsWith('ch-') && !id.startsWith('chg-') && !id.startsWith('chc-') && !id.startsWith('s-') && !id.startsWith('y-') && !id.startsWith('d-') && !id.startsWith('t-')), isEmpty);
       expect(dreams.take(dreamsK.length).map((d) => d.id), dreamsK.map((d) => d.id), reason: 'หมวด ก comes first');
-      expect(dreamCats, ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ', 'หมวด ง', 'หมวด จ', 'หมวด ฉ', 'หมวด ช', 'หมวด ซ', 'หมวด ญ', 'หมวด ด']);
+      expect(dreamCats, ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ', 'หมวด ง', 'หมวด จ', 'หมวด ฉ', 'หมวด ช', 'หมวด ซ', 'หมวด ญ', 'หมวด ด', 'หมวด ต']);
       expect(debugValidateDreams(), isTrue);
     });
 

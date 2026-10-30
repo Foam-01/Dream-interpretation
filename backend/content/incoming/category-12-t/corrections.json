@@ -1,0 +1,104 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ด ('แก้ให้เลย ให้เข้ากับเนื้อหา'). dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). 'ยังไม่มีโชคในการเสี่ยง' and 'ไม่ควรเสี่ยงโชค (…)' are stored as noLuckyNumbers; the note in brackets (ตัดศีรษะ) is kept at the end of the meaning.",
+  "corrections": [
+    {
+      "id": "t-falling-high",
+      "field": "name",
+      "from": "ตก ฝันว่าตกจากที่สูง",
+      "to": "ตกที่สูง ฝันว่าตกจากที่สูง",
+      "oldName": "ตก",
+      "newName": "ตกที่สูง",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "t-falling-fire",
+      "field": "name",
+      "from": "ตก ฝันว่าตกไปในกองไฟ",
+      "to": "ตกกองไฟ ฝันว่าตกไปในกองไฟ",
+      "oldName": "ตก",
+      "newName": "ตกกองไฟ",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "t-planting-tree",
+      "field": "name",
+      "from": "ต้นไม้ ฝันว่าปลูกต้นไม้",
+      "to": "ปลูกต้นไม้ ฝันว่าปลูกต้นไม้",
+      "oldName": "ต้นไม้",
+      "newName": "ปลูกต้นไม้",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "t-withered-tree",
+      "field": "name",
+      "from": "ต้นไม้ ฝันเห็นต้นไม้แห้ง",
+      "to": "ต้นไม้แห้ง ฝันเห็นต้นไม้แห้ง",
+      "oldName": "ต้นไม้",
+      "newName": "ต้นไม้แห้ง",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "t-dark-glasses",
+      "field": "name",
+      "from": "ตา ฝันว่าท่านได้ใส่แว่นตาดำ",
+      "to": "แว่นตาดำ ฝันว่าท่านได้ใส่แว่นตาดำ",
+      "oldName": "ตา",
+      "newName": "แว่นตาดำ",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "t-dark-glasses",
+      "field": "meaning",
+      "from": "หรือท่านจะร้อนที่อยู่อาศัย",
+      "to": "หรือท่านจะเดือดร้อนเรื่องที่อยู่อาศัย"
+    },
+    {
+      "id": "t-blind",
+      "field": "name",
+      "from": "ตา ฝันว่าตาบอด",
+      "to": "ตาบอด ฝันว่าตาบอด",
+      "oldName": "ตา",
+      "newName": "ตาบอด",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "t-glowing-stove",
+      "field": "name",
+      "from": "เตาไฟ ฝันว่ามีไฟอยู่ในเตาแดง",
+      "to": "ไฟในเตา ฝันว่ามีไฟอยู่ในเตาแดง",
+      "oldName": "เตาไฟ",
+      "newName": "ไฟในเตา",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "t-dead-stove",
+      "field": "name",
+      "from": "เตาไฟ ฝันว่าก่อไฟไว้ในเตา",
+      "to": "เตาไฟดับ ฝันว่าก่อไฟไว้ในเตา",
+      "oldName": "เตาไฟ",
+      "newName": "เตาไฟดับ",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "t-dressing-up",
+      "field": "meaning",
+      "from": "อย่างกระทันหัน",
+      "to": "อย่างกะทันหัน"
+    },
+    {
+      "id": "t-hardship",
+      "field": "meaning",
+      "from": "ท่านเกิดการเพิ่มพูนขึ้นกว่าเดิมอีก",
+      "to": "ท่านมีโชคลาภเพิ่มพูนขึ้นกว่าเดิมอีก"
+    },
+    {
+      "id": "t-wasp-sting",
+      "field": "name",
+      "from": "แตน - ต่อ ฝันว่าแตน",
+      "to": "แตนต่อย ฝันว่าแตน",
+      "oldName": "แตน - ต่อ",
+      "newName": "แตนต่อย",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    }
+  ]
+}

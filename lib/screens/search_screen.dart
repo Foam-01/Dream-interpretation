@@ -233,9 +233,15 @@ class _Pager extends StatelessWidget {
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         _PagerButton(Icons.first_page_rounded, 'ไปหน้าแรก', page > 1 ? () => onPage(1) : null),
         _PagerButton(Icons.chevron_left_rounded, 'ไปหน้าก่อนหน้า', page > 1 ? () => onPage(page - 1) : null),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text('หน้า $page / $pages', style: sans(14, weight: FontWeight.w600, color: C.redDeep)),
+        // Shrinks instead of overflowing when space is tight (narrow screens, large text, many pages).
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text('หน้า $page / $pages', style: sans(14, weight: FontWeight.w600, color: C.redDeep)),
+            ),
+          ),
         ),
         _PagerButton(Icons.chevron_right_rounded, 'ไปหน้าถัดไป', page < pages ? () => onPage(page + 1) : null),
         _PagerButton(Icons.last_page_rounded, 'ไปหน้าสุดท้าย', page < pages ? () => onPage(pages) : null),

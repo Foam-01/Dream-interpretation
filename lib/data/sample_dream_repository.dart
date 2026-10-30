@@ -10,6 +10,7 @@ import 'category_khr.dart';
 import 'category_khw.dart';
 import 'category_ng.dart';
 import 'category_s.dart';
+import 'category_t.dart';
 import 'category_y.dart';
 import 'design_data.dart';
 import 'dream_repository.dart';
@@ -28,6 +29,7 @@ const sampleCategories = [
   DreamCategory(letterSCategoryId, 'หมวด ซ'),
   DreamCategory(letterYCategoryId, 'หมวด ญ'),
   DreamCategory(letterDCategoryId, 'หมวด ด'),
+  DreamCategory(letterTCategoryId, 'หมวด ต'),
 ];
 
 final _slug = RegExp(r'^[a-z0-9-]{1,64}$');

@@ -21,6 +21,7 @@ const categories = [
   { dir: 'category-09-s', file: 'dreams_s.dart', cat: 'หมวด ซ', constName: 'dreamsS' },
   { dir: 'category-10-y', file: 'dreams_y.dart', cat: 'หมวด ญ', constName: 'dreamsY' },
   { dir: 'category-11-d', file: 'dreams_d.dart', cat: 'หมวด ด', constName: 'dreamsD' },
+  { dir: 'category-12-t', file: 'dreams_t.dart', cat: 'หมวด ต', constName: 'dreamsT' },
 ];
 
 const dart = (s) => `'${s.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\$/g, '\\$').replace(/\n/g, '\\n')}'`;
