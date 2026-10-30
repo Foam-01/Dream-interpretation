@@ -145,6 +145,7 @@ describe('Dreams API (e2e, real PostgreSQL)', () => {
         { id: 'letter-chg', name: 'หมวด ฉ' },
         { id: 'letter-chc', name: 'หมวด ช' },
         { id: 'letter-s', name: 'หมวด ซ' },
+        { id: 'letter-y', name: 'หมวด ญ' },
       ]);
     });
 

@@ -10,6 +10,7 @@ import 'dreams_khr.dart';
 import 'dreams_khw.dart';
 import 'dreams_ng.dart';
 import 'dreams_s.dart';
+import 'dreams_y.dart';
 
 /// Two- and three-digit lucky numbers of a dream, stored as literal strings so
 /// leading zeros survive ("08", "098"). Never derived from other fields.
@@ -180,9 +181,9 @@ class Dream {
       ];
 }
 
-/// The app's bundled dreams: the real letter-category content (หมวด ก–ซ), generated from the import
+/// The app's bundled dreams: the real letter-category content (หมวด ก–ญ), generated from the import
 /// files (see lib/data/dreams_*.dart). The former SAMPLE design data lives in test/fixtures only.
-const dreams = [...dreamsK, ...dreamsKh, ...dreamsKhw, ...dreamsKhr, ...dreamsNg, ...dreamsCh, ...dreamsChg, ...dreamsChc, ...dreamsS];
+const dreams = [...dreamsK, ...dreamsKh, ...dreamsKhw, ...dreamsKhr, ...dreamsNg, ...dreamsCh, ...dreamsChg, ...dreamsChc, ...dreamsS, ...dreamsY];
 
 /// Looks a dream up by its stable [id]; null when no dream has that id.
 Dream? dreamById(String id, [List<Dream> source = dreams]) {
@@ -205,7 +206,7 @@ bool debugValidateDreams([List<Dream> source = dreams]) {
   return true;
 }
 
-const dreamCats = ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ', 'หมวด ง', 'หมวด จ', 'หมวด ฉ', 'หมวด ช', 'หมวด ซ'];
+const dreamCats = ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ', 'หมวด ง', 'หมวด จ', 'หมวด ฉ', 'หมวด ช', 'หมวด ซ', 'หมวด ญ'];
 
 class MenuItem {
   final String key, title, desc;
@@ -245,6 +246,7 @@ const menus = <String, MenuDef>{
     MenuItem('19', 'ทำนายฝันหมวด ฉ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฉ'),
     MenuItem('20', 'ทำนายฝันหมวด ช', 'คำทำนายความฝันที่ขึ้นต้นด้วย ช'),
     MenuItem('21', 'ทำนายฝันหมวด ซ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ซ'),
+    MenuItem('22', 'ทำนายฝันหมวด ญ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ญ'),
   ]),
 };
 
@@ -278,12 +280,13 @@ const feats = <String, FeatDef>{
   '19': FeatDef('ทำนายฝันหมวด ฉ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฉ', FeatType.letter),
   '20': FeatDef('ทำนายฝันหมวด ช', 'คำทำนายความฝันที่ขึ้นต้นด้วย ช', FeatType.letter),
   '21': FeatDef('ทำนายฝันหมวด ซ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ซ', FeatType.letter),
+  '22': FeatDef('ทำนายฝันหมวด ญ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ญ', FeatType.letter),
 };
 
 /// Which bottom tab a feature belongs to.
 String tabOf(String k) => const ['3', '4', '11'].contains(k)
     ? 'ritual'
-    : const ['1', '5', '6', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21'].contains(k)
+    : const ['1', '5', '6', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'].contains(k)
         ? 'book'
         : 'lucky';
 

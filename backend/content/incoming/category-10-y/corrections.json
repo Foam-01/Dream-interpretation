@@ -1,0 +1,32 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ซ ('แก้ให้เลย ให้เข้ากับเนื้อหา'). dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). 'ยังไม่มีโชคในการเสี่ยง' is stored as noLuckyNumbers like 'ไม่ควรเสี่ยง'.",
+  "corrections": [
+    {
+      "id": "y-woman-in-black",
+      "field": "name",
+      "from": "หญิง ฝันเห็นผู้หญิงแต่งตัว",
+      "to": "หญิงชุดดำ ฝันเห็นผู้หญิงแต่งตัว",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "y-woman-in-black",
+      "field": "meaning",
+      "from": "จะประสบต่อปัญหา",
+      "to": "จะประสบกับปัญหา"
+    },
+    {
+      "id": "y-stranger-woman",
+      "field": "name",
+      "from": "หญิง ฝันเห็นผู้หญิงแปลกหน้า",
+      "to": "หญิงแปลกหน้า ฝันเห็นผู้หญิงแปลกหน้า",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "y-unclothed-woman",
+      "field": "name",
+      "from": "หญิง ฝันเห็นผู้หญิงแก้ผ้า",
+      "to": "หญิงแก้ผ้า ฝันเห็นผู้หญิงแก้ผ้า",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    }
+  ]
+}
