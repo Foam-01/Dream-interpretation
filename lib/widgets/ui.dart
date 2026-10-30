@@ -401,6 +401,8 @@ class DreamImageView extends StatelessWidget {
   final double fontSize;
   final double band;
   final BoxBorder? border;
+  final BoxFit fit;
+  final Color? background;
   const DreamImageView({
     super.key,
     required this.image,
@@ -411,6 +413,8 @@ class DreamImageView extends StatelessWidget {
     this.fontSize = 10,
     this.band = 6,
     this.border,
+    this.fit = BoxFit.cover,
+    this.background,
   });
 
   @override
@@ -424,12 +428,12 @@ class DreamImageView extends StatelessWidget {
       return Container(
         height: height,
         width: width,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius), border: border),
+        decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(radius), border: border),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(radius),
           child: Image.asset(
             img.url,
-            fit: BoxFit.cover,
+            fit: fit,
             semanticLabel: img.alt,
             errorBuilder: (context, error, stack) =>
                 ImagePlaceholder(placeholderLabel, radius: radius, fontSize: fontSize, band: band),
@@ -441,12 +445,12 @@ class DreamImageView extends StatelessWidget {
     return Container(
       height: height,
       width: width,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius), border: border),
+      decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(radius), border: border),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
         child: Image.network(
           img.url,
-          fit: BoxFit.cover,
+          fit: fit,
           semanticLabel: img.alt,
           loadingBuilder: (context, child, progress) => progress == null
               ? child

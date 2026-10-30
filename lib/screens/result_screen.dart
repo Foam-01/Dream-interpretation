@@ -92,8 +92,11 @@ class _ResultScreenState extends State<ResultScreen> {
           DreamImageView(
             image: dreamImageFor(d.id, d.image),
             placeholderLabel: 'ภาพประกอบ: ${d.name}',
-            height: 170,
+            // Taller and contained so the numbers printed in the picture's corners stay visible.
+            height: 220,
             width: double.infinity,
+            fit: BoxFit.contain,
+            background: C.card,
             radius: 16,
             fontSize: 12,
             band: 8,
