@@ -4,6 +4,7 @@ import '../app_shell.dart';
 import '../data/category_ch.dart';
 import '../data/category_chc.dart';
 import '../data/category_chg.dart';
+import '../data/category_d.dart';
 import '../data/category_k.dart';
 import '../data/category_kh.dart';
 import '../data/category_khr.dart';
@@ -31,6 +32,7 @@ const _letterCategories = {
   '20': letterChcCategoryId,
   '21': letterSCategoryId,
   '22': letterYCategoryId,
+  '23': letterDCategoryId,
 };
 class FeatureScreen extends StatefulWidget {
   final String featKey;

@@ -1,0 +1,79 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ญ ('แก้ให้เลย ให้เข้ากับเนื้อหา'). dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). 'ยังไม่มีโชคในการเสี่ยง' is stored as noLuckyNumbers like 'ไม่ควรเสี่ยง'.",
+  "corrections": [
+    {
+      "id": "d-fragrant-flowers",
+      "field": "name",
+      "from": "ดอกไม้ ฝันว่าได้เก็บดอกไม้",
+      "to": "ดอกไม้หอม ฝันว่าได้เก็บดอกไม้",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "d-blooming-flowers",
+      "field": "name",
+      "from": "ดอกไม้ ฝันเห็นดอกไม้ในบ้าน",
+      "to": "ดอกไม้บาน ฝันเห็นดอกไม้ในบ้าน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "d-falling-stars",
+      "field": "meaning",
+      "from": "ในเร็ววันนี้นั้น",
+      "to": "ในเร็ววันนี้"
+    },
+    {
+      "id": "d-plump-child",
+      "field": "name",
+      "from": "เด็ก ฝันเห็นเด็กขาวอ้วน",
+      "to": "เด็กอ้วน ฝันเห็นเด็กขาวอ้วน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "d-plump-child",
+      "field": "meaning",
+      "from": "จากผู้ใหญ่ ได้ทางด้านการงาน",
+      "to": "จากผู้ใหญ่ทางด้านการงาน"
+    },
+    {
+      "id": "d-disabled-child",
+      "field": "name",
+      "from": "เด็ก ฝันเห็นเด็กพิการ",
+      "to": "เด็กพิการ ฝันเห็นเด็กพิการ",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "d-disabled-child",
+      "field": "meaning",
+      "from": "ความยุ่งยากจากที่มีอายุอ่อนกว่า",
+      "to": "ความยุ่งยากจากผู้ที่มีอายุอ่อนกว่า"
+    },
+    {
+      "id": "d-walking-uphill",
+      "field": "name",
+      "from": "เดิน ฝันว่าเดินขึ้นบนเนิน",
+      "to": "เดินขึ้นเนิน ฝันว่าเดินขึ้นบนเนิน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "d-walking-open-field",
+      "field": "name",
+      "from": "เดิน ฝันว่าเดินเล่นในที่กว้าง",
+      "to": "เดินที่กว้าง ฝันว่าเดินเล่นในที่กว้าง",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "d-walking-on-sky",
+      "field": "name",
+      "from": "เดิน ฝันว่าเดินขึ้นบนฟ้า",
+      "to": "เดินบนฟ้า ฝันว่าเดินขึ้นบนฟ้า",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "d-walking-in-temple",
+      "field": "name",
+      "from": "เดิน ฝันว่าเดินเล่นภายในวัด",
+      "to": "เดินในวัด ฝันว่าเดินเล่นภายในวัด",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    }
+  ]
+}
