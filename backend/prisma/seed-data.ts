@@ -47,6 +47,8 @@ export const contentCategories: SeedCategory[] = [
   { id: 'letter-ng', name: 'หมวด ง', sortOrder: 10 },
   { id: 'letter-ch', name: 'หมวด จ', sortOrder: 11 },
   { id: 'letter-chg', name: 'หมวด ฉ', sortOrder: 12 },
+  { id: 'letter-chc', name: 'หมวด ช', sortOrder: 13 },
+  { id: 'letter-s', name: 'หมวด ซ', sortOrder: 14 },
 ];
 
 /** Every category the seed creates. */

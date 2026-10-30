@@ -1,0 +1,11 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ฉ ('แก้ให้เลย ให้เข้ากับเนื้อหา'). dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). 'ยังไม่มีโชคในการเสี่ยง' is stored as noLuckyNumbers like 'ไม่ควรเสี่ยง'.",
+  "corrections": [
+    {
+      "id": "s-buying",
+      "field": "meaning",
+      "from": "ญาติมิตรสหหาย",
+      "to": "ญาติมิตรสหาย"
+    }
+  ]
+}

@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 
 import 'category_ch.dart';
+import 'category_chc.dart';
 import 'category_chg.dart';
 import 'category_k.dart';
 import 'category_kh.dart';
 import 'category_khr.dart';
 import 'category_khw.dart';
 import 'category_ng.dart';
+import 'category_s.dart';
 import 'design_data.dart';
 import 'dream_repository.dart';
 
@@ -20,6 +22,8 @@ const sampleCategories = [
   DreamCategory(letterNgCategoryId, 'หมวด ง'),
   DreamCategory(letterChCategoryId, 'หมวด จ'),
   DreamCategory(letterChgCategoryId, 'หมวด ฉ'),
+  DreamCategory(letterChcCategoryId, 'หมวด ช'),
+  DreamCategory(letterSCategoryId, 'หมวด ซ'),
 ];
 
 final _slug = RegExp(r'^[a-z0-9-]{1,64}$');

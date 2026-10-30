@@ -83,8 +83,10 @@ void main() {
       }
     });
 
-    test('is part of the app data, last; all bundled data validates', () {
-      expect(dreams.skip(dreams.length - dreamsChg.length).map((d) => d.id), dreamsChg.map((d) => d.id));
+    test('is part of the app data, in one block right after หมวด จ; all bundled data validates', () {
+      final start = dreams.indexWhere((d) => d.id == dreamsChg.first.id);
+      expect(dreams.skip(start).take(dreamsChg.length).map((d) => d.id), dreamsChg.map((d) => d.id));
+      expect(dreams[start - 1].cat, 'หมวด จ');
       expect(dreams.map((d) => d.id).toSet(), hasLength(dreams.length), reason: 'ids unique across categories');
       expect(debugValidateDreams(), isTrue);
     });
@@ -95,7 +97,7 @@ void main() {
       final block = ts.substring(start, ts.indexOf('];', start));
       expect(block, contains("{ id: 'letter-chg', name: 'หมวด ฉ', sortOrder: 12 }"));
       expect(letterChgCategoryId, 'letter-chg');
-      expect((sampleCategories.last.id, sampleCategories.last.name), ('letter-chg', 'หมวด ฉ'));
+      expect(sampleCategories.map((c) => (c.id, c.name)), contains(('letter-chg', 'หมวด ฉ')));
       expect(dreamCats.skip(1), sampleCategories.map((c) => c.name));
     });
   });

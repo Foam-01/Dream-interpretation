@@ -1,0 +1,79 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ฉ ('แก้ให้เลย ให้เข้ากับเนื้อหา'). dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). 'ยังไม่มีโชคในการเสี่ยง' is stored as noLuckyNumbers like 'ไม่ควรเสี่ยง'.",
+  "corrections": [
+    {
+      "id": "chc-golden-spoon",
+      "field": "name",
+      "from": "ช้อน ฝันว่าได้กินช้อนทอง",
+      "to": "ช้อนทอง ฝันว่าได้กินช้อนทอง",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "chc-golden-spoon",
+      "field": "meaning",
+      "from": "ฝันว่าได้กินช้อนทองหรือเงิน",
+      "to": "ฝันว่าได้กินด้วยช้อนทองหรือเงิน"
+    },
+    {
+      "id": "chc-dirty-spoon",
+      "field": "name",
+      "from": "ช้อน ฝันเห็นช้อนกระเบื้อง",
+      "to": "ช้อนสกปรก ฝันเห็นช้อนกระเบื้อง",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "chc-dirty-spoon",
+      "field": "meaning",
+      "from": "ทายว่าท่านเป็นปากเสียงกับครอบครัวคนอาศัย",
+      "to": "ทายว่าท่านจะเป็นปากเสียงกับคนในครอบครัว"
+    },
+    {
+      "id": "chc-elephant-chase",
+      "field": "name",
+      "from": "ช้าง ฝันเห็นช้างหรือช้างไล่",
+      "to": "ช้างไล่ ฝันเห็นช้างหรือช้างไล่",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "chc-elephant-bathing",
+      "field": "name",
+      "from": "ช้าง ฝันว่าขี่ช้างลงเล่นน้ำ",
+      "to": "ช้างเล่นน้ำ ฝันว่าขี่ช้างลงเล่นน้ำ",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "chc-elephant-ride",
+      "field": "name",
+      "from": "ช้าง ฝันว่าขี่ช้างเที่ยวเล่น",
+      "to": "ช้างพาเที่ยว ฝันว่าขี่ช้างเที่ยวเล่น",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "chc-elephant-musth",
+      "field": "name",
+      "from": "ช้าง ฝันว่าได้ขี่ช้างและช้างตกมัน",
+      "to": "ช้างตกมัน ฝันว่าได้ขี่ช้างและช้างตกมัน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "chc-elephant-mountain",
+      "field": "name",
+      "from": "ช้าง ฝันว่าขี่ช้างไปเที่ยวตามป่า",
+      "to": "ช้างขึ้นเขา ฝันว่าขี่ช้างไปเที่ยวตามป่า",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "chc-elephant-majestic",
+      "field": "name",
+      "from": "ช้าง ฝันว่าช้างมีลักษณะสง่างาม",
+      "to": "ช้างสง่างาม ฝันว่าช้างมีลักษณะสง่างาม",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "chc-elephant-majestic",
+      "field": "meaning",
+      "from": "จะมีผู้โชคลาภลาภใหญ่หลวงมาให้",
+      "to": "จะมีผู้นำโชคลาภใหญ่หลวงมาให้"
+    }
+  ]
+}
