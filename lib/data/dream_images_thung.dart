@@ -5,5 +5,6 @@ import 'design_data.dart';
 /// Each was checked against the source numbers before linking.
 const dreamImagesThung = <String, DreamImage>{
   'thung-dishes': DreamImage.asset('assets/dreams/thung-dishes.jpg', alt: 'ภาพประกอบ: ถ้วยชาม'),
+  'thung-tray': DreamImage.asset('assets/dreams/thung-tray.jpg', alt: 'ภาพประกอบ: ถาด'),
   'thung-cave': DreamImage.asset('assets/dreams/thung-cave.jpg', alt: 'ภาพประกอบ: ถ้ำ'),
 };

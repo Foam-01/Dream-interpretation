@@ -29,5 +29,6 @@ const dreamImagesN = <String, DreamImage>{
   'n-wearing-red': DreamImage.asset('assets/dreams/n-wearing-red.jpg', alt: 'ภาพประกอบ: นุ่งแดง'),
   'n-fine-cloth': DreamImage.asset('assets/dreams/n-fine-cloth.jpg', alt: 'ภาพประกอบ: นุ่งผ้า'),
   'n-rotten': DreamImage.asset('assets/dreams/n-rotten.jpg', alt: 'ภาพประกอบ: เน่า'),
+  'n-flesh-cut': DreamImage.asset('assets/dreams/n-flesh-cut.jpg', alt: 'ภาพประกอบ: เนื้อถูกเชือด'),
   'n-eating-meat': DreamImage.asset('assets/dreams/n-eating-meat.jpg', alt: 'ภาพประกอบ: เนื้อบริโภค'),
 };

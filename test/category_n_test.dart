@@ -140,9 +140,8 @@ void main() {
   });
 
   group('dream pictures (per dream)', () {
-    test('26 checked pictures — every dream has one, bundled and registered', () {
-      // Waiting for regenerated pictures (the first ones had words or letters on them): n-flesh-cut.
-      expect(dreamImagesN.keys, dreamsN.map((d) => d.id).where((id) => id != 'n-flesh-cut'));
+    test('27 checked pictures — every dream has one, bundled and registered', () {
+      expect(dreamImagesN.keys, dreamsN.map((d) => d.id));
       final onDisk = Directory('assets/dreams').listSync().whereType<File>().map((f) => f.uri.pathSegments.last);
       expect(onDisk.where((f) => f.startsWith('n-')).toSet(), {for (final id in dreamImagesN.keys) '$id.jpg'});
       for (final MapEntry(:key, :value) in dreamImagesN.entries) {
@@ -151,7 +150,7 @@ void main() {
         expect(value.attribution, isNull, reason: 'no invented credit or licence');
         expect(value.alt, 'ภาพประกอบ: ${dreamsN.firstWhere((d) => d.id == key).name}');
       }
-      expect(dreamsN.where((d) => dreamImageFor(d.id) == null).map((d) => d.id), ['n-flesh-cut']);
+      expect(dreamsN.where((d) => dreamImageFor(d.id) == null), isEmpty);
     });
   });
 
