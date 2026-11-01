@@ -64,8 +64,10 @@ const body = DreamCategory('body', 'ร่างกาย');
 
 /// A dream that does not exist in the bundled sample data, so seeing it proves
 /// the screen shows remote data.
-DreamSummary remote(String id, String name, {String two = '08', DreamCategory category = body}) => DreamSummary(
+DreamSummary remote(String id, String name, {String two = '08', DreamCategory category = body, DreamImage? image}) =>
+    DreamSummary(
   id: id,
+  image: image,
   name: name,
   category: category,
   short: 'สรุป$name',
@@ -73,6 +75,8 @@ DreamSummary remote(String id, String name, {String two = '08', DreamCategory ca
   good: true,
   contentStatus: ContentStatus.verified,
 );
+
+const pic = DreamImage(url: 'https://img.test/a.png', credit: 'test', license: 'test');
 
 DreamPage pageOf(List<DreamSummary> items) => DreamPage(items: items, page: 1, limit: 100, total: items.length);
 
@@ -110,8 +114,12 @@ void main() {
       final repo = await pumpApp(tester);
       expect(spinner, findsOneWidget);
       final call = repo.of('list').single;
-      expect(call.args['limit'], 10);
-      call.complete(pageOf([remote('a', 'แมวเซิร์ฟเวอร์'), remote('b', 'นกเซิร์ฟเวอร์', two: '09')]));
+      expect(call.args['limit'], DreamRepository.maxPageSize, reason: 'draws from every dream');
+      // Home draws only from dreams with a picture.
+      call.complete(pageOf([
+        remote('a', 'แมวเซิร์ฟเวอร์', image: pic),
+        remote('b', 'นกเซิร์ฟเวอร์', two: '09', image: pic),
+      ]));
       await tester.pump();
       expect(spinner, findsNothing);
       expect(find.text('แมวเซิร์ฟเวอร์'), findsOneWidget);
@@ -129,7 +137,7 @@ void main() {
       await tester.pump();
       expect(spinner, findsOneWidget);
       expect(repo.of('list'), hasLength(2));
-      repo.of('list').last.complete(pageOf([remote('a', 'แมวเซิร์ฟเวอร์')]));
+      repo.of('list').last.complete(pageOf([remote('a', 'แมวเซิร์ฟเวอร์', image: pic)]));
       await tester.pump();
       expect(find.text('แมวเซิร์ฟเวอร์'), findsOneWidget);
     });

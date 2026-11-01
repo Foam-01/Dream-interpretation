@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../app_shell.dart';
@@ -5,6 +7,7 @@ import '../data/design_data.dart';
 import '../data/dream_images_k.dart';
 import '../data/dream_repository.dart';
 import '../data/formulas.dart';
+import '../state/daily_pick.dart';
 import '../state/load_request.dart';
 import '../theme.dart';
 import '../widgets/ui.dart';
@@ -21,10 +24,13 @@ const _quick = [
 ];
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key, required this.now});
+  const HomeScreen({super.key, required this.now, this.clock = DateTime.now});
 
   /// Reference time for the date header, daily lock card and next draw date.
   final DateTime now;
+
+  /// Live clock for the hot-dream list, which turns over at 04:00 while Home stays open.
+  final DateTime Function() clock;
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +119,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       const SectionLabel('ฝันยอดฮิตวันนี้'),
-      const _HotDreams(),
+      _HotDreams(clock: clock),
       const SizedBox(height: 24),
       // Daily lock numbers, at the bottom of the page (owner request).
       Padding(
@@ -186,11 +192,13 @@ class _Badge extends StatelessWidget {
 }
 
 /// Card with image placeholder + dream name + number (home hot list, digit screen).
-/// "ฝันยอดฮิตวันนี้": the first ten dreams in catalogue order, as two scrolling rows.
+/// "ฝันยอดฮิตวันนี้": ten dreams drawn at random from those with a picture, a new draw every day at 04:00,
+/// as two scrolling rows.
 const _perRow = 5;
 
 class _HotDreams extends StatefulWidget {
-  const _HotDreams();
+  final DateTime Function() clock;
+  const _HotDreams({required this.clock});
   @override
   State<_HotDreams> createState() => _HotDreamsState();
 }
@@ -199,6 +207,7 @@ class _HotDreams extends StatefulWidget {
 class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMixin {
   final _request = LoadRequest<DreamPage>();
   bool _started = false;
+  Timer? _rollover;
 
   @override
   void didChangeDependencies() {
@@ -206,17 +215,30 @@ class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMix
     if (_started) return;
     _started = true;
     final repo = AppScope.of(context).repository;
-    _request.run(() => repo.list(limit: _perRow * 2));
+    _request.run(() => repo.listAll());
     _request.addListener(_changed);
+    _scheduleRollover();
   }
 
   void _changed() => setState(() {});
+
+  // Redraw at the next 04:00 if Home is still alive then.
+  void _scheduleRollover() {
+    final now = widget.clock();
+    _rollover?.cancel();
+    _rollover = Timer(nextDailyRollover(now).difference(now), () {
+      if (!mounted) return;
+      setState(() {});
+      _scheduleRollover();
+    });
+  }
 
   @override
   bool get wantKeepAlive => true;
 
   @override
   void dispose() {
+    _rollover?.cancel();
     _request.dispose();
     super.dispose();
   }
@@ -224,7 +246,10 @@ class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMix
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final items = _request.value?.items ?? const <DreamSummary>[];
+    final all = _request.value?.items ?? const <DreamSummary>[];
+    final pictured = [for (final d in all) if (dreamImageFor(d.id, d.image) != null) d];
+    // A catalogue without any pictures still gets a daily list.
+    final items = dailyPick(pictured.isEmpty ? all : pictured, widget.clock(), _perRow * 2, (d) => d.id);
     return switch (_request.status) {
       LoadStatus.idle || LoadStatus.loading => const GoldLoading(height: 136),
       LoadStatus.failure => LoadErrorView(message: loadErrorMessage(_request.error), onRetry: _request.retry),

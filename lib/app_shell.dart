@@ -150,7 +150,7 @@ class _AppShellState extends State<AppShell> {
   }
 
   Widget _screenFor(AppPage page) => switch (page) {
-        HomePage() => HomeScreen(now: widget.clock()),
+        HomePage() => HomeScreen(now: widget.clock(), clock: widget.clock),
         SearchPage() => const SearchScreen(),
         ResultPage(:final dreamId) => ResultScreen(dreamId: dreamId),
         MenuPage(:final tab) => MenuScreen(tab: tab),

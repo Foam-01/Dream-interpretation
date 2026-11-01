@@ -65,6 +65,8 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(repo == null ? const MahaDreamApp() : MahaDreamApp(repository: repo));
     await tester.pumpAndSettle();
+    // Home's hot list loads the whole catalogue for the daily pick; count only what search asks for.
+    if (repo is _PagedRepo) repo.pages.clear();
     controllerOf(tester).goSearch(resetCat: true);
     await tester.pumpAndSettle(const Duration(seconds: 1));
   }

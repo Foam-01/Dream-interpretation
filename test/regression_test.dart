@@ -417,10 +417,16 @@ void main() {
       testWidgets('card content fits inside the card at text scale $scale', (tester) async {
         await pumpApp(tester, textScale: scale);
         // Home is a lazy list: scroll the page until the hot row is built.
-        await scrollTo(tester, find.text('งู'));
-        final card = find.ancestor(of: find.text('งู').first, matching: find.byType(DreamCard));
+        // The hot list is a daily random draw, so check whichever card comes first.
+        await scrollTo(tester, find.text('ฝันยอดฮิตวันนี้'));
+        await scrollTo(tester, find.byType(DreamCard).first);
+        final card = find.byType(DreamCard).first;
+        final shown = tester.widget<DreamCard>(card);
         final cardRect = tester.getRect(card);
-        for (final f in [find.text('งู').first, find.text(legacySampleDreams[0].firstTwo).first]) {
+        for (final f in [
+          find.descendant(of: card, matching: find.text(shown.name)),
+          find.descendant(of: card, matching: find.text(shown.number)),
+        ]) {
           final r = tester.getRect(f);
           expect(r.bottom, lessThanOrEqualTo(cardRect.bottom), reason: 'text bottom inside card');
           expect(r.top, greaterThanOrEqualTo(cardRect.top));
