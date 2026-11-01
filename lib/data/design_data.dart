@@ -1,18 +1,38 @@
 // Content ported from Claude Design `Dream App.dc.html`.
 // Lottery numbers are kept as String to preserve leading zeros ("08").
 
+import 'dreams_ang.dart';
+import 'dreams_b.dart';
 import 'dreams_ch.dart';
 import 'dreams_chc.dart';
 import 'dreams_chg.dart';
 import 'dreams_d.dart';
+import 'dreams_f.dart';
+import 'dreams_fan.dart';
+import 'dreams_hip.dart';
 import 'dreams_k.dart';
 import 'dreams_kh.dart';
 import 'dreams_khr.dart';
 import 'dreams_khw.dart';
+import 'dreams_l.dart';
+import 'dreams_m.dart';
+import 'dreams_n.dart';
 import 'dreams_ng.dart';
+import 'dreams_p.dart';
+import 'dreams_phan.dart';
+import 'dreams_phueng.dart';
+import 'dreams_r.dart';
 import 'dreams_s.dart';
+import 'dreams_sala.dart';
+import 'dreams_samphao.dart';
+import 'dreams_suea.dart';
 import 'dreams_t.dart';
+import 'dreams_thahan.dart';
+import 'dreams_thong.dart';
+import 'dreams_thung.dart';
+import 'dreams_w.dart';
 import 'dreams_y.dart';
+import 'dreams_yak.dart';
 
 /// Two- and three-digit lucky numbers of a dream, stored as literal strings so
 /// leading zeros survive ("08", "098"). Never derived from other fields.
@@ -183,9 +203,9 @@ class Dream {
       ];
 }
 
-/// The app's bundled dreams: the real letter-category content (หมวด ก–ต), generated from the import
+/// The app's bundled dreams: the real letter-category content (หมวด ก–อ), generated from the import
 /// files (see lib/data/dreams_*.dart). The former SAMPLE design data lives in test/fixtures only.
-const dreams = [...dreamsK, ...dreamsKh, ...dreamsKhw, ...dreamsKhr, ...dreamsNg, ...dreamsCh, ...dreamsChg, ...dreamsChc, ...dreamsS, ...dreamsY, ...dreamsD, ...dreamsT];
+const dreams = [...dreamsK, ...dreamsKh, ...dreamsKhw, ...dreamsKhr, ...dreamsNg, ...dreamsCh, ...dreamsChg, ...dreamsChc, ...dreamsS, ...dreamsY, ...dreamsD, ...dreamsT, ...dreamsThung, ...dreamsThahan, ...dreamsThong, ...dreamsN, ...dreamsB, ...dreamsP, ...dreamsPhueng, ...dreamsF, ...dreamsPhan, ...dreamsFan, ...dreamsSamphao, ...dreamsM, ...dreamsYak, ...dreamsR, ...dreamsL, ...dreamsW, ...dreamsSala, ...dreamsSuea, ...dreamsHip, ...dreamsAng];
 
 /// Looks a dream up by its stable [id]; null when no dream has that id.
 Dream? dreamById(String id, [List<Dream> source = dreams]) {
@@ -208,7 +228,7 @@ bool debugValidateDreams([List<Dream> source = dreams]) {
   return true;
 }
 
-const dreamCats = ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ', 'หมวด ง', 'หมวด จ', 'หมวด ฉ', 'หมวด ช', 'หมวด ซ', 'หมวด ญ', 'หมวด ด', 'หมวด ต'];
+const dreamCats = ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ', 'หมวด ง', 'หมวด จ', 'หมวด ฉ', 'หมวด ช', 'หมวด ซ', 'หมวด ญ', 'หมวด ด', 'หมวด ต', 'หมวด ถ', 'หมวด ท', 'หมวด ธ', 'หมวด น', 'หมวด บ', 'หมวด ป', 'หมวด ผ', 'หมวด ฝ', 'หมวด พ', 'หมวด ฟ', 'หมวด ภ', 'หมวด ม', 'หมวด ย', 'หมวด ร', 'หมวด ล', 'หมวด ว', 'หมวด ศ', 'หมวด ส', 'หมวด ห', 'หมวด อ'];
 
 class MenuItem {
   final String key, title, desc;
@@ -251,6 +271,26 @@ const menus = <String, MenuDef>{
     MenuItem('22', 'ทำนายฝันหมวด ญ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ญ'),
     MenuItem('23', 'ทำนายฝันหมวด ด', 'คำทำนายความฝันที่ขึ้นต้นด้วย ด'),
     MenuItem('24', 'ทำนายฝันหมวด ต', 'คำทำนายความฝันที่ขึ้นต้นด้วย ต'),
+    MenuItem('25', 'ทำนายฝันหมวด ถ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ถ'),
+    MenuItem('26', 'ทำนายฝันหมวด ท', 'คำทำนายความฝันที่ขึ้นต้นด้วย ท'),
+    MenuItem('27', 'ทำนายฝันหมวด ธ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ธ'),
+    MenuItem('28', 'ทำนายฝันหมวด น', 'คำทำนายความฝันที่ขึ้นต้นด้วย น'),
+    MenuItem('29', 'ทำนายฝันหมวด บ', 'คำทำนายความฝันที่ขึ้นต้นด้วย บ'),
+    MenuItem('30', 'ทำนายฝันหมวด ป', 'คำทำนายความฝันที่ขึ้นต้นด้วย ป'),
+    MenuItem('31', 'ทำนายฝันหมวด ผ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ผ'),
+    MenuItem('32', 'ทำนายฝันหมวด ฝ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฝ'),
+    MenuItem('33', 'ทำนายฝันหมวด พ', 'คำทำนายความฝันที่ขึ้นต้นด้วย พ'),
+    MenuItem('34', 'ทำนายฝันหมวด ฟ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฟ'),
+    MenuItem('35', 'ทำนายฝันหมวด ภ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ภ'),
+    MenuItem('36', 'ทำนายฝันหมวด ม', 'คำทำนายความฝันที่ขึ้นต้นด้วย ม'),
+    MenuItem('37', 'ทำนายฝันหมวด ย', 'คำทำนายความฝันที่ขึ้นต้นด้วย ย'),
+    MenuItem('38', 'ทำนายฝันหมวด ร', 'คำทำนายความฝันที่ขึ้นต้นด้วย ร'),
+    MenuItem('39', 'ทำนายฝันหมวด ล', 'คำทำนายความฝันที่ขึ้นต้นด้วย ล'),
+    MenuItem('40', 'ทำนายฝันหมวด ว', 'คำทำนายความฝันที่ขึ้นต้นด้วย ว'),
+    MenuItem('41', 'ทำนายฝันหมวด ศ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ศ'),
+    MenuItem('42', 'ทำนายฝันหมวด ส', 'คำทำนายความฝันที่ขึ้นต้นด้วย ส'),
+    MenuItem('43', 'ทำนายฝันหมวด ห', 'คำทำนายความฝันที่ขึ้นต้นด้วย ห'),
+    MenuItem('44', 'ทำนายฝันหมวด อ', 'คำทำนายความฝันที่ขึ้นต้นด้วย อ'),
   ]),
 };
 
@@ -287,12 +327,32 @@ const feats = <String, FeatDef>{
   '22': FeatDef('ทำนายฝันหมวด ญ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ญ', FeatType.letter),
   '23': FeatDef('ทำนายฝันหมวด ด', 'คำทำนายความฝันที่ขึ้นต้นด้วย ด', FeatType.letter),
   '24': FeatDef('ทำนายฝันหมวด ต', 'คำทำนายความฝันที่ขึ้นต้นด้วย ต', FeatType.letter),
+  '25': FeatDef('ทำนายฝันหมวด ถ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ถ', FeatType.letter),
+  '26': FeatDef('ทำนายฝันหมวด ท', 'คำทำนายความฝันที่ขึ้นต้นด้วย ท', FeatType.letter),
+  '27': FeatDef('ทำนายฝันหมวด ธ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ธ', FeatType.letter),
+  '28': FeatDef('ทำนายฝันหมวด น', 'คำทำนายความฝันที่ขึ้นต้นด้วย น', FeatType.letter),
+  '29': FeatDef('ทำนายฝันหมวด บ', 'คำทำนายความฝันที่ขึ้นต้นด้วย บ', FeatType.letter),
+  '30': FeatDef('ทำนายฝันหมวด ป', 'คำทำนายความฝันที่ขึ้นต้นด้วย ป', FeatType.letter),
+  '31': FeatDef('ทำนายฝันหมวด ผ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ผ', FeatType.letter),
+  '32': FeatDef('ทำนายฝันหมวด ฝ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฝ', FeatType.letter),
+  '33': FeatDef('ทำนายฝันหมวด พ', 'คำทำนายความฝันที่ขึ้นต้นด้วย พ', FeatType.letter),
+  '34': FeatDef('ทำนายฝันหมวด ฟ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ฟ', FeatType.letter),
+  '35': FeatDef('ทำนายฝันหมวด ภ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ภ', FeatType.letter),
+  '36': FeatDef('ทำนายฝันหมวด ม', 'คำทำนายความฝันที่ขึ้นต้นด้วย ม', FeatType.letter),
+  '37': FeatDef('ทำนายฝันหมวด ย', 'คำทำนายความฝันที่ขึ้นต้นด้วย ย', FeatType.letter),
+  '38': FeatDef('ทำนายฝันหมวด ร', 'คำทำนายความฝันที่ขึ้นต้นด้วย ร', FeatType.letter),
+  '39': FeatDef('ทำนายฝันหมวด ล', 'คำทำนายความฝันที่ขึ้นต้นด้วย ล', FeatType.letter),
+  '40': FeatDef('ทำนายฝันหมวด ว', 'คำทำนายความฝันที่ขึ้นต้นด้วย ว', FeatType.letter),
+  '41': FeatDef('ทำนายฝันหมวด ศ', 'คำทำนายความฝันที่ขึ้นต้นด้วย ศ', FeatType.letter),
+  '42': FeatDef('ทำนายฝันหมวด ส', 'คำทำนายความฝันที่ขึ้นต้นด้วย ส', FeatType.letter),
+  '43': FeatDef('ทำนายฝันหมวด ห', 'คำทำนายความฝันที่ขึ้นต้นด้วย ห', FeatType.letter),
+  '44': FeatDef('ทำนายฝันหมวด อ', 'คำทำนายความฝันที่ขึ้นต้นด้วย อ', FeatType.letter),
 };
 
 /// Which bottom tab a feature belongs to.
 String tabOf(String k) => const ['3', '4', '11'].contains(k)
     ? 'ritual'
-    : const ['1', '5', '6', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'].contains(k)
+    : const ['1', '5', '6', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44'].contains(k)
         ? 'book'
         : 'lucky';
 

@@ -1,0 +1,53 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ต ('แก้ให้เลย ให้เข้ากับเนื้อหา'). Names keep the category's first consonant. dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source).",
+  "corrections": [
+    {
+      "id": "r-crying",
+      "field": "meaning",
+      "from": "ติดสิ่งใดไว้",
+      "to": "คิดสิ่งใดไว้"
+    },
+    {
+      "id": "r-rainbow",
+      "field": "meaning",
+      "from": "รูปุรุ้งเจ็ดสี",
+      "to": "รูปรุ้งเจ็ดสี"
+    },
+    {
+      "id": "r-boat-sinking",
+      "field": "name",
+      "from": "เรือ ฝันว่านั่งเรือล่ม",
+      "to": "เรือล่ม ฝันว่านั่งเรือล่ม",
+      "oldName": "เรือ",
+      "newName": "เรือล่ม",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "r-boat-storm",
+      "field": "name",
+      "from": "เรือ ฝันว่านั่งเรือเล่น มีพายุ",
+      "to": "เรือกลางพายุ ฝันว่านั่งเรือเล่น มีพายุ",
+      "oldName": "เรือ",
+      "newName": "เรือกลางพายุ",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "r-boat-drifting",
+      "field": "name",
+      "from": "เรือ ฝันเห็นเรือหลุด",
+      "to": "เรือหลุดลอย ฝันเห็นเรือหลุด",
+      "oldName": "เรือ",
+      "newName": "เรือหลุดลอย",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "r-mites",
+      "field": "name",
+      "from": "ไร, มด ฝันว่าตัวไร",
+      "to": "ไรและมด ฝันว่าตัวไร",
+      "oldName": "ไร, มด",
+      "newName": "ไรและมด",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–บ ('แก้ให้เลย ให้เข้ากับเนื้อหา'). Names keep the category's first letter. dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). 'ยังไม่มีโชคในการเสี่ยง' is stored as noLuckyNumbers like 'ไม่ควรเสี่ยง'.",
+  "corrections": [
+    {
+      "id": "p-termites",
+      "field": "name",
+      "from": "ปลวก ฝันว่าปลวกขึ้นบ้าน",
+      "to": "ปลวกขึ้นบ้าน ฝันว่าปลวกขึ้นบ้าน",
+      "oldName": "ปลวก",
+      "newName": "ปลวกขึ้นบ้าน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "p-termite-mound",
+      "field": "name",
+      "from": "ปลวก ฝันว่าได้ขึ้นไปบนจอมปลวก",
+      "to": "ปลวก (จอมปลวก) ฝันว่าได้ขึ้นไปบนจอมปลวก",
+      "oldName": "ปลวก",
+      "newName": "ปลวก (จอมปลวก)",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "p-fish",
+      "field": "meaning",
+      "from": "จะบังผลสมความปรารถนา",
+      "to": "จะบังเกิดผลสมความปรารถนา"
+    },
+    {
+      "id": "p-leech",
+      "field": "meaning",
+      "from": "ความฝันนี้ท่านว่าจะประสบ",
+      "to": "ความฝันนี้ท่านจะประสบ"
+    },
+    {
+      "id": "p-being-ill",
+      "field": "name",
+      "from": "ป่วย ฝันว่าตนเจ็บป่วย",
+      "to": "ป่วยเอง ฝันว่าตนเจ็บป่วย",
+      "oldName": "ป่วย",
+      "newName": "ป่วยเอง",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "p-seeing-sick",
+      "field": "name",
+      "from": "ป่วย ฝันว่าเห็นคนนอนป่วย",
+      "to": "ป่วย (เห็นคนป่วย) ฝันว่าเห็นคนนอนป่วย",
+      "oldName": "ป่วย",
+      "newName": "ป่วย (เห็นคนป่วย)",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "p-forest",
+      "field": "meaning",
+      "from": "เพิ่มผลิตผลให้ຢ່າງพอใจ",
+      "to": "เพิ่มผลิตผลให้อย่างพอใจ"
+    }
+  ]
+}

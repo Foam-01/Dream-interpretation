@@ -1,0 +1,218 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ต ('แก้ให้เลย ให้เข้ากับเนื้อหา'). Names keep the category's first letter. dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). 'ยังไม่มีโชคในการเสี่ยง' is stored as noLuckyNumbers like 'ไม่ควรเสี่ยง'.",
+  "corrections": [
+    {
+      "id": "n-catching-bird",
+      "field": "name",
+      "from": "นก ถ้าฝันว่าได้จับนก",
+      "to": "นกที่จับได้ ถ้าฝันว่าได้จับนก",
+      "oldName": "นก",
+      "newName": "นกที่จับได้",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-becoming-bird",
+      "field": "name",
+      "from": "นก ฝันว่าตัวของเรากลายเป็นนก",
+      "to": "นกบิน ฝันว่าตัวของเรากลายเป็นนก",
+      "oldName": "นก",
+      "newName": "นกบิน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-becoming-bird",
+      "field": "meaning",
+      "from": "เพราะธุระของคนอื่นเขา",
+      "to": "เพราะธุระของคนอื่น"
+    },
+    {
+      "id": "n-milk-flowing",
+      "field": "name",
+      "from": "นม ฝันว่าเราแต่งงานแล้ว",
+      "to": "น้ำนมไหล ฝันว่าเราแต่งงานแล้ว",
+      "oldName": "นม",
+      "newName": "น้ำนมไหล",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-milk-flowing",
+      "field": "meaning",
+      "from": "เกิดมีอาการมีน้ำนมไหล",
+      "to": "เกิดมีน้ำนมไหล"
+    },
+    {
+      "id": "n-man-breasts",
+      "field": "name",
+      "from": "นม ฝันเห็นผู้ชายนมโต",
+      "to": "นมผู้ชายโต ฝันเห็นผู้ชายนมโต",
+      "oldName": "นม",
+      "newName": "นมผู้ชายโต",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-man-breasts",
+      "field": "meaning",
+      "from": "ผู้ชายนมโตได้",
+      "to": "ผู้ชายนมโต"
+    },
+    {
+      "id": "n-looking-breasts",
+      "field": "name",
+      "from": "นม ฝันว่าได้ดูนมคนอื่น",
+      "to": "นมคนอื่น ฝันว่าได้ดูนมคนอื่น",
+      "oldName": "นม",
+      "newName": "นมคนอื่น",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-child-suckling",
+      "field": "name",
+      "from": "นม ฝันว่าเด็กคนอื่นมา",
+      "to": "นมให้เด็กอื่น ฝันว่าเด็กคนอื่นมา",
+      "oldName": "นม",
+      "newName": "นมให้เด็กอื่น",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-child-suckling",
+      "field": "meaning",
+      "from": "มาอกินนมเรา",
+      "to": "มากินนมเรา"
+    },
+    {
+      "id": "n-breasts-growing",
+      "field": "name",
+      "from": "นม ฝันว่านมของตัวเอง",
+      "to": "นมโต ฝันว่านมของตัวเอง",
+      "oldName": "นม",
+      "newName": "นมโต",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-breasts-growing",
+      "field": "meaning",
+      "from": "ถ้ารังยังไม่สมรส",
+      "to": "ถ้ายังไม่สมรส"
+    },
+    {
+      "id": "n-breasts-growing",
+      "field": "meaning",
+      "from": "ในระยะเวลากระทันหัน",
+      "to": "ในระยะเวลากะทันหัน"
+    },
+    {
+      "id": "n-sleeping-boat",
+      "field": "name",
+      "from": "นอน ฝันว่านอนเล่นในเรือ จะเป็น",
+      "to": "นอนในเรือ ฝันว่านอนเล่นในเรือ จะเป็น",
+      "oldName": "นอน",
+      "newName": "นอนในเรือ",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-sleeping-boat",
+      "field": "meaning",
+      "from": "ก็ต่ามแต่",
+      "to": "ก็ตามแต่"
+    },
+    {
+      "id": "n-lying-ground",
+      "field": "name",
+      "from": "นอน ถ้าฝันว่าได้นอนเล่นกลางดิน",
+      "to": "นอนกลางดิน ถ้าฝันว่าได้นอนเล่นกลางดิน",
+      "oldName": "นอน",
+      "newName": "นอนกลางดิน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-lying-water",
+      "field": "name",
+      "from": "นอน ฝันว่านอนเล่นในน้ำ",
+      "to": "นอนในน้ำ ฝันว่านอนเล่นในน้ำ",
+      "oldName": "นอน",
+      "newName": "นอนในน้ำ",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-sleeping-askew",
+      "field": "name",
+      "from": "นอน ฝันว่านอนไม่มีระเบียบ",
+      "to": "นอนไม่เป็นระเบียบ ฝันว่านอนไม่มีระเบียบ",
+      "oldName": "นอน",
+      "newName": "นอนไม่เป็นระเบียบ",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-sleeping-askew",
+      "field": "meaning",
+      "from": "เท้าอยู่ทาง ศีรษะอยู่ทาง",
+      "to": "เท้าอยู่ทางหนึ่ง ศีรษะอยู่อีกทางหนึ่ง"
+    },
+    {
+      "id": "n-boat-capsize",
+      "field": "name",
+      "from": "นอน ฝันว่าได้นอนเล่นในเรือเกิดเรือล่ม",
+      "to": "นอนในเรือล่ม ฝันว่าได้นอนเล่นในเรือเกิดเรือล่ม",
+      "oldName": "นอน",
+      "newName": "นอนในเรือล่ม",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-sitting-mountain",
+      "field": "name",
+      "from": "นั่ง ฝันว่านั่งเล่น",
+      "to": "นั่งบนภูเขา ฝันว่านั่งเล่น",
+      "oldName": "นั่ง",
+      "newName": "นั่งบนภูเขา",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-wearing-white",
+      "field": "name",
+      "from": "นุ่งขาว ฝันว่าตัวของเราเอง",
+      "to": "นุ่งขาวห่มขาว ฝันว่าตัวของเราเอง",
+      "oldName": "นุ่งขาว",
+      "newName": "นุ่งขาวห่มขาว",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-visitor-in-white",
+      "field": "name",
+      "from": "นุ่งขาว ฝันเห็นคนนุ่งขาว",
+      "to": "นุ่งขาวมาหา ฝันเห็นคนนุ่งขาว",
+      "oldName": "นุ่งขาว",
+      "newName": "นุ่งขาวมาหา",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-visitor-in-white",
+      "field": "meaning",
+      "from": "โรคภัยไม่มาเบียดเบียนได้",
+      "to": "โรคภัยไม่มาเบียดเบียน"
+    },
+    {
+      "id": "n-flesh-cut",
+      "field": "name",
+      "from": "เนื้อ ฝันว่าได้ถูกคนอื่นเชือดเนื้อ",
+      "to": "เนื้อถูกเชือด ฝันว่าได้ถูกคนอื่นเชือดเนื้อ",
+      "oldName": "เนื้อ",
+      "newName": "เนื้อถูกเชือด",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-eating-meat",
+      "field": "name",
+      "from": "เนื้อ ฝันมีผู้บริโภคเนื้อ",
+      "to": "เนื้อบริโภค ฝันมีผู้บริโภคเนื้อ",
+      "oldName": "เนื้อ",
+      "newName": "เนื้อบริโภค",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "n-eating-meat",
+      "field": "meaning",
+      "from": "ฝันมีผู้บริโภคเนื้อ",
+      "to": "ฝันว่ามีผู้บริโภคเนื้อ"
+    }
+  ]
+}

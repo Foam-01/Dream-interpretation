@@ -1,0 +1,14 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ต ('แก้ให้เลย ให้เข้ากับเนื้อหา'). Names keep the category's first consonant. dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source).",
+  "corrections": [
+    {
+      "id": "hip-swan-goose",
+      "field": "name",
+      "from": "หงส์, ห่าน ฝันเห็น",
+      "to": "หงส์และห่าน ฝันเห็น",
+      "oldName": "หงส์, ห่าน",
+      "newName": "หงส์และห่าน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    }
+  ]
+}

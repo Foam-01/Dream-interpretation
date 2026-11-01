@@ -1,18 +1,38 @@
 import 'package:flutter/material.dart';
 
 import '../app_shell.dart';
+import '../data/category_ang.dart';
+import '../data/category_b.dart';
 import '../data/category_ch.dart';
 import '../data/category_chc.dart';
 import '../data/category_chg.dart';
 import '../data/category_d.dart';
+import '../data/category_f.dart';
+import '../data/category_fan.dart';
+import '../data/category_hip.dart';
 import '../data/category_k.dart';
 import '../data/category_kh.dart';
 import '../data/category_khr.dart';
 import '../data/category_khw.dart';
+import '../data/category_l.dart';
+import '../data/category_m.dart';
+import '../data/category_n.dart';
 import '../data/category_ng.dart';
+import '../data/category_p.dart';
+import '../data/category_phan.dart';
+import '../data/category_phueng.dart';
+import '../data/category_r.dart';
 import '../data/category_s.dart';
+import '../data/category_sala.dart';
+import '../data/category_samphao.dart';
+import '../data/category_suea.dart';
 import '../data/category_t.dart';
+import '../data/category_thahan.dart';
+import '../data/category_thong.dart';
+import '../data/category_thung.dart';
+import '../data/category_w.dart';
 import '../data/category_y.dart';
+import '../data/category_yak.dart';
 import '../data/design_data.dart';
 import '../data/formulas.dart';
 import '../theme.dart';
@@ -35,6 +55,26 @@ const _letterCategories = {
   '22': letterYCategoryId,
   '23': letterDCategoryId,
   '24': letterTCategoryId,
+  '25': letterThungCategoryId,
+  '26': letterThahanCategoryId,
+  '27': letterThongCategoryId,
+  '28': letterNCategoryId,
+  '29': letterBCategoryId,
+  '30': letterPCategoryId,
+  '31': letterPhuengCategoryId,
+  '32': letterFCategoryId,
+  '33': letterPhanCategoryId,
+  '34': letterFanCategoryId,
+  '35': letterSamphaoCategoryId,
+  '36': letterMCategoryId,
+  '37': letterYakCategoryId,
+  '38': letterRCategoryId,
+  '39': letterLCategoryId,
+  '40': letterWCategoryId,
+  '41': letterSalaCategoryId,
+  '42': letterSueaCategoryId,
+  '43': letterHipCategoryId,
+  '44': letterAngCategoryId,
 };
 class FeatureScreen extends StatefulWidget {
   final String featKey;

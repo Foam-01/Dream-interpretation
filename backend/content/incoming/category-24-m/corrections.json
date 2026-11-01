@@ -1,0 +1,38 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ต ('แก้ให้เลย ให้เข้ากับเนื้อหา'). Names keep the category's first consonant. dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source).",
+  "corrections": [
+    {
+      "id": "m-riding-horse",
+      "field": "name",
+      "from": "ม้า ฝันว่าได้ขี่ม้าเล่น",
+      "to": "ม้าขี่เล่น ฝันว่าได้ขี่ม้าเล่น",
+      "oldName": "ม้า",
+      "newName": "ม้าขี่เล่น",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "m-horse-water",
+      "field": "name",
+      "from": "ม้า ฝันว่าขี่ม้าลุยน้ำ",
+      "to": "ม้าลุยน้ำ ฝันว่าขี่ม้าลุยน้ำ",
+      "oldName": "ม้า",
+      "newName": "ม้าลุยน้ำ",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "m-horse-winning",
+      "field": "name",
+      "from": "ม้า ฝันเห็นม้าวิ่ง",
+      "to": "ม้าเข้าหลักชัย ฝันเห็นม้าวิ่ง",
+      "oldName": "ม้า",
+      "newName": "ม้าเข้าหลักชัย",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "m-hand",
+      "field": "meaning",
+      "from": "มือถูกมัดจำซื่อคา",
+      "to": "มือถูกมัดจำขื่อคา"
+    }
+  ]
+}

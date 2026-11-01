@@ -1,0 +1,11 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ต ('แก้ให้เลย ให้เข้ากับเนื้อหา'). Names keep the category's first consonant. dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). Cross-references ('ดูคำว่า …') are not records.",
+  "corrections": [
+    {
+      "id": "w-boxing-ring",
+      "field": "meaning",
+      "from": "มิตรสหหาย",
+      "to": "มิตรสหาย"
+    }
+  ]
+}

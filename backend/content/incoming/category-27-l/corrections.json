@@ -1,0 +1,35 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ต ('แก้ให้เลย ให้เข้ากับเนื้อหา'). Names keep the category's first consonant. dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). Cross-references ('ดูคำว่า …') are not records.",
+  "corrections": [
+    {
+      "id": "l-lottery",
+      "field": "name",
+      "from": "ล๊อตเตอรี่ ฝันว่าถูก",
+      "to": "ลอตเตอรี่ ฝันว่าถูก",
+      "oldName": "ล๊อตเตอรี่",
+      "newName": "ลอตเตอรี่",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "l-lottery",
+      "field": "meaning",
+      "from": "ถูกล๊อตเตอรี่",
+      "to": "ถูกลอตเตอรี่"
+    },
+    {
+      "id": "l-beads",
+      "field": "name",
+      "from": "ลูกประคำ, ลูกปัด ฝันเห็น",
+      "to": "ลูกประคำและลูกปัด ฝันเห็น",
+      "oldName": "ลูกประคำ, ลูกปัด",
+      "newName": "ลูกประคำและลูกปัด",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "l-beads",
+      "field": "meaning",
+      "from": "อยูภายในบ้าน",
+      "to": "อยู่ภายในบ้าน"
+    }
+  ]
+}

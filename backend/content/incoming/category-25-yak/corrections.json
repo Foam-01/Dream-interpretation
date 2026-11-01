@@ -1,0 +1,17 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ต ('แก้ให้เลย ให้เข้ากับเนื้อหา'). Names keep the category's first consonant. dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source).",
+  "corrections": [
+    {
+      "id": "yak-shoulder-bag",
+      "field": "meaning",
+      "from": "สะพายถือคลองในมือ",
+      "to": "สะพายถือคล้องในมือ"
+    },
+    {
+      "id": "yak-granary",
+      "field": "meaning",
+      "from": "กองข้าว-เปลือกเก็บไว้ในยุ่ง",
+      "to": "กองข้าวเปลือกเก็บไว้ในยุ้ง"
+    }
+  ]
+}

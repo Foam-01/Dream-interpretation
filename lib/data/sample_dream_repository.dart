@@ -1,17 +1,37 @@
 import 'package:flutter/foundation.dart';
 
+import 'category_ang.dart';
+import 'category_b.dart';
 import 'category_ch.dart';
 import 'category_chc.dart';
 import 'category_chg.dart';
 import 'category_d.dart';
+import 'category_f.dart';
+import 'category_fan.dart';
+import 'category_hip.dart';
 import 'category_k.dart';
 import 'category_kh.dart';
 import 'category_khr.dart';
 import 'category_khw.dart';
+import 'category_l.dart';
+import 'category_m.dart';
+import 'category_n.dart';
 import 'category_ng.dart';
+import 'category_p.dart';
+import 'category_phan.dart';
+import 'category_phueng.dart';
+import 'category_r.dart';
 import 'category_s.dart';
+import 'category_sala.dart';
+import 'category_samphao.dart';
+import 'category_suea.dart';
 import 'category_t.dart';
+import 'category_thahan.dart';
+import 'category_thong.dart';
+import 'category_thung.dart';
+import 'category_w.dart';
 import 'category_y.dart';
+import 'category_yak.dart';
 import 'design_data.dart';
 import 'dream_repository.dart';
 
@@ -30,6 +50,26 @@ const sampleCategories = [
   DreamCategory(letterYCategoryId, 'หมวด ญ'),
   DreamCategory(letterDCategoryId, 'หมวด ด'),
   DreamCategory(letterTCategoryId, 'หมวด ต'),
+  DreamCategory(letterThungCategoryId, 'หมวด ถ'),
+  DreamCategory(letterThahanCategoryId, 'หมวด ท'),
+  DreamCategory(letterThongCategoryId, 'หมวด ธ'),
+  DreamCategory(letterNCategoryId, 'หมวด น'),
+  DreamCategory(letterBCategoryId, 'หมวด บ'),
+  DreamCategory(letterPCategoryId, 'หมวด ป'),
+  DreamCategory(letterPhuengCategoryId, 'หมวด ผ'),
+  DreamCategory(letterFCategoryId, 'หมวด ฝ'),
+  DreamCategory(letterPhanCategoryId, 'หมวด พ'),
+  DreamCategory(letterFanCategoryId, 'หมวด ฟ'),
+  DreamCategory(letterSamphaoCategoryId, 'หมวด ภ'),
+  DreamCategory(letterMCategoryId, 'หมวด ม'),
+  DreamCategory(letterYakCategoryId, 'หมวด ย'),
+  DreamCategory(letterRCategoryId, 'หมวด ร'),
+  DreamCategory(letterLCategoryId, 'หมวด ล'),
+  DreamCategory(letterWCategoryId, 'หมวด ว'),
+  DreamCategory(letterSalaCategoryId, 'หมวด ศ'),
+  DreamCategory(letterSueaCategoryId, 'หมวด ส'),
+  DreamCategory(letterHipCategoryId, 'หมวด ห'),
+  DreamCategory(letterAngCategoryId, 'หมวด อ'),
 ];
 
 final _slug = RegExp(r'^[a-z0-9-]{1,64}$');

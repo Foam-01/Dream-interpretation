@@ -1,0 +1,32 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ต ('แก้ให้เลย ให้เข้ากับเนื้อหา'). Names keep the category's first letter. dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). A 'แต่ถ้าฝัน…' paragraph with no numbers of its own is part of the dream before it; a 'ถ้าฝัน…' paragraph with its own numbers is its own record.",
+  "corrections": [
+    {
+      "id": "phueng-lightning",
+      "field": "meaning",
+      "from": "ถูกล๊อตเตอรี่",
+      "to": "ถูกลอตเตอรี่"
+    },
+    {
+      "id": "phueng-struck-by-lightning",
+      "field": "name",
+      "from": "ถ้าฝันว่าฟ้าผ่าตน",
+      "to": "ผ่า (ฟ้าผ่าตน) ถ้าฝันว่าฟ้าผ่าตน",
+      "oldName": "",
+      "newName": "ผ่า (ฟ้าผ่าตน)",
+      "note": "the source has no heading for this sub-dream; a name is added in front of it"
+    },
+    {
+      "id": "phueng-struck-by-lightning",
+      "field": "meaning",
+      "from": "บูชาด้วยแดง",
+      "to": "บูชาด้วยผ้าแดง"
+    },
+    {
+      "id": "phueng-bees",
+      "field": "meaning",
+      "from": "ผึ้งไล่อม-ต่อย",
+      "to": "ผึ้งไล่ตอม-ต่อย"
+    }
+  ]
+}

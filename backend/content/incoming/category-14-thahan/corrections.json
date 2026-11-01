@@ -1,0 +1,17 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ต ('แก้ให้เลย ให้เข้ากับเนื้อหา'). dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). 'ยังไม่มีโชคในการเสี่ยง' is stored as noLuckyNumbers like 'ไม่ควรเสี่ยง'.",
+  "corrections": [
+    {
+      "id": "thahan-quarrel",
+      "field": "meaning",
+      "from": "ความยุ่งยาก อลเวง",
+      "to": "ความยุ่งยากอลเวง"
+    },
+    {
+      "id": "thahan-stabbed",
+      "field": "meaning",
+      "from": "อย่าให้เครื่องใช้เงินทองแก่ใครจะสูญเปล่า",
+      "to": "อย่าให้ยืมเครื่องใช้เงินทองแก่ใคร จะสูญเปล่า"
+    }
+  ]
+}

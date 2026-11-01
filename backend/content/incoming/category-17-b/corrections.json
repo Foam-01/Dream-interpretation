@@ -1,0 +1,68 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ต ('แก้ให้เลย ให้เข้ากับเนื้อหา'). Names keep the category's first letter. dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). 'ยังไม่มีโชคในการเสี่ยง' is stored as noLuckyNumbers like 'ไม่ควรเสี่ยง'.",
+  "corrections": [
+    {
+      "id": "b-climbing-stairs",
+      "field": "name",
+      "from": "บันได ฝันว่าได้ขึ้นบ้าน",
+      "to": "บันไดขึ้น ฝันว่าได้ขึ้นบ้าน",
+      "oldName": "บันได",
+      "newName": "บันไดขึ้น",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "b-climbing-stairs",
+      "field": "meaning",
+      "from": "ฝันว่าได้ขึ้นบ้านของเราเอง",
+      "to": "ฝันว่าได้ขึ้นบันไดบ้านของเราเอง"
+    },
+    {
+      "id": "b-falling-stairs",
+      "field": "name",
+      "from": "บันได ฝันว่าตกบันได",
+      "to": "บันไดตก ฝันว่าตกบันได",
+      "oldName": "บันได",
+      "newName": "บันไดตก",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "b-falling-stairs",
+      "field": "meaning",
+      "from": "จะมีผู้จากไปไกล",
+      "to": "ความฝันนี้จะมีผู้จากไปไกล"
+    },
+    {
+      "id": "b-ruined-house",
+      "field": "name",
+      "from": "บ้าน ฝันเห็นบ้านที่อยู่",
+      "to": "บ้านพัง ฝันเห็นบ้านที่อยู่",
+      "oldName": "บ้าน",
+      "newName": "บ้านพัง",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "b-flying",
+      "field": "name",
+      "from": "บิน ฝันว่าได้ขึ้นเครื่องบิน",
+      "to": "บินเดินทาง ฝันว่าได้ขึ้นเครื่องบิน",
+      "oldName": "บิน",
+      "newName": "บินเดินทาง",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "b-plane-crash",
+      "field": "name",
+      "from": "บิน แต่ถ้าฝันว่าตกเครื่องบิน",
+      "to": "บินตก แต่ถ้าฝันว่าตกเครื่องบิน",
+      "oldName": "บิน",
+      "newName": "บินตก",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "b-plane-crash",
+      "field": "meaning",
+      "from": "แต่ถ้าฝันว่าตกเครื่องบิน",
+      "to": "ฝันว่าตกเครื่องบิน"
+    }
+  ]
+}

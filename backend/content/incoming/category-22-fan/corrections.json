@@ -1,0 +1,83 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ต ('แก้ให้เลย ให้เข้ากับเนื้อหา'). Names keep the category's first consonant. dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source).",
+  "corrections": [
+    {
+      "id": "fan-loose-tooth",
+      "field": "name",
+      "from": "ฟัน ฝันว่าฟันคลอน",
+      "to": "ฟันคลอน ฝันว่าฟันคลอน",
+      "oldName": "ฟัน",
+      "newName": "ฟันคลอน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "fan-lightning-self",
+      "field": "name",
+      "from": "ฟ้า ฝันว่าฟ้าผ่าถูกตัว",
+      "to": "ฟ้าผ่าตัว ฝันว่าฟ้าผ่าถูกตัว",
+      "oldName": "ฟ้า",
+      "newName": "ฟ้าผ่าตัว",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "fan-lightning-self",
+      "field": "meaning",
+      "from": "จะได้ทุกข์ลาภภายหลัง",
+      "to": "จะได้ลาภภายหลัง"
+    },
+    {
+      "id": "fan-lightning-tree",
+      "field": "name",
+      "from": "ฟ้าผ่า ฝันเห็นฟ้าผ่าต้นไม้",
+      "to": "ฟ้าผ่าต้นไม้ ฝันเห็นฟ้าผ่าต้นไม้",
+      "oldName": "ฟ้าผ่า",
+      "newName": "ฟ้าผ่าต้นไม้",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "fan-fire-mountain",
+      "field": "name",
+      "from": "ไฟ ฝันเห็นไฟลุกลาม",
+      "to": "ไฟบนภูเขา ฝันเห็นไฟลุกลาม",
+      "oldName": "ไฟ",
+      "newName": "ไฟบนภูเขา",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "fan-fire-stove",
+      "field": "name",
+      "from": "ไฟ ฝันเห็นไฟในเตา",
+      "to": "ไฟในเตา ฝันเห็นไฟในเตา",
+      "oldName": "ไฟ",
+      "newName": "ไฟในเตา",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "fan-house-fire",
+      "field": "name",
+      "from": "ไฟ ฝันว่าไฟไหม้บ้าน",
+      "to": "ไฟไหม้บ้าน ฝันว่าไฟไหม้บ้าน",
+      "oldName": "ไฟ",
+      "newName": "ไฟไหม้บ้าน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "fan-lamp",
+      "field": "name",
+      "from": "ไฟ ฝันเห็นโคมไฟ",
+      "to": "ไฟโคมและเทียน ฝันเห็นโคมไฟ",
+      "oldName": "ไฟ",
+      "newName": "ไฟโคมและเทียน",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "fan-forest-fire",
+      "field": "name",
+      "from": "ไฟ ฝันเห็นไฟไหม้ป่า",
+      "to": "ไฟไหม้ป่า ฝันเห็นไฟไหม้ป่า",
+      "oldName": "ไฟ",
+      "newName": "ไฟไหม้ป่า",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    }
+  ]
+}

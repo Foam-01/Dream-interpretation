@@ -1,0 +1,20 @@
+{
+  "note": "Fixes and clearer names, same rules the content owner approved for ก–ต ('แก้ให้เลย ให้เข้ากับเนื้อหา'). Names keep the category's first consonant. dreams-source.md stays as received; dreams.json = source with these replacements (each 'from' occurs exactly once in the source). Cross-references ('ดูคำว่า …') are not records.",
+  "corrections": [
+    {
+      "id": "sala-pavilion",
+      "field": "name",
+      "from": "ศลาลา ฝันว่าเห็น",
+      "to": "ศาลา ฝันว่าเห็น",
+      "oldName": "ศลาลา",
+      "newName": "ศาลา",
+      "note": "name change; 'from' includes the start of the meaning so it is unique in the source"
+    },
+    {
+      "id": "sala-pavilion",
+      "field": "meaning",
+      "from": "บนศลาลา",
+      "to": "บนศาลา"
+    }
+  ]
+}

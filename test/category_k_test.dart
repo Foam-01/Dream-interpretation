@@ -250,9 +250,9 @@ void main() {
     });
 
     test('no sample data is left in the app', () {
-      expect(dreams.map((d) => d.id).where((id) => !id.startsWith('k-') && !id.startsWith('kh-') && !id.startsWith('khw-') && !id.startsWith('khr-') && !id.startsWith('ng-') && !id.startsWith('ch-') && !id.startsWith('chg-') && !id.startsWith('chc-') && !id.startsWith('s-') && !id.startsWith('y-') && !id.startsWith('d-') && !id.startsWith('t-')), isEmpty);
+      expect(dreams.map((d) => d.id).where((id) => !id.startsWith('k-') && !id.startsWith('kh-') && !id.startsWith('khw-') && !id.startsWith('khr-') && !id.startsWith('ng-') && !id.startsWith('ch-') && !id.startsWith('chg-') && !id.startsWith('chc-') && !id.startsWith('s-') && !id.startsWith('y-') && !id.startsWith('d-') && !id.startsWith('t-') && !id.startsWith('thung-') && !id.startsWith('thahan-') && !id.startsWith('thong-') && !id.startsWith('n-') && !id.startsWith('b-') && !id.startsWith('p-') && !id.startsWith('phueng-') && !id.startsWith('f-') && !id.startsWith('phan-') && !id.startsWith('fan-') && !id.startsWith('samphao-') && !id.startsWith('m-') && !id.startsWith('yak-') && !id.startsWith('r-') && !id.startsWith('l-') && !id.startsWith('w-') && !id.startsWith('sala-') && !id.startsWith('suea-') && !id.startsWith('hip-') && !id.startsWith('ang-')), isEmpty);
       expect(dreams.take(dreamsK.length).map((d) => d.id), dreamsK.map((d) => d.id), reason: 'หมวด ก comes first');
-      expect(dreamCats, ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ', 'หมวด ง', 'หมวด จ', 'หมวด ฉ', 'หมวด ช', 'หมวด ซ', 'หมวด ญ', 'หมวด ด', 'หมวด ต']);
+      expect(dreamCats, ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ', 'หมวด ง', 'หมวด จ', 'หมวด ฉ', 'หมวด ช', 'หมวด ซ', 'หมวด ญ', 'หมวด ด', 'หมวด ต', 'หมวด ถ', 'หมวด ท', 'หมวด ธ', 'หมวด น', 'หมวด บ', 'หมวด ป', 'หมวด ผ', 'หมวด ฝ', 'หมวด พ', 'หมวด ฟ', 'หมวด ภ', 'หมวด ม', 'หมวด ย', 'หมวด ร', 'หมวด ล', 'หมวด ว', 'หมวด ศ', 'หมวด ส', 'หมวด ห', 'หมวด อ']);
       expect(debugValidateDreams(), isTrue);
     });
 
