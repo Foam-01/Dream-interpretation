@@ -7,6 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:maha_dream/app_shell.dart';
 import 'package:maha_dream/data/category_n.dart';
 import 'package:maha_dream/data/design_data.dart';
+import 'package:maha_dream/data/dream_images_k.dart';
+import 'package:maha_dream/data/dream_images_n.dart';
 import 'package:maha_dream/data/dreams_n.dart';
 import 'package:maha_dream/data/sample_dream_repository.dart';
 import 'package:maha_dream/main.dart';
@@ -134,6 +136,22 @@ void main() {
       expect(letterNCategoryId, 'letter-n');
       expect(sampleCategories.map((c) => (c.id, c.name)), contains(('letter-n', 'หมวด น')));
       expect(dreamCats.skip(1), sampleCategories.map((c) => c.name));
+    });
+  });
+
+  group('dream pictures (per dream)', () {
+    test('26 checked pictures — every dream has one, bundled and registered', () {
+      // Waiting for regenerated pictures (the first ones had words or letters on them): n-flesh-cut.
+      expect(dreamImagesN.keys, dreamsN.map((d) => d.id).where((id) => id != 'n-flesh-cut'));
+      final onDisk = Directory('assets/dreams').listSync().whereType<File>().map((f) => f.uri.pathSegments.last);
+      expect(onDisk.where((f) => f.startsWith('n-')).toSet(), {for (final id in dreamImagesN.keys) '$id.jpg'});
+      for (final MapEntry(:key, :value) in dreamImagesN.entries) {
+        expect(value.url, 'assets/dreams/$key.jpg');
+        expect(value.isAsset, isTrue);
+        expect(value.attribution, isNull, reason: 'no invented credit or licence');
+        expect(value.alt, 'ภาพประกอบ: ${dreamsN.firstWhere((d) => d.id == key).name}');
+      }
+      expect(dreamsN.where((d) => dreamImageFor(d.id) == null).map((d) => d.id), ['n-flesh-cut']);
     });
   });
 

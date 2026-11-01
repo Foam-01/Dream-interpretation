@@ -141,9 +141,8 @@ void main() {
   });
 
   group('dream pictures (per dream)', () {
-    test('28 checked pictures — every dream has one, bundled and registered', () {
-      // ตะราง (t-jail) waits for a regenerated picture (the first one had English words on it).
-      expect(dreamImagesT.keys, dreamsT.map((d) => d.id).where((id) => id != 't-jail'));
+    test('29 checked pictures — every dream has one, bundled and registered', () {
+      expect(dreamImagesT.keys, dreamsT.map((d) => d.id));
       final onDisk = Directory('assets/dreams').listSync().whereType<File>().map((f) => f.uri.pathSegments.last);
       expect(onDisk.where((f) => f.startsWith('t-')).toSet(), {for (final id in dreamImagesT.keys) '$id.jpg'});
       for (final MapEntry(:key, :value) in dreamImagesT.entries) {
@@ -152,7 +151,7 @@ void main() {
         expect(value.attribution, isNull, reason: 'no invented credit or licence');
         expect(value.alt, 'ภาพประกอบ: ${dreamsT.firstWhere((d) => d.id == key).name}');
       }
-      expect(dreamsT.where((d) => dreamImageFor(d.id) == null).map((d) => d.id), ['t-jail']);
+      expect(dreamsT.where((d) => dreamImageFor(d.id) == null), isEmpty);
     });
   });
 

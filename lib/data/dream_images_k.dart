@@ -1,4 +1,5 @@
 import 'design_data.dart';
+import 'dream_images_b.dart';
 import 'dream_images_ch.dart';
 import 'dream_images_chc.dart';
 import 'dream_images_chg.dart';
@@ -6,9 +7,14 @@ import 'dream_images_d.dart';
 import 'dream_images_kh.dart';
 import 'dream_images_khr.dart';
 import 'dream_images_khw.dart';
+import 'dream_images_n.dart';
 import 'dream_images_ng.dart';
+import 'dream_images_p.dart';
 import 'dream_images_s.dart';
 import 'dream_images_t.dart';
+import 'dream_images_thahan.dart';
+import 'dream_images_thong.dart';
+import 'dream_images_thung.dart';
 import 'dream_images_y.dart';
 
 /// Bundled illustrations of หมวด ก dreams, by stable dream id. Resized from the owner-supplied images in
@@ -56,4 +62,4 @@ const dreamImagesK = <String, DreamImage>{
 
 /// The image to show for a dream: the API's image when it has one, else the bundled one, else null
 /// (the placeholder). Works the same in offline and API mode.
-DreamImage? dreamImageFor(String id, [DreamImage? remote]) => remote ?? dreamImagesK[id] ?? dreamImagesKh[id] ?? dreamImagesKhw[id] ?? dreamImagesKhr[id] ?? dreamImagesNg[id] ?? dreamImagesCh[id] ?? dreamImagesChg[id] ?? dreamImagesChc[id] ?? dreamImagesS[id] ?? dreamImagesY[id] ?? dreamImagesD[id] ?? dreamImagesT[id];
+DreamImage? dreamImageFor(String id, [DreamImage? remote]) => remote ?? dreamImagesK[id] ?? dreamImagesKh[id] ?? dreamImagesKhw[id] ?? dreamImagesKhr[id] ?? dreamImagesNg[id] ?? dreamImagesCh[id] ?? dreamImagesChg[id] ?? dreamImagesChc[id] ?? dreamImagesS[id] ?? dreamImagesY[id] ?? dreamImagesD[id] ?? dreamImagesT[id] ?? dreamImagesThung[id] ?? dreamImagesThahan[id] ?? dreamImagesThong[id] ?? dreamImagesN[id] ?? dreamImagesB[id] ?? dreamImagesP[id];

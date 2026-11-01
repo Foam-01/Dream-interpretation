@@ -16,6 +16,7 @@ const dreamImagesT = <String, DreamImage>{
   't-planting-tree': DreamImage.asset('assets/dreams/t-planting-tree.jpg', alt: 'ภาพประกอบ: ปลูกต้นไม้'),
   't-withered-tree': DreamImage.asset('assets/dreams/t-withered-tree.jpg', alt: 'ภาพประกอบ: ต้นไม้แห้ง'),
   't-monitor-lizard': DreamImage.asset('assets/dreams/t-monitor-lizard.jpg', alt: 'ภาพประกอบ: ตะกวด'),
+  't-jail': DreamImage.asset('assets/dreams/t-jail.jpg', alt: 'ภาพประกอบ: ตะราง (ตาราง)'),
   't-scooping-water': DreamImage.asset('assets/dreams/t-scooping-water.jpg', alt: 'ภาพประกอบ: ตักน้ำ'),
   't-cut-limbs': DreamImage.asset('assets/dreams/t-cut-limbs.jpg', alt: 'ภาพประกอบ: ตัด'),
   't-haircut': DreamImage.asset('assets/dreams/t-haircut.jpg', alt: 'ภาพประกอบ: ตัดผม'),
