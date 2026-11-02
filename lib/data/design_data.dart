@@ -294,7 +294,7 @@ const menus = <String, MenuDef>{
   ]),
 };
 
-enum FeatType { day, digit, steps, animals, pae, draw, table, letter }
+enum FeatType { day, digit, steps, remedies, animals, pae, draw, table, letter }
 
 class FeatDef {
   final String title, sub;
@@ -305,7 +305,7 @@ class FeatDef {
 const feats = <String, FeatDef>{
   '1': FeatDef('พยากรณ์โชคชะตาชีวิต', 'จากวันเกิด + ความฝัน', FeatType.day),
   '2': FeatDef('สรุปเลขนำโชค 0–9', 'ความฝันพร้อมรูป แยกตามเลข', FeatType.digit),
-  '3': FeatDef('เคล็ดลับแก้ฝันร้าย', 'ปัดเป่าลางร้ายตามตำรา', FeatType.steps),
+  '3': FeatDef('เคล็ดลับแก้ฝันร้าย', 'ปัดเป่าลางร้ายตามตำรา', FeatType.remedies),
   '4': FeatDef('การขอโชคจากความฝัน', 'ขอเลขก่อนนอน', FeatType.steps),
   '5': FeatDef('ทำนายฝันจากสัตว์', 'ตารางชื่อสัตว์ + เลข + รูป', FeatType.animals),
   '6': FeatDef('ภาพแป๊ะกงชี้โชค', '1,000 ตัวเลข 000–999', FeatType.pae),
@@ -392,12 +392,6 @@ const paeWords = [
 ];
 
 const steps = <String, List<List<String>>>{
-  '3': [
-    ['ตั้งสติเมื่อตื่น', 'อย่าเพิ่งเล่าฝันร้ายให้ใครฟังก่อนล้างหน้า'],
-    ['บ้วนน้ำลาย', 'บ้วนน้ำลายลงดิน 3 ครั้ง กล่าว "ร้ายกลายเป็นดี"'],
-    ['กรวดน้ำ', 'กรวดน้ำอุทิศให้เจ้ากรรมนายเวร'],
-    ['ทำบุญใส่บาตร', 'ภายใน 3 วัน ถวายข้าวสุกและน้ำสะอาด'],
-  ],
   '4': [
     ['ชำระกาย', 'อาบน้ำ แต่งกายสะอาด สีมงคลประจำวัน'],
     ['จุดธูปบูชา', 'จุดธูป 9 ดอก บอกเจ้าที่และสิ่งศักดิ์สิทธิ์'],
@@ -412,7 +406,6 @@ const steps = <String, List<List<String>>>{
 };
 
 const prayers = <String, List<String>>{
-  '3': ['คาถาแก้ฝันร้าย', 'ทุสสุปินัง ปาปะกัง ทุนนิมิตตัง\nพุทธานุภาเวนะ วินาสะเมนตุ'],
   '4': ['คาถาขอเลขก่อนนอน', 'นะโมพุทธายะ ขอฝันบอกเลขให้ชัดแจ้ง'],
   '11': ['สวดจบ อธิษฐาน', 'ขอให้ฝันดี มีโชค มีชัย'],
 };

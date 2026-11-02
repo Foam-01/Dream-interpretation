@@ -35,6 +35,7 @@ import '../data/category_y.dart';
 import '../data/category_yak.dart';
 import '../data/design_data.dart';
 import '../data/formulas.dart';
+import '../data/nightmare_remedies.dart';
 import '../theme.dart';
 import '../widgets/ui.dart';
 import 'home_screen.dart' show DreamCard;
@@ -93,6 +94,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
   int _digit = 5;
   int _hund = 0;
   int _pae = 59;
+  bool _remedyIntroOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +104,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
     final body = switch (f.type) {
       FeatType.day => _dayBody(k),
       FeatType.steps => _stepsBody(k),
+      FeatType.remedies => _remediesBody(),
       FeatType.animals => _animalsBody(),
       FeatType.pae => _paeBody(),
       FeatType.digit => _digitBody(),
@@ -220,7 +223,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
     ];
   }
 
-  // ---- Step-by-step rituals (3, 4, 11) ----
+  // ---- Step-by-step rituals (4, 11) ----
   List<Widget> _stepsBody(String k) {
     final list = steps[k] ?? const [];
     final prayer = prayers[k];
@@ -272,6 +275,89 @@ class _FeatureScreenState extends State<FeatureScreen> {
                     textAlign: TextAlign.center, style: serif(17, color: C.goldLight, height: 1.9)),
               ]),
             ),
+        ]),
+      ),
+    ];
+  }
+
+  // ---- Nightmare remedies (3): the owner's text — remedies first, then the closing; the long intro folds away ----
+  List<Widget> _remediesBody() {
+    Widget label(String text, String body, {Color color = C.inkSoft}) => Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(
+              width: 56,
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              margin: const EdgeInsets.only(top: 2, right: 10),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(color: C.tileLight, borderRadius: BorderRadius.circular(8)),
+              child: Text(text, style: sans(12, weight: FontWeight.w600, color: C.redDeep)),
+            ),
+            Expanded(child: Text(body, style: sans(14, color: color, height: 1.7))),
+          ]),
+        );
+    String num(int n) => n.toString().split('').map((d) => thaiDigits[int.parse(d)]).join();
+    return [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('เคล็ดแก้ฝัน ${num(remedies.length)} ข้อ', style: serif(18, color: C.red)),
+          const SizedBox(height: 10),
+          for (final (i, r) in remedies.indexed)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: CreamCard(
+                padding: const EdgeInsets.all(14),
+                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Container(
+                    width: 34,
+                    height: 34,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: C.red,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: C.gold, width: 1.5),
+                    ),
+                    child: Text(num(i + 1), style: serif(14, color: C.goldLight, height: 1.2)),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text('ฝันว่า${r.dream}', style: sans(16, weight: FontWeight.w600)),
+                      label('ทายว่า', r.omen),
+                      label('วิธีแก้', r.cure, color: C.inkBody),
+                    ]),
+                  ),
+                ]),
+              ),
+            ),
+          const SizedBox(height: 6),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: C.red,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: C.goldDeep, width: 2),
+            ),
+            child: Text(remedyClosing, style: sans(14, color: C.onRed, height: 1.8)),
+          ),
+          const SizedBox(height: 12),
+          CreamCard(
+            onTap: () => setState(() => _remedyIntroOpen = !_remedyIntroOpen),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Expanded(child: Text('อ่านเพิ่มเติม', style: serif(16, color: C.red))),
+                Icon(_remedyIntroOpen ? Icons.expand_less_rounded : Icons.expand_more_rounded, color: C.red),
+              ]),
+              if (_remedyIntroOpen)
+                for (final p in remedyIntro)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Text(p, style: sans(14, color: C.inkBody, height: 1.8)),
+                  ),
+            ]),
+          ),
         ]),
       ),
     ];
