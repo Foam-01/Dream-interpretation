@@ -7,6 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:maha_dream/app_shell.dart';
 import 'package:maha_dream/data/category_yak.dart';
 import 'package:maha_dream/data/design_data.dart';
+import 'package:maha_dream/data/dream_images_k.dart';
+import 'package:maha_dream/data/dream_images_yak.dart';
 import 'package:maha_dream/data/dreams_yak.dart';
 import 'package:maha_dream/data/sample_dream_repository.dart';
 import 'package:maha_dream/main.dart';
@@ -102,6 +104,21 @@ void main() {
       expect(letterYakCategoryId, 'letter-yak');
       expect(sampleCategories.map((c) => (c.id, c.name)), contains(('letter-yak', 'หมวด ย')));
       expect(dreamCats.skip(1), sampleCategories.map((c) => c.name));
+    });
+  });
+
+  group('dream pictures (per dream)', () {
+    test('8 checked pictures — every dream has one, bundled and registered', () {
+      expect(dreamImagesYak.keys, dreamsYak.map((d) => d.id));
+      final onDisk = Directory('assets/dreams').listSync().whereType<File>().map((f) => f.uri.pathSegments.last);
+      expect(onDisk.where((f) => f.startsWith('yak-')).toSet(), {for (final id in dreamImagesYak.keys) '$id.jpg'});
+      for (final MapEntry(:key, :value) in dreamImagesYak.entries) {
+        expect(value.url, 'assets/dreams/$key.jpg');
+        expect(value.isAsset, isTrue);
+        expect(value.attribution, isNull, reason: 'no invented credit or licence');
+        expect(value.alt, 'ภาพประกอบ: ${dreamsYak.firstWhere((d) => d.id == key).name}');
+      }
+      expect(dreamsYak.where((d) => dreamImageFor(d.id) == null).map((d) => d.id), isEmpty);
     });
   });
 
