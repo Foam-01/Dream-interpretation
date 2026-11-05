@@ -20,9 +20,10 @@ Future<void> openFeature(WidgetTester tester, String tab, String menuTitle) asyn
   await tester.pump();
 }
 
-/// Text inside the home lock card's badge row (ตัวเด่น / ตัวกัน / เลขวิ่ง).
+/// Text inside the home lock card's badge row (link to ตัวเด่น · ตัวกัน, then เลขวิ่ง).
 Finder inBadgeRow(String text) => find.descendant(
-    of: find.ancestor(of: find.text('ตัวเด่น'), matching: find.byType(Wrap)).first, matching: find.text(text));
+    of: find.ancestor(of: find.text('ตัวเด่น · ตัวกัน ›'), matching: find.byType(Wrap)).first,
+    matching: find.text(text));
 
 void expectHome(
   WidgetTester tester, {
@@ -31,8 +32,6 @@ void expectHome(
   required String draw,
   required String top,
   required String bottom,
-  required String lead,
-  required String block,
   required String running,
 }) {
   expect(find.text(header), findsOneWidget);
@@ -40,8 +39,6 @@ void expectHome(
   expect(find.text(draw), findsOneWidget);
   expect(find.text(top), findsOneWidget);
   expect(find.text(bottom), findsOneWidget);
-  expect(inBadgeRow(lead), findsOneWidget, reason: 'ตัวเด่น');
-  expect(inBadgeRow(block), findsOneWidget, reason: 'ตัวกัน');
   expect(inBadgeRow(running), findsOneWidget, reason: 'เลขวิ่ง');
 }
 
@@ -59,9 +56,7 @@ void main() {
           draw: 'งวด 1 พ.ย. 69',
           top: '6 5',
           bottom: '6 4',
-          lead: '6',
-          block: '0',
-          running: '3 · 1 · 4');
+          running: '1 · 8 · 4'); // draw 1 Nov 2026 is a Sunday
     });
 
     testWidgets('H2 Monday 2026-10-05 (different values, next draw on the 16th)', (tester) async {
@@ -72,9 +67,7 @@ void main() {
           draw: 'งวด 16 ต.ค. 69',
           top: '2 7',
           bottom: '8 8',
-          lead: '2',
-          block: '6',
-          running: '7 · 7 · 6');
+          running: '6 · 3 · 5'); // draw 16 Oct 2026 is a Friday
     });
 
     testWidgets('H3 time of day does not change the date (Sunday 23:59)', (tester) async {
@@ -85,9 +78,7 @@ void main() {
           draw: 'งวด 1 พ.ย. 69',
           top: '1 5',
           bottom: '6 4',
-          lead: '1',
-          block: '5',
-          running: '3 · 6 · 9');
+          running: '1 · 8 · 4'); // draw 1 Nov 2026 is a Sunday
     });
   });
 
@@ -113,11 +104,11 @@ void main() {
       expect(find.text('7 7'), findsOneWidget);
     });
 
-    testWidgets('F3 feature 9 on Monday 2026-10-26 starts on Monday', (tester) async {
+    testWidgets('F3 feature 9 on Monday 2026-10-26 starts on the day of the next draw (Sunday 1 Nov)', (tester) async {
       await pumpAt(tester, DateTime(2026, 10, 26));
       await openFeature(tester, 'เลขเด็ด', 'สูตรเลขเสียงโชค');
-      expect(pillSelected(tester, 'จ'), isTrue);
-      expect(find.text('วันจันทร์'), findsOneWidget);
+      expect(pillSelected(tester, 'อา'), isTrue);
+      expect(find.text('งวด 1 พ.ย. 2569 สลากออกวันอาทิตย์'), findsOneWidget);
     });
   });
 

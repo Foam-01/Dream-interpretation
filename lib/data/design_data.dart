@@ -246,8 +246,8 @@ const menus = <String, MenuDef>{
     MenuItem('2', 'สรุปเลขนำโชค 0–9', 'ความฝันพร้อมรูป แยกตามเลข'),
     MenuItem('7', 'เลขล็อคตามวัน', 'บน · ล่าง ประจำวัน'),
     MenuItem('8', 'สูตรเลขเด่น', 'งวดวันที่ 1 และ 16'),
-    MenuItem('9', 'สูตรเลขเสียงโชค', 'ดาราศาสตร์ ตัวเด่น ตัวกัน'),
-    MenuItem('10', 'สูตรเลขวิ่งประจำวัน', 'เลขวิ่งเด่นวันนี้'),
+    MenuItem('9', 'สูตรเลขเสียงโชค', 'ตัวเด่น · ตัวกัน ตามวันออกสลาก'),
+    MenuItem('10', 'สูตรเลขวิ่งประจำวัน', 'เลขวิ่งตามวันออกสลาก'),
   ]),
   'ritual': MenuDef('แก้ฝัน & ขอโชค', 'พิธีมงคลจากความฝัน', [
     MenuItem('3', 'เคล็ดลับแก้ฝันร้าย', 'ปัดเป่าลางร้าย'),
@@ -294,7 +294,7 @@ const menus = <String, MenuDef>{
   ]),
 };
 
-enum FeatType { day, digit, steps, remedies, chant, animals, pae, draw, table, letter }
+enum FeatType { day, digit, steps, remedies, chant, running, sound, animals, pae, draw, table, letter }
 
 class FeatDef {
   final String title, sub;
@@ -310,8 +310,8 @@ const feats = <String, FeatDef>{
   '6': FeatDef('ภาพแป๊ะกงชี้โชค', '1,000 ตัวเลข 000–999', FeatType.pae),
   '7': FeatDef('เลขล็อคตามวัน', 'บน · ล่าง ประจำวัน', FeatType.day),
   '8': FeatDef('สูตรเลขเด่นประจำงวด', 'งวดวันที่ 1 และ 16', FeatType.draw),
-  '9': FeatDef('สูตรเลขเสียงโชค', 'ตามหลักดาราศาสตร์ไทย', FeatType.day),
-  '10': FeatDef('สูตรเลขวิ่งประจำวัน', 'เลขวิ่งเด่นวันนี้', FeatType.day),
+  '9': FeatDef('สูตรเลขเสียงโชค', 'ตัวเด่น · ตัวกัน ตามวันออกสลาก', FeatType.sound),
+  '10': FeatDef('สูตรเลขวิ่งประจำวัน', 'เลขวิ่งตามวันออกสลาก', FeatType.running),
   '11': FeatDef('บทสวดมนต์ความฝัน', 'สวดเมื่อฝัน ร้ายกลายเป็นดี', FeatType.chant),
   '12': FeatDef('หลักทำนายฝันตัวเลข', 'ตามตำราโบราณ', FeatType.table),
   '13': FeatDef('ทำนายฝันหมวด ก', 'คำทำนายความฝันที่ขึ้นต้นด้วย ก', FeatType.letter),

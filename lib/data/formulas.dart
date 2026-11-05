@@ -14,7 +14,7 @@ class DayResult {
   const DayResult(this.tiles, this.rows, this.note, {this.image});
 }
 
-/// Day-based formulas (features 7, 9, 10). [i] is weekday index, Sunday = 0.
+/// Day-based formulas (feature 7). [i] is weekday index, Sunday = 0.
 /// Ported 1:1 from the design's `dayData`.
 DayResult dayData(String k, int i) {
   final p = i + 1;
@@ -28,19 +28,6 @@ DayResult dayData(String k, int i) {
         [DayTile('บน', u.split('').join(' '), true), DayTile('ล่าง', l.split('').join(' '), false)],
         [['3 ตัวบน', '$u$a'], ['เลขรอง', '$b$c'], ['เลขเบิ้ล', '$p$p']],
         'เลขล็อควัน$day คำนวณจากดาวประจำวัน ($p) และฤกษ์ยามงวดนี้',
-      );
-    case '9':
-      return DayResult(
-        [DayTile('ตัวเด่น', '$p', true), DayTile('ตัวกัน', '${(p + 4) % 10}', false)],
-        [['ดาวประจำวัน', 'พระ$day ($p)'], ['ธาตุ', dayElement[i]], ['สีมงคล', dayColor[i]], ['เลขคู่เด่น', '$p$a · $a$p']],
-        'สูตรเสียงโชค: นำกำลังดาว$dayบวกเลขฤกษ์ ได้ตัวเด่น $p ตัวกันคือดาวที่เป็นศัตรู',
-        image: 'ภาพเทวดาประจำวัน$day',
-      );
-    case '10':
-      return DayResult(
-        [DayTile('วิ่ง 1', '$a', true), DayTile('วิ่ง 2', '$b', true), DayTile('วิ่ง 3', '$c', false)],
-        [['เลขเจาะ 2 ตัว', '$a$b · $b$c'], ['รูด 19 ประตู', 'รูด $a'], ['3 ตัวโต๊ด', '$a$b$c']],
-        'เลขวิ่งเปลี่ยนทุกวันตามดาวประจำวัน ใช้คู่กับเลขจากความฝันยิ่งแม่นยำ',
       );
     default:
       throw ArgumentError.value(k, 'k', 'not a day-based feature');

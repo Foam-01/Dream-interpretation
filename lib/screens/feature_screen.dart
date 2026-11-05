@@ -40,6 +40,8 @@ import '../data/digit_lore.dart';
 import '../data/digit_summary.dart';
 import '../data/dream_chant.dart';
 import '../data/formulas.dart';
+import '../data/running_numbers.dart';
+import '../data/sound_numbers.dart';
 import '../data/nightmare_remedies.dart';
 import '../theme.dart';
 import '../widgets/ui.dart';
@@ -99,6 +101,9 @@ class _FeatureScreenState extends State<FeatureScreen> {
   final _digitKeys = [for (var i = 0; i < 10; i++) GlobalKey()];
   int _hund = 0;
   int _pae = 59;
+  late final DateTime _draw = nextDrawDate(widget.now);
+  late int _runDay = weekdayIndex(_draw);
+  late int _soundDay = weekdayIndex(_draw);
   final _paeQuery = TextEditingController();
 
   @override
@@ -134,6 +139,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
       FeatType.steps => _stepsBody(k),
       FeatType.remedies => _remediesBody(),
       FeatType.chant => _chantBody(),
+      FeatType.running => _runningBody(),
+      FeatType.sound => _soundBody(),
       FeatType.animals => _animalsBody(),
       FeatType.pae => _paeBody(),
       FeatType.digit => _digitBody(),
@@ -154,7 +161,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
     ]);
   }
 
-  // ---- Day-based formulas (7, 9, 10) ----
+  // ---- Day-based formulas (7) ----
   List<Widget> _dayBody(String k) {
     final dd = dayData(k, _day);
     return [
@@ -306,6 +313,177 @@ class _FeatureScreenState extends State<FeatureScreen> {
                     textAlign: TextAlign.center, style: serif(17, color: C.goldLight, height: 1.9)),
               ]),
             ),
+        ]),
+      ),
+    ];
+  }
+
+  // ---- Sound numbers (9): the book's lead / block groups by the draw's weekday; opens on the next draw ----
+  List<Widget> _soundBody() {
+    final lead = soundLead[_soundDay];
+    final block = soundBlock[_soundDay];
+    final isDrawDay = _soundDay == weekdayIndex(_draw);
+    Widget group(String title, List<String> nums, {required bool dark}) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: serif(16, color: C.red)),
+            const SizedBox(height: 8),
+            Wrap(spacing: 8, runSpacing: 8, children: [
+              for (final n in nums)
+                Container(
+                  width: 52,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: dark ? C.red : C.chipGrey,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: dark ? C.goldDeep : C.goldBorder),
+                  ),
+                  child: Text(n, style: serif(18, color: dark ? C.goldLight : C.ink, height: 1.2)),
+                ),
+            ]),
+          ],
+        );
+    return [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(12, 14, 12, 4),
+        child: Row(children: [
+          for (var i = 0; i < 7; i++)
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: SelectPill(
+                  text: dayShort[i],
+                  selected: _soundDay == i,
+                  onTap: () => setState(() => _soundDay = i),
+                  radius: 10,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                ),
+              ),
+            ),
+        ]),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: C.red,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: C.goldDeep, width: 2),
+          ),
+          child: Column(children: [
+            if (soundImages[_soundDay] case final img?) ...[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Image.asset(img, fit: BoxFit.cover, semanticLabel: 'ภาพประจำวัน${dayFull[_soundDay]}'),
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
+            Text(
+              isDrawDay ? 'งวด ${thaiDate(_draw)} สลากออกวัน${dayFull[_soundDay]}' : 'สลากออกวัน${dayFull[_soundDay]}',
+              textAlign: TextAlign.center,
+              style: serif(17, color: C.goldLight),
+            ),
+          ]),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          group('กลุ่มเลขตัวเด่น', lead, dark: true),
+          const SizedBox(height: 18),
+          group('กลุ่มเลขตัวกัน', block, dark: false),
+        ]),
+      ),
+    ];
+  }
+
+  // ---- Running numbers (10): the book's table by the draw's weekday; opens on the next draw ----
+  List<Widget> _runningBody() {
+    final nums = runningByDrawDay[_runDay];
+    final isDrawDay = _runDay == weekdayIndex(_draw);
+    return [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(12, 14, 12, 4),
+        child: Row(children: [
+          for (var i = 0; i < 7; i++)
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: SelectPill(
+                  text: dayShort[i],
+                  selected: _runDay == i,
+                  onTap: () => setState(() => _runDay = i),
+                  radius: 10,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                ),
+              ),
+            ),
+        ]),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: C.red,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: C.goldDeep, width: 2),
+          ),
+          child: Column(children: [
+            Text(
+              isDrawDay ? 'งวด ${thaiDate(_draw)} ออกวัน${dayFull[_runDay]}' : 'ถ้าสลากออกวัน${dayFull[_runDay]}',
+              style: sans(14, color: C.gold),
+            ),
+            const SizedBox(height: 2),
+            Text('งวดนั้นจะมีเลขวิ่ง', style: sans(13, color: C.onRedMuted)),
+            const SizedBox(height: 10),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              for (final (i, n) in nums.indexed) ...[
+                if (i > 0) const SizedBox(width: 10),
+                DigitBox(n, width: 60, height: 70, fontSize: 36),
+              ],
+            ]),
+          ]),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(runningIntro, style: sans(14, color: C.inkBody, height: 1.8)),
+          const SizedBox(height: 14),
+          CreamCard(
+            padding: EdgeInsets.zero,
+            child: Column(children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: const BoxDecoration(
+                  color: C.red,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                ),
+                child: Text(runningTableTitle, textAlign: TextAlign.center, style: serif(16, color: C.goldLight)),
+              ),
+              for (var i = 0; i < 7; i++)
+                Container(
+                  color: i == _runDay ? C.tileLight : null,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Row(children: [
+                    Expanded(
+                      child: Text('วัน${dayFull[i]}',
+                          style: sans(15, weight: i == _runDay ? FontWeight.w700 : FontWeight.w400)),
+                    ),
+                    Text(runningByDrawDay[i].join('   '), style: serif(18, color: C.red)),
+                  ]),
+                ),
+            ]),
+          ),
         ]),
       ),
     ];

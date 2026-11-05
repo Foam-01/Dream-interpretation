@@ -7,6 +7,7 @@ import '../data/design_data.dart';
 import '../data/dream_images_k.dart';
 import '../data/dream_repository.dart';
 import '../data/formulas.dart';
+import '../data/running_numbers.dart';
 import '../state/daily_pick.dart';
 import '../state/load_request.dart';
 import '../theme.dart';
@@ -37,8 +38,8 @@ class HomeScreen extends StatelessWidget {
     final app = AppScope.of(context);
     final wd = weekdayIndex(now);
     final locked = dayData('7', wd);
-    final sound = dayData('9', wd);
-    final running = dayData('10', wd);
+    // The book's running numbers follow the weekday the next draw falls on.
+    final running = runningByDrawDay[weekdayIndex(nextDrawDate(now))];
 
     return ListView(padding: EdgeInsets.zero, children: [
       RedHeader(
@@ -141,12 +142,15 @@ class HomeScreen extends StatelessWidget {
               ]),
               const SizedBox(height: 12),
               Wrap(spacing: 8, runSpacing: 4, crossAxisAlignment: WrapCrossAlignment.center, children: [
-                Text('ตัวเด่น', style: sans(13, color: C.inkSoft)),
-                _Badge(sound.tiles[0].value, bg: C.redBright, fg: Colors.white),
-                Text('ตัวกัน', style: sans(13, color: C.inkSoft)),
-                _Badge(sound.tiles[1].value, bg: C.chipGrey, fg: C.ink),
+                Semantics(
+                  button: true,
+                  child: GestureDetector(
+                    onTap: () => app.openFeat('9'),
+                    child: Text('ตัวเด่น · ตัวกัน ›', style: sans(13, weight: FontWeight.w600, color: C.redDeep)),
+                  ),
+                ),
                 Text('เลขวิ่ง', style: sans(13, color: C.inkSoft)),
-                Text(running.tiles.map((t) => t.value).join(' · '),
+                Text(running.join(' · '),
                     style: sans(13, weight: FontWeight.w700, color: C.redBright)),
               ]),
             ]),
@@ -175,19 +179,6 @@ class _LockTile extends StatelessWidget {
           Text(value,
               style: serif(34, weight: FontWeight.w800, color: dark ? C.goldLight : C.red, letterSpacing: 4, height: 1.3)),
         ]),
-      );
-}
-
-class _Badge extends StatelessWidget {
-  final String text;
-  final Color bg, fg;
-  const _Badge(this.text, {required this.bg, required this.fg});
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(6)),
-        child: Text(text, style: sans(13, weight: FontWeight.w700, color: fg)),
       );
 }
 
