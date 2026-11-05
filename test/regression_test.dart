@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:maha_dream/data/design_data.dart';
 import 'package:maha_dream/data/formulas.dart';
+import 'package:maha_dream/data/lock_numbers.dart';
 import 'package:maha_dream/main.dart';
 import 'package:maha_dream/screens/home_screen.dart' show DreamCard;
 import 'package:maha_dream/widgets/ui.dart';
@@ -283,17 +284,16 @@ void main() {
   });
 
   group('E. Feature selection', () {
-    testWidgets('lock-by-day: selecting Monday shows Monday numbers', (tester) async {
+    testWidgets('lock-by-day: selecting Monday shows the Monday numbers from the book', (tester) async {
       await pumpApp(tester);
       await tapTab(tester, 'เลขเด็ด');
       await tapText(tester, 'เลขล็อคตามวัน');
       await tapPill(tester, 'จ');
-      final expected = dayData('7', 1);
-      expect(find.text('วันจันทร์'), findsOneWidget);
-      expect(expected.tiles[0].value, '2 7');
-      expect(find.text('2 7'), findsOneWidget);
-      expect(find.text(expected.tiles[1].value), findsOneWidget);
-      expect(find.text('เลขล็อควันจันทร์ คำนวณจากดาวประจำวัน (2) และฤกษ์ยามงวดนี้'), findsOneWidget);
+      await tester.pumpAndSettle();
+      for (final n in [...lockTop[1], ...lockBottom[1]]) {
+        expect(find.text(n), findsWidgets, reason: n);
+      }
+      expect(find.textContaining('คำนวณจากดาวประจำวัน'), findsNothing, reason: 'sample formula removed');
     });
 
     testWidgets('life fortune (menu 1) opens the dream search, not a birthday formula', (tester) async {

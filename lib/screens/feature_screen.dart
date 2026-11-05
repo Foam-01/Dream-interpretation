@@ -41,6 +41,7 @@ import '../data/digit_summary.dart';
 import '../data/draw_numbers.dart';
 import '../data/dream_chant.dart';
 import '../data/formulas.dart';
+import '../data/lock_numbers.dart';
 import '../data/running_numbers.dart';
 import '../data/sound_numbers.dart';
 import '../data/nightmare_remedies.dart';
@@ -97,13 +98,13 @@ class FeatureScreen extends StatefulWidget {
 
 class _FeatureScreenState extends State<FeatureScreen> {
   // Initialised once per State from the injected time (same lifecycle as before).
-  late int _day = weekdayIndex(widget.now);
   int? _digit;
   final _digitKeys = [for (var i = 0; i < 10; i++) GlobalKey()];
   int _hund = 0;
   int _pae = 59;
   late final DateTime _draw = nextDrawDate(widget.now);
   late int _runDay = weekdayIndex(_draw);
+  late int _lockDay = weekdayIndex(_draw);
   late int _soundDay = weekdayIndex(_draw);
   final _paeQuery = TextEditingController();
   final _animalQuery = TextEditingController();
@@ -138,7 +139,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
     final k = widget.featKey;
     final f = feats[k]!;
     final body = switch (f.type) {
-      FeatType.day => _dayBody(k),
+      FeatType.lock => _lockBody(),
       FeatType.steps => _stepsBody(k),
       FeatType.remedies => _remediesBody(),
       FeatType.chant => _chantBody(),
@@ -164,9 +165,43 @@ class _FeatureScreenState extends State<FeatureScreen> {
     ]);
   }
 
-  // ---- Day-based formulas (7) ----
-  List<Widget> _dayBody(String k) {
-    final dd = dayData(k, _day);
+  // ---- Lock numbers (7): the book's บน / ล่าง table by weekday; opens on the next draw's day ----
+  List<Widget> _lockBody() {
+    final isDrawDay = _lockDay == weekdayIndex(_draw);
+    Widget group(String title, List<String> nums, {required bool top}) => CreamCard(
+          borderWidth: 1.5,
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              Container(width: 4, height: 18, color: top ? C.red : C.goldDeep),
+              const SizedBox(width: 8),
+              Text(title, style: serif(17, color: C.red)),
+            ]),
+            const SizedBox(height: 12),
+            GridView.count(
+              crossAxisCount: 3,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 1.7,
+              children: [
+                for (final n in nums)
+                  Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: top ? C.red : C.tileLight,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: top ? C.gold : C.goldBorder, width: top ? 1.5 : 1),
+                    ),
+                    child: Text(n,
+                        style: serif(26, weight: FontWeight.w800, color: top ? C.goldLight : C.red, height: 1.2)),
+                  ),
+              ],
+            ),
+          ]),
+        );
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(12, 14, 12, 4),
@@ -177,8 +212,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: SelectPill(
                   text: dayShort[i],
-                  selected: _day == i,
-                  onTap: () => setState(() => _day = i),
+                  selected: _lockDay == i,
+                  onTap: () => setState(() => _lockDay = i),
                   radius: 10,
                   padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
@@ -187,77 +222,25 @@ class _FeatureScreenState extends State<FeatureScreen> {
         ]),
       ),
       Padding(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-        child: Text('วัน${dayFull[_day]}', style: sans(13, color: C.caption)),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-        child: CreamCard(
-          borderWidth: 1.5,
-          child: Column(children: [
-            if (dd.image != null) ...[
-              ImagePlaceholder(dd.image!,
-                  height: 140,
-                  width: double.infinity,
-                  radius: 12,
-                  fontSize: 11,
-                  band: 8,
-                  border: Border.all(color: C.goldBorder)),
-              const SizedBox(height: 14),
-            ],
-            Row(children: [
-              for (final (i, t) in dd.tiles.indexed) ...[
-                if (i > 0) const SizedBox(width: 10),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                    decoration: BoxDecoration(
-                      color: t.dark ? C.red : C.tileLight,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: C.goldBorder, width: 1.5),
-                    ),
-                    child: Column(children: [
-                      Text(t.label, style: sans(12, color: t.dark ? C.gold : C.imgText)),
-                      Text(t.value,
-                          style: serif(30,
-                              weight: FontWeight.w800,
-                              color: t.dark ? C.goldLight : C.red,
-                              letterSpacing: 3,
-                              height: 1.3)),
-                    ]),
-                  ),
-                ),
-              ],
-            ]),
-          ]),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-        child: CreamCard(
-          padding: EdgeInsets.zero,
-          child: Column(children: [
-            for (final (i, r) in dd.rows.indexed)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-                  border: i < dd.rows.length - 1 ? const Border(bottom: BorderSide(color: C.divider)) : null,
-                ),
-                child: Row(children: [
-                  Expanded(child: Text(r[0], style: sans(15, color: C.inkMuted))),
-                  r[1].contains('★') || r[1].contains('☆')
-                      ? _Stars(r[1])
-                      : Text(r[1], style: sans(15, weight: FontWeight.w700, color: C.red)),
-                ]),
-              ),
-          ]),
-        ),
-      ),
-      Container(
-        margin: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(color: C.red, borderRadius: BorderRadius.circular(16)),
-        child: Text(dd.note, style: sans(14, color: C.onRed, height: 1.7)),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Text(
+            isDrawDay ? 'งวด ${thaiDate(_draw)} · ออกวัน${dayFull[_lockDay]}' : 'ถ้าสลากออกวัน${dayFull[_lockDay]}',
+            textAlign: TextAlign.center,
+            style: serif(18, color: C.red),
+          ),
+          const SizedBox(height: 12),
+          group('เลขบน', lockTop[_lockDay], top: true),
+          const SizedBox(height: 12),
+          group('เลขล่าง', lockBottom[_lockDay], top: false),
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(color: C.tileLight.withValues(alpha: .5), borderRadius: BorderRadius.circular(12)),
+            child: Text('$lockNote\n(เลข "ล็อค" ตามกำลังวัน $lockSource)',
+                style: sans(13, color: C.inkSoft, height: 1.7)),
+          ),
+        ]),
       ),
     ];
   }
@@ -1066,20 +1049,4 @@ class _FeatureScreenState extends State<FeatureScreen> {
       ),
     ];
   }
-}
-
-/// Renders "★★★☆☆" with icons (Thai fonts lack these glyphs).
-class _Stars extends StatelessWidget {
-  final String value;
-  const _Stars(this.value);
-
-  @override
-  Widget build(BuildContext context) => Semantics(
-        label: '${'★'.allMatches(value).length} จาก ${value.length} ดาว',
-        excludeSemantics: true,
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          for (final ch in value.split(''))
-            Icon(ch == '★' ? Icons.star : Icons.star_border, size: 16, color: C.red),
-        ]),
-      );
 }

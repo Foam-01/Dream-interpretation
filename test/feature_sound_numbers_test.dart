@@ -72,7 +72,7 @@ void main() {
     await tester.pumpWidget(MahaDreamApp(clock: () => DateTime(2026, 10, 5)));
     await tester.pumpAndSettle();
     final link = find.text('ตัวเด่น · ตัวกัน ›');
-    await tester.scrollUntilVisible(link, 300, scrollable: find.byType(Scrollable).first);
+    await tester.scrollUntilVisible(link.hitTestable(), 200, scrollable: find.byType(Scrollable).first);
     await tester.tap(link);
     await tester.pumpAndSettle();
     expect(find.text('งวด 16 ต.ค. 2569 สลากออกวันศุกร์'), findsOneWidget);

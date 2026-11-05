@@ -52,10 +52,10 @@ void main() {
       await pumpAt(tester, DateTime(2026, 10, 23));
       expectHome(tester,
           header: 'วันศุกร์ที่ 23 ต.ค. 2569',
-          cardTitle: 'เลขล็อคประจำวันศุกร์',
+          cardTitle: 'เลขล็อควันอาทิตย์', // draw 1 Nov 2026 is a Sunday
           draw: 'งวด 1 พ.ย. 69',
-          top: '6 5',
-          bottom: '6 4',
+          top: '06  14  16\n36  59  80',
+          bottom: '12  33  38\n66  77  89',
           running: '1 · 8 · 4'); // draw 1 Nov 2026 is a Sunday
     });
 
@@ -63,10 +63,10 @@ void main() {
       await pumpAt(tester, DateTime(2026, 10, 5));
       expectHome(tester,
           header: 'วันจันทร์ที่ 5 ต.ค. 2569',
-          cardTitle: 'เลขล็อคประจำวันจันทร์',
+          cardTitle: 'เลขล็อควันศุกร์', // draw 16 Oct 2026 is a Friday
           draw: 'งวด 16 ต.ค. 69',
-          top: '2 7',
-          bottom: '8 8',
+          top: '21  31  41\n67  77  88',
+          bottom: '22  36  44\n56  86  96',
           running: '6 · 3 · 5'); // draw 16 Oct 2026 is a Friday
     });
 
@@ -74,10 +74,10 @@ void main() {
       await pumpAt(tester, DateTime(2026, 10, 25, 23, 59));
       expectHome(tester,
           header: 'วันอาทิตย์ที่ 25 ต.ค. 2569',
-          cardTitle: 'เลขล็อคประจำวันอาทิตย์',
+          cardTitle: 'เลขล็อควันอาทิตย์',
           draw: 'งวด 1 พ.ย. 69',
-          top: '1 5',
-          bottom: '6 4',
+          top: '06  14  16\n36  59  80',
+          bottom: '12  33  38\n66  77  89',
           running: '1 · 8 · 4'); // draw 1 Nov 2026 is a Sunday
     });
   });
@@ -86,22 +86,24 @@ void main() {
     bool pillSelected(WidgetTester tester, String label) =>
         tester.widget<SelectPill>(find.widgetWithText(SelectPill, label)).selected;
 
-    testWidgets('F1 feature 7 on Sunday 2026-10-25 starts on Sunday', (tester) async {
+    testWidgets('F1 feature 7 on Sunday 2026-10-25 starts on the next draw (Sunday 1 Nov)', (tester) async {
       await pumpAt(tester, DateTime(2026, 10, 25));
       await openFeature(tester, 'เลขเด็ด', 'เลขล็อคตามวัน');
       expect(pillSelected(tester, 'อา'), isTrue);
       expect(pillSelected(tester, 'จ'), isFalse);
-      expect(find.text('วันอาทิตย์'), findsOneWidget);
-      expect(find.text('1 5'), findsOneWidget);
-      expect(find.text('เลขล็อควันอาทิตย์ คำนวณจากดาวประจำวัน (1) และฤกษ์ยามงวดนี้'), findsOneWidget);
+      expect(find.text('งวด 1 พ.ย. 2569 · ออกวันอาทิตย์'), findsOneWidget);
+      expect(find.text('59'), findsOneWidget); // Sunday บน
     });
 
-    testWidgets('F2 feature 7 on Saturday 2026-10-24 starts on Saturday', (tester) async {
-      await pumpAt(tester, DateTime(2026, 10, 24));
+    testWidgets('F2 feature 7 on Monday 2026-10-05 starts on the next draw (Friday 16 Oct)', (tester) async {
+      await pumpAt(tester, DateTime(2026, 10, 5));
       await openFeature(tester, 'เลขเด็ด', 'เลขล็อคตามวัน');
-      expect(pillSelected(tester, 'ส'), isTrue);
-      expect(find.text('วันเสาร์'), findsOneWidget);
-      expect(find.text('7 7'), findsOneWidget);
+      expect(pillSelected(tester, 'ศ'), isTrue);
+      expect(find.text('งวด 16 ต.ค. 2569 · ออกวันศุกร์'), findsOneWidget);
+      await tester.tap(find.widgetWithText(SelectPill, 'ส'));
+      await tester.pumpAndSettle();
+      expect(find.text('ถ้าสลากออกวันเสาร์'), findsOneWidget);
+      expect(find.text('62'), findsOneWidget); // Saturday บน
     });
 
     testWidgets('F3 feature 9 on Monday 2026-10-26 starts on the day of the next draw (Sunday 1 Nov)', (tester) async {

@@ -1,40 +1,6 @@
 import 'design_data.dart';
 import 'draw_schedule.dart';
 
-class DayTile {
-  final String label, value;
-  final bool dark;
-  const DayTile(this.label, this.value, this.dark);
-}
-
-class DayResult {
-  final String? image;
-  final List<DayTile> tiles;
-  final List<List<String>> rows;
-  final String note;
-  const DayResult(this.tiles, this.rows, this.note, {this.image});
-}
-
-/// Day-based formulas (feature 7). [i] is weekday index, Sunday = 0.
-/// Ported 1:1 from the design's `dayData`.
-DayResult dayData(String k, int i) {
-  final p = i + 1;
-  final a = (p * 3 + i) % 10, b = (p + 5) % 10, c = (p * 7 + 2) % 10;
-  final u = '$p${(p + i + 4) % 10}';
-  final l = '${(i * 2 + 6) % 10}${(p * 4) % 10}';
-  final day = dayFull[i];
-  switch (k) {
-    case '7':
-      return DayResult(
-        [DayTile('บน', u.split('').join(' '), true), DayTile('ล่าง', l.split('').join(' '), false)],
-        [['3 ตัวบน', '$u$a'], ['เลขรอง', '$b$c'], ['เลขเบิ้ล', '$p$p']],
-        'เลขล็อควัน$day คำนวณจากดาวประจำวัน ($p) และฤกษ์ยามงวดนี้',
-      );
-    default:
-      throw ArgumentError.value(k, 'k', 'not a day-based feature');
-  }
-}
-
 class Pae {
   final String num, name, rev;
   const Pae(this.num, this.name, this.rev);

@@ -7,6 +7,7 @@ import '../data/design_data.dart';
 import '../data/dream_images_k.dart';
 import '../data/dream_repository.dart';
 import '../data/formulas.dart';
+import '../data/lock_numbers.dart';
 import '../data/running_numbers.dart';
 import '../state/daily_pick.dart';
 import '../state/load_request.dart';
@@ -36,10 +37,10 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final app = AppScope.of(context);
-    final wd = weekdayIndex(now);
-    final locked = dayData('7', wd);
-    // The book's running numbers follow the weekday the next draw falls on.
-    final running = runningByDrawDay[weekdayIndex(nextDrawDate(now))];
+    // The book's lock and running numbers follow the weekday the next draw falls on.
+    final draw = nextDrawDate(now);
+    final drawDay = weekdayIndex(draw);
+    final running = runningByDrawDay[drawDay];
 
     return ListView(padding: EdgeInsets.zero, children: [
       RedHeader(
@@ -131,14 +132,14 @@ class HomeScreen extends StatelessWidget {
             shadow: const [BoxShadow(color: Color(0x26781E0A), blurRadius: 24, offset: Offset(0, 8))],
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
-                Expanded(child: Text('เลขล็อคประจำวัน${dayFull[wd]}', style: serif(16, color: C.red))),
-                Text('งวด ${thaiDateShort(nextDrawDate(now))}', style: sans(12, color: C.caption)),
+                Expanded(child: Text('เลขล็อควัน${dayFull[drawDay]}', style: serif(16, color: C.red))),
+                Text('งวด ${thaiDateShort(draw)}', style: sans(12, color: C.caption)),
               ]),
               const SizedBox(height: 12),
               Row(children: [
-                Expanded(child: _LockTile(label: 'บน', value: locked.tiles[0].value, dark: true)),
+                Expanded(child: _LockTile(label: 'บน', numbers: lockTop[drawDay], dark: true)),
                 const SizedBox(width: 10),
-                Expanded(child: _LockTile(label: 'ล่าง', value: locked.tiles[1].value, dark: false)),
+                Expanded(child: _LockTile(label: 'ล่าง', numbers: lockBottom[drawDay], dark: false)),
               ]),
               const SizedBox(height: 12),
               Wrap(spacing: 8, runSpacing: 4, crossAxisAlignment: WrapCrossAlignment.center, children: [
@@ -162,9 +163,10 @@ class HomeScreen extends StatelessWidget {
 }
 
 class _LockTile extends StatelessWidget {
-  final String label, value;
+  final String label;
+  final List<String> numbers;
   final bool dark;
-  const _LockTile({required this.label, required this.value, required this.dark});
+  const _LockTile({required this.label, required this.numbers, required this.dark});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -176,8 +178,10 @@ class _LockTile extends StatelessWidget {
         ),
         child: Column(children: [
           Text(label, style: sans(12, color: dark ? C.gold : C.red)),
-          Text(value,
-              style: serif(34, weight: FontWeight.w800, color: dark ? C.goldLight : C.red, letterSpacing: 4, height: 1.3)),
+          const SizedBox(height: 4),
+          Text('${numbers.take(3).join('  ')}\n${numbers.skip(3).join('  ')}',
+              textAlign: TextAlign.center,
+              style: serif(20, weight: FontWeight.w800, color: dark ? C.goldLight : C.red, height: 1.4)),
         ]),
       );
 }

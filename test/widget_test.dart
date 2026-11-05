@@ -13,12 +13,6 @@ void main() {
     expect(d.firstTwo, '08');
   });
 
-  test('day formula matches design for Friday lock numbers', () {
-    final r = dayData('7', 5); // Friday
-    expect(r.tiles.first.label, 'บน');
-    expect(r.rows.length, 3);
-  });
-
   test('pae number is zero-padded and reversible', () {
     final p = paeOf(59);
     expect(p.num, '059');

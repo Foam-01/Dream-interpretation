@@ -244,7 +244,7 @@ class MenuDef {
 const menus = <String, MenuDef>{
   'lucky': MenuDef('เลขเด็ด', 'สูตรเลขประจำงวด', [
     MenuItem('2', 'สรุปเลขนำโชค 0–9', 'ความฝันพร้อมรูป แยกตามเลข'),
-    MenuItem('7', 'เลขล็อคตามวัน', 'บน · ล่าง ประจำวัน'),
+    MenuItem('7', 'เลขล็อคตามวัน', 'บน · ล่าง ตามวันออกสลาก'),
     MenuItem('8', 'สูตรเลขเด่น', 'งวดวันที่ 1 และ 16'),
     MenuItem('9', 'สูตรเลขเสียงโชค', 'ตัวเด่น · ตัวกัน ตามวันออกสลาก'),
     MenuItem('10', 'สูตรเลขวิ่งประจำวัน', 'เลขวิ่งตามวันออกสลาก'),
@@ -294,7 +294,7 @@ const menus = <String, MenuDef>{
   ]),
 };
 
-enum FeatType { day, digit, steps, remedies, chant, running, sound, animals, pae, draw, table, letter }
+enum FeatType { lock, digit, steps, remedies, chant, running, sound, animals, pae, draw, table, letter }
 
 class FeatDef {
   final String title, sub;
@@ -308,7 +308,7 @@ const feats = <String, FeatDef>{
   '4': FeatDef('การขอโชคจากความฝัน', 'ไหว้ขอโชค–ลาภที่ประตูบ้าน', FeatType.steps),
   '5': FeatDef('ทำนายฝันจากสัตว์', 'ตารางชื่อสัตว์ + เลข + รูป', FeatType.animals),
   '6': FeatDef('ภาพแป๊ะกงชี้โชค', '1,000 ตัวเลข 000–999', FeatType.pae),
-  '7': FeatDef('เลขล็อคตามวัน', 'บน · ล่าง ประจำวัน', FeatType.day),
+  '7': FeatDef('เลขล็อคตามวัน', 'บน · ล่าง ตามวันออกสลาก', FeatType.lock),
   '8': FeatDef('สูตรเลขเด่นประจำวัน', 'งวดวันที่ 1 และ 16', FeatType.draw),
   '9': FeatDef('สูตรเลขเสียงโชค', 'ตัวเด่น · ตัวกัน ตามวันออกสลาก', FeatType.sound),
   '10': FeatDef('สูตรเลขวิ่งประจำวัน', 'เลขวิ่งตามวันออกสลาก', FeatType.running),
@@ -357,8 +357,6 @@ String tabOf(String k) => const ['3', '4', '11'].contains(k)
 
 const dayShort = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
 const dayFull = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
-const dayColor = ['แดง', 'เหลือง', 'ชมพู', 'เขียว', 'ส้ม', 'ฟ้า', 'ม่วง'];
-const dayElement = ['ไฟ', 'น้ำ', 'ไฟ', 'ดิน', 'ลม', 'น้ำ', 'ดิน'];
 
 // name, meaning, main digit, two-digit
 const animals = [
