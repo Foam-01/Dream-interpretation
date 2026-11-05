@@ -310,7 +310,13 @@ class DreamCard extends StatelessWidget {
         onTap: () => AppScope.of(context).openDream(dreamId),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
           DreamImageView(
-              image: dreamImageFor(dreamId, image), placeholderLabel: 'ภาพ $name', height: 80, width: double.infinity),
+              image: dreamImageFor(dreamId, image),
+              placeholderLabel: 'ภาพ $name',
+              // Contained so the numbers printed in the picture's corners are not cropped.
+              height: 90,
+              width: double.infinity,
+              fit: BoxFit.contain,
+              background: C.card),
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
