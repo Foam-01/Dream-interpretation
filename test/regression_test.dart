@@ -366,7 +366,15 @@ void main() {
       expect(nextDrawDate(DateTime(2026, 10, 2)), DateTime(2026, 10, 16));
       expect(nextDrawDate(DateTime(2026, 10, 16)), DateTime(2026, 10, 16));
       expect(nextDrawDate(DateTime(2026, 10, 17)), DateTime(2026, 11, 1));
-      expect(nextDrawDate(DateTime(2026, 12, 20)), DateTime(2027, 1, 1)); // year rollover
+      expect(nextDrawDate(DateTime(2026, 12, 20)), DateTime(2027, 1, 2)); // year rollover, New Year draw moved to the 2nd
+      // Draws the lottery office moved (drawShifts): 16 Dec 2569 → 17 Dec, 1 Jan 2570 → 2 Jan.
+      expect(nextDrawDate(DateTime(2026, 12, 10)), DateTime(2026, 12, 17));
+      expect(nextDrawDate(DateTime(2026, 12, 17)), DateTime(2026, 12, 17));
+      expect(nextDrawDate(DateTime(2027, 1, 1)), DateTime(2027, 1, 2));
+      expect(nextDrawDate(DateTime(2027, 1, 3)), DateTime(2027, 1, 16));
+      expect(drawRound(DateTime(2026, 12, 17)), 16);
+      expect(drawRound(DateTime(2027, 1, 2)), 1);
+      expect(drawRound(DateTime(2026, 11, 16)), 16);
       expect(nextDrawDate(DateTime(2026, 10, 1, 23, 59)), DateTime(2026, 10, 1)); // time ignored
     });
   });

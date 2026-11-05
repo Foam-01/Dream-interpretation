@@ -991,7 +991,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
   // ---- Draw lead numbers (8): the book's table (weekday × the 1st / the 16th); the next two draws first ----
   List<Widget> _drawBody() {
     final first = _draw;
-    final second = first.day == 1 ? DateTime(first.year, first.month, 16) : DateTime(first.year, first.month + 1, 1);
+    final second = nextDrawDate(first.add(const Duration(days: 1)));
     Widget cell(String text, {bool head = false, bool on = false}) => Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 9),
@@ -1004,7 +1004,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
           ),
         );
     bool isNext(int day, int col) =>
-        [first, second].any((d) => weekdayIndex(d) == day && (d.day == 1 ? 0 : 1) == col);
+        [first, second].any((d) => weekdayIndex(d) == day && (drawRound(d) == 1 ? 0 : 1) == col);
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -1024,7 +1024,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                   Text('งวด ${thaiDate(d)} ออกวัน${dayFull[weekdayIndex(d)]}', style: sans(14, color: C.gold)),
                   const SizedBox(height: 8),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    for (final (i, n) in drawLeadFor(d, weekdayIndex(d)).indexed) ...[
+                    for (final (i, n) in drawLeadFor(drawRound(d), weekdayIndex(d)).indexed) ...[
                       if (i > 0) const SizedBox(width: 10),
                       DigitBox(n, width: 52, height: 60, fontSize: 30),
                     ],

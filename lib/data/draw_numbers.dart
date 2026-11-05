@@ -17,5 +17,5 @@ const drawLead = [
   [['4', '7', '8'], ['1', '5', '7']], // เสาร์
 ];
 
-/// The lead numbers for a draw on [date] (the 1st or the 16th).
-List<String> drawLeadFor(DateTime date, int weekday) => drawLead[weekday][date.day == 1 ? 0 : 1];
+/// The lead numbers for a draw: the weekday it really falls on, and the round (1st or 16th) it was due on.
+List<String> drawLeadFor(int round, int weekday) => drawLead[weekday][round == 1 ? 0 : 1];

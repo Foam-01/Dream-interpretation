@@ -17,8 +17,8 @@ void main() {
     }
   });
 
-  test('a draw on the 1st reads the first column, on the 16th the second', () {
-    expect(drawLeadFor(DateTime(2026, 11, 1), 0), ['5', '7', '4']);
-    expect(drawLeadFor(DateTime(2026, 10, 16), 5), ['6', '3', '4']);
+  test('a draw due on the 1st reads the first column, on the 16th the second', () {
+    expect(drawLeadFor(1, 0), ['5', '7', '4']);
+    expect(drawLeadFor(16, 5), ['6', '3', '4']);
   });
 }

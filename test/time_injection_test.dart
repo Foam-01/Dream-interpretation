@@ -146,9 +146,10 @@ void main() {
       expectDraws(tester, [('งวด 1 พ.ย. 2569 ออกวันอาทิตย์', '574'), ('งวด 16 พ.ย. 2569 ออกวันจันทร์', '493')]);
     });
 
-    testWidgets('D3 2026-12-10: year rollover, 16 Dec (Wednesday) then 1 Jan (Friday)', (tester) async {
+    testWidgets('D3 2026-12-10: moved draws, 17 Dec (Thursday) then 2 Jan (Saturday)', (tester) async {
+      // 16 Dec 2569 → 17 Dec and 1 Jan 2570 → 2 Jan (drawShifts): real weekday, original round's column.
       await openDraws(tester, DateTime(2026, 12, 10));
-      expectDraws(tester, [('งวด 16 ธ.ค. 2569 ออกวันพุธ', '642'), ('งวด 1 ม.ค. 2570 ออกวันศุกร์', '543')]);
+      expectDraws(tester, [('งวด 17 ธ.ค. 2569 ออกวันพฤหัสบดี', '823'), ('งวด 2 ม.ค. 2570 ออกวันเสาร์', '478')]);
     });
   });
 }
