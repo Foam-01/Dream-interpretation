@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../app_shell.dart';
@@ -34,11 +36,11 @@ import '../data/category_w.dart';
 import '../data/category_y.dart';
 import '../data/category_yak.dart';
 import '../data/design_data.dart';
+import '../data/digit_summary.dart';
 import '../data/formulas.dart';
 import '../data/nightmare_remedies.dart';
 import '../theme.dart';
 import '../widgets/ui.dart';
-import 'home_screen.dart' show DreamCard;
 import 'letter_category_section.dart';
 
 
@@ -91,7 +93,8 @@ class FeatureScreen extends StatefulWidget {
 class _FeatureScreenState extends State<FeatureScreen> {
   // Initialised once per State from the injected time (same lifecycle as before).
   late int _day = weekdayIndex(widget.now);
-  int _digit = 5;
+  int? _digit;
+  final _digitKeys = [for (var i = 0; i < 10; i++) GlobalKey()];
   int _hund = 0;
   int _pae = 59;
   bool _remedyIntroOpen = false;
@@ -490,72 +493,101 @@ class _FeatureScreenState extends State<FeatureScreen> {
     );
   }
 
-  // ---- Lucky digits 0-9 summary (2) ----
+  // ---- Lucky digits 0-9 summary (2): the owner's book pages, one card per digit; pills jump to a card ----
+  /// The page list builds cards lazily, so a far card may not exist yet: step down from the top until it does.
+  Future<void> _jumpToDigit(ScrollPosition pos, int digit) async {
+    final key = _digitKeys[digit];
+    if (key.currentContext == null) pos.jumpTo(0);
+    while (key.currentContext == null && pos.pixels < pos.maxScrollExtent) {
+      pos.jumpTo(math.min(pos.pixels + pos.viewportDimension, pos.maxScrollExtent));
+      await WidgetsBinding.instance.endOfFrame;
+    }
+    final target = key.currentContext;
+    if (target != null && target.mounted) {
+      await Scrollable.ensureVisible(target, duration: const Duration(milliseconds: 300));
+    }
+  }
+
   List<Widget> _digitBody() {
-    final l = lore[_digit];
-    final list = [
-      for (final d in dreams)
-        if (d.digits.contains('$_digit')) d,
-    ];
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-        child: GridView.count(
-          crossAxisCount: 5,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 1.25,
-          children: [
-            for (var i = 0; i < 10; i++)
-              SelectPill(
-                text: '$i',
-                selected: _digit == i,
-                onTap: () => setState(() => _digit = i),
-                radius: 12,
-                padding: EdgeInsets.zero,
-                fontSize: 24,
-                weight: FontWeight.w800,
-              ),
-          ],
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        child: CreamCard(
-          borderWidth: 1.5,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: SizedBox(
-            width: double.infinity,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('เลข ${l[0]} · ${l[1]}', style: serif(16, color: C.red)),
-              const SizedBox(height: 4),
-              Text(l[2], style: sans(14, color: C.inkSoft, height: 1.7)),
-            ]),
+        child: Builder(
+          builder: (context) => GridView.count(
+            crossAxisCount: 5,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 1.25,
+            children: [
+              for (final s in digitSymbols)
+                SelectPill(
+                  text: '${s.digit}',
+                  selected: _digit == s.digit,
+                  onTap: () {
+                    setState(() => _digit = s.digit);
+                    _jumpToDigit(Scrollable.of(context).position, s.digit);
+                  },
+                  radius: 12,
+                  padding: EdgeInsets.zero,
+                  fontSize: 24,
+                  weight: FontWeight.w800,
+                ),
+            ],
           ),
         ),
       ),
-      SectionLabel('ความฝันที่ให้เลข ${l[0]}', size: 15, padding: const EdgeInsets.fromLTRB(16, 4, 16, 8)),
       Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-        child: list.isEmpty
-            ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24),
-                child: Text('ยังไม่มีความฝันที่ให้เลขนี้', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
-              )
-            : GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                childAspectRatio: 1.15,
-                children: [for (final d in list) DreamCard(dreamId: d.id, name: d.name, number: d.two, numberSize: 15)],
-              ),
+        padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
+        child: Text(digitSummaryIntro, style: sans(14, color: C.inkBody, height: 1.8)),
       ),
+      for (final s in digitSymbols)
+        Padding(
+          key: _digitKeys[s.digit],
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
+          child: CreamCard(
+            borderWidth: 1.5,
+            padding: const EdgeInsets.all(14),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: C.red,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: C.gold, width: 2),
+                  ),
+                  child: Text('${s.digit}', style: serif(28, weight: FontWeight.w800, color: C.goldLight, height: 1.1)),
+                ),
+                const SizedBox(width: 12),
+                Text('เลข ${s.digit}', style: serif(18, color: C.red)),
+              ]),
+              const SizedBox(height: 12),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: s.image == null
+                      ? ImagePlaceholder('ภาพประกอบเลข ${s.digit}', fontSize: 11, band: 8)
+                      : Image.asset(s.image!, fit: BoxFit.cover, semanticLabel: 'ภาพประกอบเลข ${s.digit}'),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text.rich(
+                TextSpan(children: [
+                  TextSpan(text: 'ได้แก่ ฝันเห็น ', style: sans(14, weight: FontWeight.w600, color: C.redDeep, height: 1.8)),
+                  TextSpan(text: '${s.items.join(', ')} ฯลฯ'),
+                ]),
+                style: sans(14, color: C.inkBody, height: 1.8),
+              ),
+            ]),
+          ),
+        ),
+      const SizedBox(height: 20),
     ];
   }
 

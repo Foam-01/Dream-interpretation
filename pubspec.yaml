@@ -61,6 +61,7 @@ flutter:
   # หมวด ก dream pictures (cropped/resized copies; originals in backend/content/incoming/category-01-k).
   assets:
     - assets/dreams/
+    - assets/digits/
 
   # Noto Thai variable fonts (OFL), bundled so the app works offline.
   fonts:

@@ -6,6 +6,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:maha_dream/data/digit_summary.dart';
 import 'package:maha_dream/data/dream_images_k.dart';
 import 'package:maha_dream/main.dart';
 import 'package:maha_dream/widgets/ui.dart';
@@ -26,16 +27,18 @@ Future<void> pumpApp(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
-/// Decodes the bundled dream pictures before a capture (asset decoding is asynchronous).
-Future<void> precacheDreamImages(WidgetTester tester) async {
+/// Decodes bundled pictures before a capture (asset decoding is asynchronous).
+Future<void> precacheAssets(WidgetTester tester, Iterable<String> paths) async {
   final context = tester.element(find.byType(Scaffold).first);
   await tester.runAsync(() async {
-    for (final image in dreamImagesK.values) {
-      await precacheImage(AssetImage(image.url), context);
+    for (final path in paths) {
+      await precacheImage(AssetImage(path), context);
     }
   });
   await tester.pumpAndSettle();
 }
+
+Future<void> precacheDreamImages(WidgetTester tester) => precacheAssets(tester, dreamImagesK.values.map((i) => i.url));
 
 Future<void> tap(WidgetTester tester, Finder f) async {
   await tester.tap(f);
@@ -154,9 +157,10 @@ void main() {
       await expectGolden(tester, 'feat12_digit_lore_table');
     });
 
-    testWidgets('feature 2: สรุปเลขนำโชค 0–9 (digit summary, default digit 5)', (tester) async {
+    testWidgets('feature 2: สรุปเลขนำโชค 0–9 (book layout, one card per digit)', (tester) async {
       await pumpApp(tester);
       await openFeature(tester, 'เลขเด็ด', 'สรุปเลขนำโชค 0–9');
+      await precacheAssets(tester, [for (final s in digitSymbols) s.image!]);
       await expectGolden(tester, 'feat02_digit_summary');
     });
 

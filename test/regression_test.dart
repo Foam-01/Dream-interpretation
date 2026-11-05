@@ -304,17 +304,14 @@ void main() {
       expect(find.text('เลือกวันเกิดของคุณ · วันอาทิตย์'), findsOneWidget);
     });
 
-    testWidgets('digit summary: selecting 7 shows the digit lore and the empty state', (tester) async {
-      // The feature reads the bundled dreams' single digits. The real หมวด ก content has none,
-      // so every digit shows the empty state (nothing is derived or invented).
+    testWidgets('digit summary: tapping 7 jumps to the เลข 7 card', (tester) async {
       await pumpApp(tester);
       await tapTab(tester, 'เลขเด็ด');
       await tapText(tester, 'สรุปเลขนำโชค 0–9');
-      expect(find.text('เลข 5 · ตะขอ · งู'), findsOneWidget); // default digit
+      expect(find.text('เลข 7').hitTestable(), findsNothing);
       await tapPill(tester, '7');
-      expect(find.text('เลข 7 · ไม้เท้า'), findsOneWidget);
-      expect(find.text('ความฝันที่ให้เลข 7'), findsOneWidget);
-      expect(find.text('ยังไม่มีความฝันที่ให้เลขนี้'), findsOneWidget);
+      await tester.pumpAndSettle(); // steps down to the card, then animates it into view
+      expect(find.text('เลข 7').hitTestable(), findsOneWidget);
     });
 
     test('the bundled real content has no single lucky digits', () {
