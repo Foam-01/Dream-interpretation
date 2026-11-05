@@ -35,6 +35,7 @@ import '../data/category_thung.dart';
 import '../data/category_w.dart';
 import '../data/category_y.dart';
 import '../data/category_yak.dart';
+import '../data/animal_numbers.dart';
 import '../data/design_data.dart';
 import '../data/digit_lore.dart';
 import '../data/digit_summary.dart';
@@ -108,6 +109,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
   late int _soundDay = weekdayIndex(_draw);
   final _paeQuery = TextEditingController();
   final _animalQuery = TextEditingController();
+  int _animalPage = 0;
 
   @override
   void dispose() {
@@ -591,27 +593,50 @@ class _FeatureScreenState extends State<FeatureScreen> {
     ];
   }
 
-  // ---- Animal table (5) ----
+  // ---- Animals (5): the book's pages of 9 (last page 10), each animal with its number pair and picture;
+  // the search box looks across all 100 ----
   List<Widget> _animalsBody() {
-    Widget row(List<Widget> cells, {Color? bg, bool last = false}) => Container(
-          color: bg,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: null,
-          foregroundDecoration:
-              last || bg != null ? null : const BoxDecoration(border: Border(bottom: BorderSide(color: C.divider))),
-          child: Row(children: [
-            SizedBox(width: 52, child: cells[0]),
-            const SizedBox(width: 8),
-            Expanded(child: cells[1]),
-            const SizedBox(width: 8),
-            SizedBox(width: 64, child: Center(child: cells[2])),
-            const SizedBox(width: 8),
-            SizedBox(width: 64, child: Center(child: cells[3])),
+    final q = _animalQuery.text.trim();
+    final pages = animalPages;
+    final shown = q.isEmpty
+        ? pages[_animalPage]
+        : [for (final a in animalNumbers) if (a.name.contains(q) || a.number == q || a.pair == q) a];
+    Widget cell(AnimalNumber a) => Container(
+          decoration: BoxDecoration(
+            color: C.card,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: C.goldBorder),
+          ),
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+          child: Column(children: [
+            SizedBox(
+              height: 36,
+              child: Center(
+                child: Text(a.name,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    style: sans(13, weight: FontWeight.w700, color: C.ink, height: 1.3)),
+              ),
+            ),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: [
+                Text(a.number, style: serif(22, weight: FontWeight.w800, color: C.red, height: 1.2)),
+                const SizedBox(width: 14),
+                Text(a.pair, style: serif(16, color: C.inkSoft, height: 1.2)),
+              ]),
+            ),
+            const SizedBox(height: 6),
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: a.image == null
+                    ? ImagePlaceholder('ภาพ', width: double.infinity, fontSize: 9, band: 6)
+                    : Image.asset(a.image!, fit: BoxFit.contain, semanticLabel: a.name),
+              ),
+            ),
           ]),
         );
-    final head = sans(13, weight: FontWeight.w600, color: C.goldLight);
-    final q = _animalQuery.text.trim();
-    final shown = [for (final a in animals) if (q.isEmpty || a[0].contains(q) || a[2] == q || a[3].contains(q)) a];
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
@@ -633,7 +658,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 textInputAction: TextInputAction.search,
                 style: sans(16),
                 decoration: InputDecoration(
-                  hintText: 'ค้นหาชื่อสัตว์ เช่น งู หรือเลข',
+                  hintText: 'ค้นหาชื่อสัตว์ เช่น ช้าง หรือเลข',
                   hintStyle: sans(16, color: C.placeholder),
                   border: InputBorder.none,
                   isDense: true,
@@ -651,31 +676,38 @@ class _FeatureScreenState extends State<FeatureScreen> {
           ]),
         ),
       ),
-      if (shown.isEmpty)
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
-          child: Text('ไม่พบสัตว์ที่ตรงกับ "$q"', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
+      if (q.isEmpty)
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          child: Row(children: [
+            for (final (i, p) in pages.indexed) ...[
+              if (i > 0) const SizedBox(width: 6),
+              SelectPill(
+                text: '${p.first.number}–${p.last.number}',
+                selected: _animalPage == i,
+                onTap: () => setState(() => _animalPage = i),
+              ),
+            ],
+          ]),
         )
       else
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          child: Text(shown.isEmpty ? 'ไม่พบสัตว์ที่ตรงกับ "$q"' : 'พบ ${shown.length} ตัว',
+              style: sans(13, color: C.caption)),
+        ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-        child: CreamCard(
-          borderWidth: 1.5,
+        child: GridView.count(
+          crossAxisCount: 3,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           padding: EdgeInsets.zero,
-          child: Column(children: [
-            row([Text('รูป', style: head), Text('ชื่อสัตว์', style: head), Text('เลขเด่น', style: head), Text('2 ตัว', style: head)],
-                bg: C.red),
-            for (final (i, a) in shown.indexed)
-              row([
-                const ImagePlaceholder('ภาพ', width: 44, height: 44, radius: 10, fontSize: 8, band: 5),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(a[0], style: sans(15, weight: FontWeight.w600)),
-                  Text(a[1], style: sans(12, color: C.caption)),
-                ]),
-                Text(a[2], style: serif(20, weight: FontWeight.w800, color: C.redBright)),
-                Text('${a[3]} · ${a[3][1]}${a[3][0]}', style: sans(14, weight: FontWeight.w600, color: C.inkSoft)),
-              ], last: i == shown.length - 1),
-          ]),
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 0.72,
+          children: [for (final a in shown) cell(a)],
         ),
       ),
     ];

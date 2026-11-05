@@ -63,6 +63,7 @@ flutter:
     - assets/dreams/
     - assets/digits/
     - assets/days/
+    - assets/animals/
 
   # Noto Thai variable fonts (OFL), bundled so the app works offline.
   fonts:

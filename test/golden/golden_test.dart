@@ -6,6 +6,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:maha_dream/data/animal_numbers.dart';
 import 'package:maha_dream/data/digit_summary.dart';
 import 'package:maha_dream/data/dream_images_k.dart';
 import 'package:maha_dream/main.dart';
@@ -167,6 +168,7 @@ void main() {
     testWidgets('feature 5: ตารางชื่อสัตว์ (animals)', (tester) async {
       await pumpApp(tester);
       await openFeature(tester, 'ตำรา', 'ตารางชื่อสัตว์');
+      await precacheAssets(tester, [for (final a in animalPages.first) a.image!]);
       await expectGolden(tester, 'feat05_animals');
     });
 
