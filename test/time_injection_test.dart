@@ -112,41 +112,43 @@ void main() {
     });
   });
 
-  group('Feature 8 draw cards (current order locked)', () {
+  group('Feature 8: the next two draws, in date order, with the lead numbers from the book', () {
     Future<void> openDraws(WidgetTester tester, DateTime now) async {
       await pumpAt(tester, now);
       await openFeature(tester, 'เลขเด็ด', 'สูตรเลขเด่น');
     }
 
-    /// Card 1 is always listed first; its date is beside its title.
-    void expectCards(WidgetTester tester, {required String date1, required String date16}) {
-      final t1 = tester.getCenter(find.text('งวดวันที่ 1'));
-      final t16 = tester.getCenter(find.text('งวดวันที่ 16'));
-      expect(t1.dy, lessThan(t16.dy), reason: 'card "งวดวันที่ 1" is shown first');
-      expect(tester.getCenter(find.text(date1)).dy, moreOrLessEquals(t1.dy, epsilon: 4));
-      expect(tester.getCenter(find.text(date16)).dy, moreOrLessEquals(t16.dy, epsilon: 4));
+    void expectDraws(WidgetTester tester, List<(String, String)> draws) {
+      double? lastY;
+      for (final (title, digits) in draws) {
+        final t = find.text(title);
+        expect(t, findsOneWidget, reason: title);
+        final y = tester.getCenter(t).dy;
+        if (lastY != null) expect(y, greaterThan(lastY), reason: 'date order');
+        lastY = y;
+        final card = find.ancestor(of: t, matching: find.byType(Column)).first;
+        expect(
+          find.descendant(of: card, matching: find.byType(DigitBox)).evaluate().map((e) => (e.widget as DigitBox).digit).join(),
+          digits,
+          reason: title,
+        );
+      }
     }
 
-    testWidgets('D1 2026-10-05: card 1 shows a later date than card 16 (existing behaviour)', (tester) async {
+    testWidgets('D1 2026-10-05: 16 Oct (Friday) then 1 Nov (Sunday)', (tester) async {
       await openDraws(tester, DateTime(2026, 10, 5));
-      expectCards(tester, date1: '1 พ.ย. 2569', date16: '16 ต.ค. 2569');
-      for (final n in ['4', '7', '9', '2', '5', '8']) {
-        expect(find.text(n), findsOneWidget, reason: n);
-      }
-      expect(find.text('สูตร: เลขท้าย 2 ตัวงวดก่อน + เลขวันพระ แล้วถอดหลักหน่วย'), findsOneWidget);
-      expect(find.text('สูตร: เลขหน้า 3 ตัว × กำลังดาวประจำวันออกรางวัล'), findsOneWidget);
-      expect(find.textContaining('47 · 79 · 94', findRichText: true), findsOneWidget);
-      expect(find.textContaining('25 · 58 · 82', findRichText: true), findsOneWidget);
+      expectDraws(tester, [('งวด 16 ต.ค. 2569 ออกวันศุกร์', '634'), ('งวด 1 พ.ย. 2569 ออกวันอาทิตย์', '574')]);
+      expect(find.textContaining('สูตร: ', skipOffstage: false), findsNothing, reason: 'sample formulas removed');
     });
 
-    testWidgets('D2 2026-10-23: chronological order', (tester) async {
+    testWidgets('D2 2026-10-23: 1 Nov (Sunday) then 16 Nov (Monday)', (tester) async {
       await openDraws(tester, DateTime(2026, 10, 23));
-      expectCards(tester, date1: '1 พ.ย. 2569', date16: '16 พ.ย. 2569');
+      expectDraws(tester, [('งวด 1 พ.ย. 2569 ออกวันอาทิตย์', '574'), ('งวด 16 พ.ย. 2569 ออกวันจันทร์', '493')]);
     });
 
-    testWidgets('D3 2026-12-10: year rollover', (tester) async {
+    testWidgets('D3 2026-12-10: year rollover, 16 Dec (Wednesday) then 1 Jan (Friday)', (tester) async {
       await openDraws(tester, DateTime(2026, 12, 10));
-      expectCards(tester, date1: '1 ม.ค. 2570', date16: '16 ธ.ค. 2569');
+      expectDraws(tester, [('งวด 16 ธ.ค. 2569 ออกวันพุธ', '642'), ('งวด 1 ม.ค. 2570 ออกวันศุกร์', '543')]);
     });
   });
 }

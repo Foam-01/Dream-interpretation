@@ -38,6 +38,7 @@ import '../data/category_yak.dart';
 import '../data/design_data.dart';
 import '../data/digit_lore.dart';
 import '../data/digit_summary.dart';
+import '../data/draw_numbers.dart';
 import '../data/dream_chant.dart';
 import '../data/formulas.dart';
 import '../data/running_numbers.dart';
@@ -105,10 +106,12 @@ class _FeatureScreenState extends State<FeatureScreen> {
   late int _runDay = weekdayIndex(_draw);
   late int _soundDay = weekdayIndex(_draw);
   final _paeQuery = TextEditingController();
+  final _animalQuery = TextEditingController();
 
   @override
   void dispose() {
     _paeQuery.dispose();
+    _animalQuery.dispose();
     super.dispose();
   }
 
@@ -624,16 +627,62 @@ class _FeatureScreenState extends State<FeatureScreen> {
           ]),
         );
     final head = sans(13, weight: FontWeight.w600, color: C.goldLight);
+    final q = _animalQuery.text.trim();
+    final shown = [for (final a in animals) if (q.isEmpty || a[0].contains(q) || a[2] == q || a[3].contains(q)) a];
     return [
       Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+          decoration: BoxDecoration(
+            color: C.input,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: C.goldBorder, width: 1.5),
+          ),
+          child: Row(children: [
+            const Icon(Icons.search, size: 18, color: C.redBright),
+            const SizedBox(width: 8),
+            Expanded(
+              child: TextField(
+                key: const ValueKey('animal-search'),
+                controller: _animalQuery,
+                onChanged: (_) => setState(() {}),
+                textInputAction: TextInputAction.search,
+                style: sans(16),
+                decoration: InputDecoration(
+                  hintText: 'ค้นหาชื่อสัตว์ เช่น งู หรือเลข',
+                  hintStyle: sans(16, color: C.placeholder),
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                ),
+              ),
+            ),
+            if (q.isNotEmpty)
+              IconButton(
+                tooltip: 'ล้างคำค้นหา',
+                visualDensity: VisualDensity.compact,
+                icon: const Icon(Icons.close, size: 18, color: C.placeholder),
+                onPressed: () => setState(_animalQuery.clear),
+              ),
+          ]),
+        ),
+      ),
+      if (shown.isEmpty)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+          child: Text('ไม่พบสัตว์ที่ตรงกับ "$q"', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
+        )
+      else
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         child: CreamCard(
           borderWidth: 1.5,
           padding: EdgeInsets.zero,
           child: Column(children: [
             row([Text('รูป', style: head), Text('ชื่อสัตว์', style: head), Text('เลขเด่น', style: head), Text('2 ตัว', style: head)],
                 bg: C.red),
-            for (final (i, a) in animals.indexed)
+            for (final (i, a) in shown.indexed)
               row([
                 const ImagePlaceholder('ภาพ', width: 44, height: 44, radius: 10, fontSize: 8, band: 5),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -642,7 +691,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 ]),
                 Text(a[2], style: serif(20, weight: FontWeight.w800, color: C.redBright)),
                 Text('${a[3]} · ${a[3][1]}${a[3][0]}', style: sans(14, weight: FontWeight.w600, color: C.inkSoft)),
-              ], last: i == animals.length - 1),
+              ], last: i == shown.length - 1),
           ]),
         ),
       ),
@@ -939,57 +988,80 @@ class _FeatureScreenState extends State<FeatureScreen> {
         ),
       ];
 
-  // ---- Draw formulas (8) ----
+  // ---- Draw lead numbers (8): the book's table (weekday × the 1st / the 16th); the next two draws first ----
   List<Widget> _drawBody() {
-    final first = nextDrawDate(widget.now);
-    final d1 = first.day == 1 ? first : DateTime(first.year, first.month + 1, 1);
-    final d16 = first.day == 16 ? first : DateTime(d1.year, d1.month, 16);
-    final draws = [
-      ('งวดวันที่ 1', d1, 'สูตร: เลขท้าย 2 ตัวงวดก่อน + เลขวันพระ แล้วถอดหลักหน่วย', ['4', '7', '9'], '47 · 79 · 94'),
-      ('งวดวันที่ 16', d16, 'สูตร: เลขหน้า 3 ตัว × กำลังดาวประจำวันออกรางวัล', ['2', '5', '8'], '25 · 58 · 82'),
-    ];
+    final first = _draw;
+    final second = first.day == 1 ? DateTime(first.year, first.month, 16) : DateTime(first.year, first.month + 1, 1);
+    Widget cell(String text, {bool head = false, bool on = false}) => Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 9),
+            color: on ? C.tileLight : null,
+            child: Text(text,
+                textAlign: TextAlign.center,
+                style: head
+                    ? sans(13, weight: FontWeight.w600, color: C.goldLight)
+                    : serif(16, color: on ? C.redDeep : C.red, weight: on ? FontWeight.w800 : FontWeight.w700)),
+          ),
+        );
+    bool isNext(int day, int col) =>
+        [first, second].any((d) => weekdayIndex(d) == day && (d.day == 1 ? 0 : 1) == col);
     return [
       Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: Column(children: [
-          for (final (t, date, formula, digits, pairs) in draws)
+          for (final d in [first, second])
             Padding(
-              padding: const EdgeInsets.only(bottom: 14),
-              child: CreamCard(
-                borderWidth: 1.5,
-                padding: EdgeInsets.zero,
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: C.red,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: C.goldDeep, width: 2),
+                ),
                 child: Column(children: [
-                  Container(
-                    color: C.red,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    child: Row(children: [
-                      Expanded(child: Text(t, style: serif(16, color: C.goldLight))),
-                      Text(thaiDate(date), style: sans(12, color: C.gold)),
-                    ]),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    child: Column(children: [
-                      Text(formula, style: sans(13, color: C.inkMuted, height: 1.6)),
-                      const SizedBox(height: 12),
-                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                        for (final n in digits)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: DigitBox(n, width: 52, height: 60, fontSize: 28),
-                          ),
-                      ]),
-                      const SizedBox(height: 12),
-                      Text.rich(TextSpan(style: sans(14, color: C.inkSoft), children: [
-                        const TextSpan(text: 'เลขคู่เด่น '),
-                        TextSpan(text: pairs, style: sans(17, weight: FontWeight.w700, color: C.redBright)),
-                      ])),
-                    ]),
-                  ),
+                  Text('งวด ${thaiDate(d)} ออกวัน${dayFull[weekdayIndex(d)]}', style: sans(14, color: C.gold)),
+                  const SizedBox(height: 8),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    for (final (i, n) in drawLeadFor(d, weekdayIndex(d)).indexed) ...[
+                      if (i > 0) const SizedBox(width: 10),
+                      DigitBox(n, width: 52, height: 60, fontSize: 30),
+                    ],
+                  ]),
                 ]),
               ),
             ),
-          Text('เลขจากสูตรเพื่อความบันเทิง โปรดใช้วิจารณญาณ', textAlign: TextAlign.center, style: sans(12, color: C.caption)),
+        ]),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(drawIntro, style: sans(14, color: C.inkBody, height: 1.8)),
+          const SizedBox(height: 14),
+          CreamCard(
+            padding: EdgeInsets.zero,
+            child: Column(children: [
+              Container(
+                decoration: const BoxDecoration(
+                  color: C.red,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                ),
+                child: Row(children: [cell('วัน', head: true), cell('วันที่ 1', head: true), cell('วันที่ 16', head: true)]),
+              ),
+              for (var i = 0; i < 7; i++)
+                Row(children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: Text('วัน${dayFull[i]}', style: sans(14)),
+                    ),
+                  ),
+                  cell(drawLead[i][0].join(' '), on: isNext(i, 0)),
+                  cell(drawLead[i][1].join(' '), on: isNext(i, 1)),
+                ]),
+            ]),
+          ),
         ]),
       ),
     ];
