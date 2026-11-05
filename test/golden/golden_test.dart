@@ -189,5 +189,17 @@ void main() {
       await openFeature(tester, 'แก้ฝัน', 'เคล็ดลับแก้ฝันร้าย');
       await expectGolden(tester, 'feat03_remedy_steps');
     });
+
+    testWidgets('feature 4: การขอโชคจากความฝัน (steps from the book page)', (tester) async {
+      await pumpApp(tester);
+      await openFeature(tester, 'แก้ฝัน', 'การขอโชคจากความฝัน');
+      await expectGolden(tester, 'feat04_luck_ritual');
+    });
+
+    testWidgets('feature 11: บทสวดมนต์ความฝัน (chant from the book page)', (tester) async {
+      await pumpApp(tester);
+      await openFeature(tester, 'แก้ฝัน', 'บทสวดมนต์ความฝัน');
+      await expectGolden(tester, 'feat11_dream_chant');
+    });
   });
 }

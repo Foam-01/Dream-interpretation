@@ -36,7 +36,9 @@ import '../data/category_w.dart';
 import '../data/category_y.dart';
 import '../data/category_yak.dart';
 import '../data/design_data.dart';
+import '../data/digit_lore.dart';
 import '../data/digit_summary.dart';
+import '../data/dream_chant.dart';
 import '../data/formulas.dart';
 import '../data/nightmare_remedies.dart';
 import '../theme.dart';
@@ -97,6 +99,29 @@ class _FeatureScreenState extends State<FeatureScreen> {
   final _digitKeys = [for (var i = 0; i < 10; i++) GlobalKey()];
   int _hund = 0;
   int _pae = 59;
+  final _paeQuery = TextEditingController();
+
+  @override
+  void dispose() {
+    _paeQuery.dispose();
+    super.dispose();
+  }
+
+  String _paeWord = '';
+  final _paeCardKey = GlobalKey();
+
+  /// One box for both: 1–3 digits select that number and its hundred block; words list the matching pictures.
+  void _searchPae(String q) {
+    final t = q.trim();
+    final n = RegExp(r'^\d{1,3}$').hasMatch(t) ? int.parse(t) : null;
+    setState(() {
+      _paeWord = n == null ? t : '';
+      if (n != null) {
+        _hund = n ~/ 100;
+        _pae = n;
+      }
+    });
+  }
   bool _remedyIntroOpen = false;
 
   @override
@@ -108,6 +133,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
       FeatType.day => _dayBody(k),
       FeatType.steps => _stepsBody(k),
       FeatType.remedies => _remediesBody(),
+      FeatType.chant => _chantBody(),
       FeatType.animals => _animalsBody(),
       FeatType.pae => _paeBody(),
       FeatType.digit => _digitBody(),
@@ -226,7 +252,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
     ];
   }
 
-  // ---- Step-by-step rituals (4, 11) ----
+  // ---- Step-by-step rituals (4) ----
   List<Widget> _stepsBody(String k) {
     final list = steps[k] ?? const [];
     final prayer = prayers[k];
@@ -272,12 +298,47 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 border: Border.all(color: C.goldDeep, width: 2),
               ),
               child: Column(children: [
-                Text(prayer[0], style: sans(13, color: C.gold)),
-                const SizedBox(height: 6),
+                if (prayer[0].isNotEmpty) ...[
+                  Text(prayer[0], style: sans(13, color: C.gold)),
+                  const SizedBox(height: 6),
+                ],
                 SelectableText(prayer[1],
                     textAlign: TextAlign.center, style: serif(17, color: C.goldLight, height: 1.9)),
               ]),
             ),
+        ]),
+      ),
+    ];
+  }
+
+  // ---- Dream chant (11): the owner's book page — intro, then the three stanzas in one card ----
+  List<Widget> _chantBody() {
+    return [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(chantIntro, style: sans(14, color: C.inkBody, height: 1.8)),
+          const SizedBox(height: 14),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 20),
+            decoration: BoxDecoration(
+              color: C.red,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: C.goldDeep, width: 2),
+            ),
+            child: Column(children: [
+              for (final (i, stanza) in chantStanzas.indexed) ...[
+                if (i > 0)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    child: Container(width: 48, height: 1, color: C.goldDeep),
+                  ),
+                SelectableText(stanza.join('\n'),
+                    textAlign: TextAlign.center, style: serif(17, color: C.goldLight, height: 1.9)),
+              ],
+            ]),
+          ),
         ]),
       ),
     ];
@@ -413,7 +474,51 @@ class _FeatureScreenState extends State<FeatureScreen> {
   // ---- Pae Kong 000-999 (6) ----
   List<Widget> _paeBody() {
     final cur = paeOf(_pae);
+    final shown = _paeWord.isEmpty
+        ? [for (var i = 0; i < 100; i++) _hund * 100 + i]
+        : [for (var i = 0; i < 1000; i++) if (paeOf(i).name.contains(_paeWord)) i];
     return [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+          decoration: BoxDecoration(
+            color: C.input,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: C.goldBorder, width: 1.5),
+          ),
+          child: Row(children: [
+            const Icon(Icons.search, size: 18, color: C.redBright),
+            const SizedBox(width: 8),
+            Expanded(
+              child: TextField(
+                key: const ValueKey('pae-search'),
+                controller: _paeQuery,
+                onChanged: _searchPae,
+                textInputAction: TextInputAction.search,
+                style: sans(16),
+                decoration: InputDecoration(
+                  hintText: 'ค้นหาคำ เช่น ม้า หรือเลข 000–999',
+                  hintStyle: sans(16, color: C.placeholder),
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                ),
+              ),
+            ),
+            if (_paeQuery.text.isNotEmpty)
+              IconButton(
+                tooltip: 'ล้างคำค้นหา',
+                visualDensity: VisualDensity.compact,
+                icon: const Icon(Icons.close, size: 18, color: C.placeholder),
+                onPressed: () {
+                  _paeQuery.clear();
+                  _searchPae('');
+                },
+              ),
+          ]),
+        ),
+      ),
       // Row height follows the pills (was a fixed 48 that clipped text at large scale).
       SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -423,16 +528,19 @@ class _FeatureScreenState extends State<FeatureScreen> {
             if (i > 0) const SizedBox(width: 6),
             SelectPill(
               text: '${i}00–${i}99',
-              selected: _hund == i,
+              selected: _paeWord.isEmpty && _hund == i,
               onTap: () => setState(() {
                 _hund = i;
                 _pae = i * 100;
+                _paeWord = '';
+                _paeQuery.clear();
               }),
             ),
           ],
         ]),
       ),
       Container(
+        key: _paeCardKey,
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
@@ -453,6 +561,14 @@ class _FeatureScreenState extends State<FeatureScreen> {
           ),
         ]),
       ),
+      if (_paeWord.isNotEmpty)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Text(
+            shown.isEmpty ? 'ไม่พบภาพที่มีคำว่า "$_paeWord"' : 'พบ ${shown.length} เลข ที่มีคำว่า "$_paeWord"',
+            style: sans(13, color: C.caption),
+          ),
+        ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
         child: ContentGrid(
@@ -460,7 +576,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
           spacing: 6,
           runSpacing: 6,
           minRowHeight: 52,
-          children: [for (var i = 0; i < 100; i++) _paeCell(_hund * 100 + i)],
+          children: [for (final n in shown) _paeCell(n)],
         ),
       ),
     ];
@@ -473,7 +589,14 @@ class _FeatureScreenState extends State<FeatureScreen> {
       button: true,
       selected: sel,
       child: GestureDetector(
-        onTap: () => setState(() => _pae = n),
+        onTap: () {
+          setState(() => _pae = n);
+          // In a word search the list can push the big card off screen: bring it back into view.
+          final card = _paeCardKey.currentContext;
+          if (_paeWord.isNotEmpty && card != null) {
+            Scrollable.ensureVisible(card, duration: const Duration(milliseconds: 250));
+          }
+        },
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
           decoration: BoxDecoration(
@@ -591,29 +714,49 @@ class _FeatureScreenState extends State<FeatureScreen> {
     ];
   }
 
-  // ---- Number lore table (12) ----
+  // ---- Number lore (12): the owner's book pages — intro, 28 rules with the number as a badge, closing ----
   List<Widget> _tableBody() => [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-          child: Column(children: [
-            for (final l in lore)
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(loreIntro, style: sans(14, color: C.inkBody, height: 1.8)),
+            const SizedBox(height: 12),
+            for (final e in loreEntries)
               Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: 10),
                 child: CreamCard(
                   radius: 14,
                   padding: const EdgeInsets.all(12),
-                  child: Row(children: [
-                    DigitBox(l[0], width: 48, height: 48, fontSize: 24),
+                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    DigitBox(e.badge, width: 48, height: 48, fontSize: e.badge.length > 1 ? 18 : 24),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(l[1], style: sans(15, weight: FontWeight.w600)),
-                        Text(l[2], style: sans(13, color: C.inkMuted, height: 1.6)),
-                      ]),
+                      child: Text.rich(
+                        TextSpan(children: [
+                          if (e.seen case final seen?) ...[
+                            const TextSpan(text: 'ถ้าฝันเห็น '),
+                            TextSpan(text: seen, style: sans(14, weight: FontWeight.w700, color: C.redDeep, height: 1.7)),
+                            TextSpan(text: e.text.substring('ถ้าฝันเห็น '.length + seen.length)),
+                          ] else
+                            TextSpan(text: e.text),
+                        ]),
+                        style: sans(14, color: C.inkBody, height: 1.7),
+                      ),
                     ),
                   ]),
                 ),
               ),
+            const SizedBox(height: 6),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: C.red,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: C.goldDeep, width: 2),
+              ),
+              child: Text(loreClosing, style: sans(14, color: C.onRed, height: 1.8)),
+            ),
           ]),
         ),
       ];
