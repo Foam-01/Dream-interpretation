@@ -296,12 +296,13 @@ void main() {
       expect(find.text('เลขล็อควันจันทร์ คำนวณจากดาวประจำวัน (2) และฤกษ์ยามงวดนี้'), findsOneWidget);
     });
 
-    testWidgets('life fortune shows birth-day caption prefix', (tester) async {
+    testWidgets('life fortune (menu 1) opens the dream search, not a birthday formula', (tester) async {
       await pumpApp(tester);
       await tapTab(tester, 'ตำรา');
       await tapText(tester, 'พยากรณ์โชคชะตาชีวิต');
-      await tapPill(tester, 'อา');
-      expect(find.text('เลือกวันเกิดของคุณ · วันอาทิตย์'), findsOneWidget);
+      expect(find.text('ค้นหาความฝัน'), findsWidgets);
+      expect(find.textContaining('พบ '), findsOneWidget); // the search result count
+      expect(find.textContaining('เลือกวันเกิดของคุณ', skipOffstage: false), findsNothing);
     });
 
     testWidgets('digit summary: tapping 7 jumps to the เลข 7 card', (tester) async {

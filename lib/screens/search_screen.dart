@@ -9,6 +9,9 @@ import '../state/load_request.dart';
 import '../theme.dart';
 import '../widgets/ui.dart';
 
+
+/// Hint examples: dreams people commonly have, each one a dream name in the bundled book.
+const searchHintExamples = ['งู', 'ฟันหัก', 'คนตาย'];
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
   @override
@@ -146,7 +149,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   textInputAction: TextInputAction.search,
                   style: sans(16),
                   decoration: InputDecoration(
-                    hintText: 'พิมพ์ เช่น งู ช้าง ฟันหลุด',
+                    hintText: 'พิมพ์ เช่น ${searchHintExamples.join(' ')}',
                     hintStyle: sans(16, color: C.placeholder),
                     border: InputBorder.none,
                     isDense: true,

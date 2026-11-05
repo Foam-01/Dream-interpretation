@@ -78,6 +78,8 @@ class AppController extends ChangeNotifier {
   }
 
   void openFeat(String k) {
+    // Menu 1 (พยากรณ์โชคชะตาชีวิต จากความฝัน + ตัวเลข + รูป) is the dream book itself: open the search.
+    if (k == '1') return goSearch(resetCat: true);
     tab = tabOf(k);
     _stacks[tab] = [MenuPage(tab), FeaturePage(k)];
     notifyListeners();

@@ -128,7 +128,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
     ]);
   }
 
-  // ---- Day-based formulas (1, 7, 9, 10) ----
+  // ---- Day-based formulas (7, 9, 10) ----
   List<Widget> _dayBody(String k) {
     final dd = dayData(k, _day);
     return [
@@ -152,7 +152,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
       ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-        child: Text('${k == '1' ? 'เลือกวันเกิดของคุณ · ' : ''}วัน${dayFull[_day]}', style: sans(13, color: C.caption)),
+        child: Text('วัน${dayFull[_day]}', style: sans(13, color: C.caption)),
       ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),

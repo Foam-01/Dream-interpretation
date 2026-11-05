@@ -113,11 +113,11 @@ void main() {
       expect(find.text('7 7'), findsOneWidget);
     });
 
-    testWidgets('F3 feature 1 on Monday 2026-10-26 starts on Monday', (tester) async {
+    testWidgets('F3 feature 9 on Monday 2026-10-26 starts on Monday', (tester) async {
       await pumpAt(tester, DateTime(2026, 10, 26));
-      await openFeature(tester, 'ตำรา', 'พยากรณ์โชคชะตาชีวิต');
+      await openFeature(tester, 'เลขเด็ด', 'สูตรเลขเสียงโชค');
       expect(pillSelected(tester, 'จ'), isTrue);
-      expect(find.text('เลือกวันเกิดของคุณ · วันจันทร์'), findsOneWidget);
+      expect(find.text('วันจันทร์'), findsOneWidget);
     });
   });
 

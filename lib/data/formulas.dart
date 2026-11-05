@@ -14,7 +14,7 @@ class DayResult {
   const DayResult(this.tiles, this.rows, this.note, {this.image});
 }
 
-/// Day-based formulas (features 1, 7, 9, 10). [i] is weekday index, Sunday = 0.
+/// Day-based formulas (features 7, 9, 10). [i] is weekday index, Sunday = 0.
 /// Ported 1:1 from the design's `dayData`.
 DayResult dayData(String k, int i) {
   final p = i + 1;
@@ -43,12 +43,7 @@ DayResult dayData(String k, int i) {
         'เลขวิ่งเปลี่ยนทุกวันตามดาวประจำวัน ใช้คู่กับเลขจากความฝันยิ่งแม่นยำ',
       );
     default:
-      return DayResult(
-        [DayTile('เลขประจำตัว', '$p', true), DayTile('เลขนำโชค', '$a$b', false)],
-        [['การเงิน', '★★★★☆'], ['ความรัก', i.isOdd ? '★★★☆☆' : '★★★★★'], ['การงาน', '★★★★☆'], ['สีมงคล', dayColor[i]]],
-        'ผู้เกิดวัน$day ช่วงนี้ดวงมีผู้ใหญ่อุปถัมภ์ หากฝันเห็นสัตว์ใหญ่ ทายว่าจะได้ลาภก้อนโต',
-        image: 'ภาพดวงประจำวัน$day',
-      );
+      throw ArgumentError.value(k, 'k', 'not a day-based feature');
   }
 }
 
