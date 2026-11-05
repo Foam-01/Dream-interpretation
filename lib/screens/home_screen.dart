@@ -273,7 +273,8 @@ class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMix
                         dreamId: items[r * _perRow + c].id,
                         name: items[r * _perRow + c].name,
                         image: items[r * _perRow + c].image,
-                        width: 120,
+                        // Pictures are ~1.8:1; 160 wide fills the 90-high image box edge to edge.
+                        width: 160,
                         number: items[r * _perRow + c].firstTwo),
                   ],
                 ]),
