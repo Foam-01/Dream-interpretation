@@ -7,6 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:maha_dream/app_shell.dart';
 import 'package:maha_dream/data/category_sala.dart';
 import 'package:maha_dream/data/design_data.dart';
+import 'package:maha_dream/data/dream_images_k.dart';
+import 'package:maha_dream/data/dream_images_sala.dart';
 import 'package:maha_dream/data/dreams_sala.dart';
 import 'package:maha_dream/data/sample_dream_repository.dart';
 import 'package:maha_dream/main.dart';
@@ -102,6 +104,21 @@ void main() {
       expect(letterSalaCategoryId, 'letter-sala');
       expect(sampleCategories.map((c) => (c.id, c.name)), contains(('letter-sala', 'หมวด ศ')));
       expect(dreamCats.skip(1), sampleCategories.map((c) => c.name));
+    });
+  });
+
+  group('dream pictures (per dream)', () {
+    test('3 checked pictures — every dream has one, bundled and registered', () {
+      expect(dreamImagesSala.keys, dreamsSala.map((d) => d.id));
+      final onDisk = Directory('assets/dreams').listSync().whereType<File>().map((f) => f.uri.pathSegments.last);
+      expect(onDisk.where((f) => f.startsWith('sala-')).toSet(), {for (final id in dreamImagesSala.keys) '$id.jpg'});
+      for (final MapEntry(:key, :value) in dreamImagesSala.entries) {
+        expect(value.url, 'assets/dreams/$key.jpg');
+        expect(value.isAsset, isTrue);
+        expect(value.attribution, isNull, reason: 'no invented credit or licence');
+        expect(value.alt, 'ภาพประกอบ: ${dreamsSala.firstWhere((d) => d.id == key).name}');
+      }
+      expect(dreamsSala.where((d) => dreamImageFor(d.id) == null).map((d) => d.id), isEmpty);
     });
   });
 

@@ -1,4 +1,5 @@
 import 'design_data.dart';
+import 'dream_images_ang.dart';
 import 'dream_images_b.dart';
 import 'dream_images_ch.dart';
 import 'dream_images_chc.dart';
@@ -6,6 +7,7 @@ import 'dream_images_chg.dart';
 import 'dream_images_d.dart';
 import 'dream_images_f.dart';
 import 'dream_images_fan.dart';
+import 'dream_images_hip.dart';
 import 'dream_images_kh.dart';
 import 'dream_images_khr.dart';
 import 'dream_images_khw.dart';
@@ -18,11 +20,14 @@ import 'dream_images_phan.dart';
 import 'dream_images_phueng.dart';
 import 'dream_images_r.dart';
 import 'dream_images_s.dart';
+import 'dream_images_sala.dart';
 import 'dream_images_samphao.dart';
+import 'dream_images_suea.dart';
 import 'dream_images_t.dart';
 import 'dream_images_thahan.dart';
 import 'dream_images_thong.dart';
 import 'dream_images_thung.dart';
+import 'dream_images_w.dart';
 import 'dream_images_y.dart';
 import 'dream_images_yak.dart';
 
@@ -71,4 +76,4 @@ const dreamImagesK = <String, DreamImage>{
 
 /// The image to show for a dream: the API's image when it has one, else the bundled one, else null
 /// (the placeholder). Works the same in offline and API mode.
-DreamImage? dreamImageFor(String id, [DreamImage? remote]) => remote ?? dreamImagesK[id] ?? dreamImagesKh[id] ?? dreamImagesKhw[id] ?? dreamImagesKhr[id] ?? dreamImagesNg[id] ?? dreamImagesCh[id] ?? dreamImagesChg[id] ?? dreamImagesChc[id] ?? dreamImagesS[id] ?? dreamImagesY[id] ?? dreamImagesD[id] ?? dreamImagesT[id] ?? dreamImagesThung[id] ?? dreamImagesThahan[id] ?? dreamImagesThong[id] ?? dreamImagesN[id] ?? dreamImagesB[id] ?? dreamImagesP[id] ?? dreamImagesPhueng[id] ?? dreamImagesF[id] ?? dreamImagesPhan[id] ?? dreamImagesFan[id] ?? dreamImagesSamphao[id] ?? dreamImagesM[id] ?? dreamImagesYak[id] ?? dreamImagesR[id] ?? dreamImagesL[id];
+DreamImage? dreamImageFor(String id, [DreamImage? remote]) => remote ?? dreamImagesK[id] ?? dreamImagesKh[id] ?? dreamImagesKhw[id] ?? dreamImagesKhr[id] ?? dreamImagesNg[id] ?? dreamImagesCh[id] ?? dreamImagesChg[id] ?? dreamImagesChc[id] ?? dreamImagesS[id] ?? dreamImagesY[id] ?? dreamImagesD[id] ?? dreamImagesT[id] ?? dreamImagesThung[id] ?? dreamImagesThahan[id] ?? dreamImagesThong[id] ?? dreamImagesN[id] ?? dreamImagesB[id] ?? dreamImagesP[id] ?? dreamImagesPhueng[id] ?? dreamImagesF[id] ?? dreamImagesPhan[id] ?? dreamImagesFan[id] ?? dreamImagesSamphao[id] ?? dreamImagesM[id] ?? dreamImagesYak[id] ?? dreamImagesR[id] ?? dreamImagesL[id] ?? dreamImagesW[id] ?? dreamImagesSala[id] ?? dreamImagesSuea[id] ?? dreamImagesHip[id] ?? dreamImagesAng[id];
