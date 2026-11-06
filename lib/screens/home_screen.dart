@@ -45,6 +45,7 @@ class HomeScreen extends StatelessWidget {
     return ListView(padding: EdgeInsets.zero, children: [
       PageHeader(
         pattern: true,
+        border: false,
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
         child: Column(children: [
           Row(children: [
@@ -83,8 +84,18 @@ class HomeScreen extends StatelessWidget {
         ]),
       ),
       // Daily lock numbers right under the search box, as in the design (owner request).
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
+      // The header continues behind the card's top, so the card sits half on the header (as in the first design).
+      Stack(children: [
+        const Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 64,
+          child: PageHeader(
+              gradient: false, color: C.headerEnd, pattern: true, border: false, padding: EdgeInsets.zero, child: SizedBox.expand()),
+        ),
+        Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
           child: AppCard(
             radius: 18,
             borderWidth: 1.5,
@@ -116,6 +127,7 @@ class HomeScreen extends StatelessWidget {
             ]),
           ),
       ),
+      ]),
       const SectionLabel('เมนูยอดนิยม'),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),

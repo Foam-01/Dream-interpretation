@@ -35,6 +35,10 @@ class PageHeader extends StatelessWidget {
   final bool pattern;
   final bool gradient;
   final double patternOpacity;
+
+  /// Fill when [gradient] is off (e.g. C.headerEnd to continue a header below itself).
+  final Color color;
+  final bool border;
   const PageHeader({
     super.key,
     required this.child,
@@ -42,13 +46,15 @@ class PageHeader extends StatelessWidget {
     this.pattern = false,
     this.gradient = true,
     this.patternOpacity = .06,
+    this.color = C.brand,
+    this.border = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: C.brand,
+        color: color,
         gradient: gradient
             ? const LinearGradient(
                 begin: Alignment.topCenter,
@@ -56,7 +62,7 @@ class PageHeader extends StatelessWidget {
                 colors: [C.brandBright, C.brand, C.headerEnd],
                 stops: [0, .55, 1])
             : null,
-        border: const Border(bottom: BorderSide(color: C.goldBorder)),
+        border: border ? const Border(bottom: BorderSide(color: C.goldBorder)) : null,
       ),
       child: Stack(children: [
         if (pattern) Positioned.fill(child: CustomPaint(painter: _LatticePainter(patternOpacity))),
