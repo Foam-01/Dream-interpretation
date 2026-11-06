@@ -214,8 +214,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 ? const LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Color(0xFF1A4BC2), Color(0xFF0B2A7A), Color(0xFF061B42)],
-                    stops: [0, 0.48, 1],
+                    colors: [Color(0xFF2868FF), Color(0xFF0B388E), Color(0xFF002344)],
+                    stops: [0, 0.38, 1],
                   )
                 : null,
             color: top ? null : C.surface,
@@ -1251,8 +1251,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
                       ? const LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Color(0xFF1A4BC2), Color(0xFF0B2A7A), Color(0xFF061B42)],
-                          stops: [0, 0.48, 1],
+                          colors: [Color(0xFF2868FF), Color(0xFF0B388E), Color(0xFF002344)],
+                          stops: [0, 0.38, 1],
                         )
                       : null,
                   color: drawIndex == 0 ? null : C.brand,
