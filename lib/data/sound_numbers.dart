@@ -1,4 +1,4 @@
-/// Feature 9 (สูตรเลขเสียงโชค): the owner's book pages 258–264, one page per draw weekday ("สลากออกวัน…") with
+/// Feature 9 (สูตรเลขเสี่ยงโชค): the owner's book pages 258–264, one page per draw weekday ("สลากออกวัน…") with
 /// กลุ่มเลขตัวเด่น and กลุ่มเลขตัวกัน; transcribed in backend/content/incoming/feature-09-sound-numbers/source.md.
 /// The book lists 92 in both groups for Monday; kept as printed.
 library;

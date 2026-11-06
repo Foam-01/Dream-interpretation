@@ -417,7 +417,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
               const SizedBox(height: 10),
             ],
             Text(
-              isDrawDay ? 'งวด ${thaiDate(_draw)} สลากออกวัน${dayFull[_soundDay]}' : 'สลากออกวัน${dayFull[_soundDay]}',
+              // Every day names its coming draw, not only the next draw's weekday.
+              'งวด ${thaiDate(nextDrawOnWeekday(widget.now, _soundDay))} สลากออกวัน${dayFull[_soundDay]}',
               textAlign: TextAlign.center,
               style: serif(17, color: C.goldLight),
             ),
@@ -1173,30 +1174,41 @@ class _LetterSwitcherState extends State<_LetterSwitcher> {
   @override
   Widget build(BuildContext context) {
     final keys = _letterCategories.keys.toList();
+    // Three rows in letter order (first third on top), scrolling together.
+    const rowCount = 3;
+    final perRow = (keys.length + rowCount - 1) ~/ rowCount;
+    final rows = [
+      for (var s = 0; s < keys.length; s += perRow) keys.sublist(s, (s + perRow).clamp(0, keys.length)),
+    ];
     return Container(
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: C.caption.withValues(alpha: .12)))),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-        child: Row(children: [
-          for (final (i, k) in keys.indexed) ...[
-            if (i > 0) const SizedBox(width: 6),
-            SizedBox(
-              key: k == widget.current ? _currentKey : null,
-              width: 44,
-              height: 44,
-              child: Semantics(
-                label: feats[k]!.title,
-                child: SelectPill(
-                  text: feats[k]!.title.split(' ').last,
-                  selected: k == widget.current,
-                  onTap: () => k == widget.current ? null : widget.onPick(k),
-                  padding: EdgeInsets.zero,
-                  radius: 10,
-                  fontSize: 17,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          for (final (r, row) in rows.indexed) ...[
+            if (r > 0) const SizedBox(height: 6),
+            Row(children: [
+              for (final (i, k) in row.indexed) ...[
+                if (i > 0) const SizedBox(width: 6),
+                SizedBox(
+                  key: k == widget.current ? _currentKey : null,
+                  width: 44,
+                  height: 44,
+                  child: Semantics(
+                    label: feats[k]!.title,
+                    child: SelectPill(
+                      text: feats[k]!.title.split(' ').last,
+                      selected: k == widget.current,
+                      onTap: () => k == widget.current ? null : widget.onPick(k),
+                      padding: EdgeInsets.zero,
+                      radius: 10,
+                      fontSize: 17,
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              ],
+            ]),
           ],
         ]),
       ),

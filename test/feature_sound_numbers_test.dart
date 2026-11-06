@@ -1,4 +1,4 @@
-// Feature 9 (สูตรเลขเสียงโชค): the book's กลุ่มเลขตัวเด่น / ตัวกัน per draw weekday (pp. 258–264), opened on the next
+// Feature 9 (สูตรเลขเสี่ยงโชค): the book's กลุ่มเลขตัวเด่น / ตัวกัน per draw weekday (pp. 258–264), opened on the next
 // draw.
 import 'dart:io';
 
@@ -38,7 +38,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('เลขเด็ด').last);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('สูตรเลขเสียงโชค'));
+    await tester.tap(find.text('สูตรเลขเสี่ยงโชค'));
     await tester.pumpAndSettle();
   }
 

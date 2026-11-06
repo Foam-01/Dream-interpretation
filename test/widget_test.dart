@@ -53,7 +53,7 @@ void main() {
     expect(find.text('ภาพแป๊ะกงชี้โชค'), findsOneWidget);
   });
 
-  testWidgets('search -> result -> save toggle', (tester) async {
+  testWidgets('search -> result', (tester) async {
     await pumpApp(tester);
     await tester.tap(find.text('เมื่อคืนคุณฝันเห็นอะไร...'));
     await tester.pump();
@@ -64,9 +64,6 @@ void main() {
     await tester.tap(find.text('งู').last); // the row, not the query field
     await tester.pump();
     expect(find.text('เลขนำโชคจากความฝัน'), findsOneWidget);
-    await tester.tap(find.text('บันทึก'));
-    await tester.pump();
-    expect(find.text('บันทึกแล้ว'), findsOneWidget);
   });
 
   testWidgets('every bottom tab and feature renders', (tester) async {

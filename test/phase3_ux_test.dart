@@ -1,7 +1,6 @@
-// UX additions from the blue-gold redesign: letter grid and switcher, remedy search,
+﻿// UX additions from the blue-gold redesign: letter grid and switcher, remedy search,
 // chant text size and copying a dream's numbers.
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:maha_dream/data/nightmare_remedies.dart';
 import 'package:maha_dream/main.dart';
@@ -56,18 +55,12 @@ void main() {
     expect(size(), closeTo(17 * 1.3, .01));
   });
 
-  testWidgets('copy button puts the dream numbers on the clipboard', (tester) async {
-    String? copied;
-    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (call) async {
-      if (call.method == 'Clipboard.setData') copied = (call.arguments as Map)['text'] as String;
-      return null;
-    });
-    addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, null));
+  testWidgets('dream detail has no save or copy-numbers button (owner decision)', (tester) async {
     await pumpApp(tester);
     await tap(tester, find.text('ทำนายฝัน').last);
     await tap(tester, find.text('กบ').first);
-    await tap(tester, find.text('คัดลอกเลขทั้งหมด'));
-    expect(copied, '14 · 18 · 141 · 181 · 148');
-    expect(find.textContaining('คัดลอกแล้ว'), findsOneWidget);
+    expect(find.text('เลขนำโชคจากความฝัน'), findsOneWidget);
+    expect(find.text('บันทึก'), findsNothing);
+    expect(find.text('คัดลอกเลขทั้งหมด'), findsNothing);
   });
 }

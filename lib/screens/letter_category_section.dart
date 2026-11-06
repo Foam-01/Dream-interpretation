@@ -60,7 +60,7 @@ class _LetterCategorySectionState extends State<LetterCategorySection> {
       case LoadStatus.success:
     }
     final page = _request.value!;
-    if (page.items.isEmpty) return _Message('ยังไม่มีคำทำนายที่ผ่านการตรวจสอบในหมวดนี้');
+    if (page.items.isEmpty) return _Message('ยังไม่มีข้อมูลคำทำนายในหมวดนี้');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

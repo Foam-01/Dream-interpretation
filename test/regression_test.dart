@@ -195,35 +195,7 @@ void main() {
     });
   });
 
-  group('C. Saved legacySampleDreams (in-memory)', () {
-    testWidgets('toggling save twice returns to initial state', (tester) async {
-      await pumpApp(tester);
-      await openSearch(tester);
-      await tapText(tester, 'งู');
-      expect(find.text('บันทึก'), findsOneWidget);
-      expect(find.byIcon(Icons.star_border), findsOneWidget);
-      await tapText(tester, 'บันทึก');
-      expect(find.text('บันทึกแล้ว'), findsOneWidget);
-      expect(find.byIcon(Icons.star), findsOneWidget);
-      await tapText(tester, 'บันทึกแล้ว');
-      expect(find.text('บันทึก'), findsOneWidget);
-      expect(find.text('บันทึกแล้ว'), findsNothing);
-    });
-
-    testWidgets('saving one dream does not change another', (tester) async {
-      await pumpApp(tester);
-      await openSearch(tester);
-      await tapText(tester, 'งู');
-      await tapText(tester, 'บันทึก');
-      await tapText(tester, 'กลับ');
-      await tapText(tester, 'ช้าง');
-      expect(find.text('บันทึก'), findsOneWidget);
-      expect(find.text('บันทึกแล้ว'), findsNothing);
-      await tapText(tester, 'กลับ');
-      await tapText(tester, 'งู');
-      expect(find.text('บันทึกแล้ว'), findsOneWidget);
-    });
-  });
+  // Group C (save toggle) removed: the detail page has no save button until accounts exist.
 
   group('D. Navigation', () {
     testWidgets('tapping the current tab inside a feature returns to its menu', (tester) async {

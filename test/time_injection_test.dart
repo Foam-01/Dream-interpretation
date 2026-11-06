@@ -108,7 +108,7 @@ void main() {
 
     testWidgets('F3 feature 9 on Monday 2026-10-26 starts on the day of the next draw (Sunday 1 Nov)', (tester) async {
       await pumpAt(tester, DateTime(2026, 10, 26));
-      await openFeature(tester, 'เลขเด็ด', 'สูตรเลขเสียงโชค');
+      await openFeature(tester, 'เลขเด็ด', 'สูตรเลขเสี่ยงโชค');
       expect(pillSelected(tester, 'อา'), isTrue);
       expect(find.text('งวด 1 พ.ย. 2569 สลากออกวันอาทิตย์'), findsOneWidget);
     });
