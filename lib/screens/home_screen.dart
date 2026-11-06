@@ -68,7 +68,7 @@ class HomeScreen extends StatelessWidget {
             button: true,
             label: 'ค้นหาความฝัน',
             child: GestureDetector(
-              onTap: () => app.goSearch(),
+              onTap: () => app.goSearch(focus: true),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
@@ -77,7 +77,7 @@ class HomeScreen extends StatelessWidget {
                   border: Border.all(color: C.gold, width: 1.5),
                 ),
                 child: Row(children: [
-                  const Icon(Icons.search, size: 18, color: C.redBright),
+                  const Icon(Icons.search, size: 18, color: C.gold),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text('เมื่อคืนคุณฝันเห็นอะไร...',
@@ -129,10 +129,10 @@ class HomeScreen extends StatelessWidget {
           child: CreamCard(
             radius: 18,
             borderWidth: 1.5,
-            shadow: const [BoxShadow(color: Color(0x26781E0A), blurRadius: 24, offset: Offset(0, 8))],
+            shadow: const [BoxShadow(color: C.shadow, blurRadius: 24, offset: Offset(0, 8))],
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
-                Expanded(child: Text('เลขล็อควัน${dayFull[drawDay]}', style: serif(16, color: C.red))),
+                Expanded(child: Text('เลขล็อควัน${dayFull[drawDay]}', style: serif(16, color: C.accent))),
                 Text('งวด ${thaiDateShort(draw)}', style: sans(12, color: C.caption)),
               ]),
               const SizedBox(height: 12),
@@ -147,12 +147,12 @@ class HomeScreen extends StatelessWidget {
                   button: true,
                   child: GestureDetector(
                     onTap: () => app.openFeat('9'),
-                    child: Text('ตัวเด่น · ตัวกัน ›', style: sans(13, weight: FontWeight.w600, color: C.redDeep)),
+                    child: Text('ตัวเด่น · ตัวกัน ›', style: sans(13, weight: FontWeight.w600, color: C.accent)),
                   ),
                 ),
-                Text('เลขวิ่ง', style: sans(13, color: C.inkSoft)),
+                Text('เลขวิ่ง', style: sans(13, color: C.textSoft)),
                 Text(running.join(' · '),
-                    style: sans(13, weight: FontWeight.w700, color: C.redBright)),
+                    style: sans(13, weight: FontWeight.w700, color: C.number)),
               ]),
             ]),
           ),
@@ -172,16 +172,16 @@ class _LockTile extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: dark ? C.red : C.tileLight,
+          color: dark ? C.brand : C.highlight,
           borderRadius: BorderRadius.circular(12),
           border: dark ? null : Border.all(color: C.goldBorder),
         ),
         child: Column(children: [
-          Text(label, style: sans(12, color: dark ? C.gold : C.red)),
+          Text(label, style: sans(12, color: dark ? C.gold : C.accent)),
           const SizedBox(height: 4),
           Text('${numbers.take(3).join('  ')}\n${numbers.skip(3).join('  ')}',
               textAlign: TextAlign.center,
-              style: serif(20, weight: FontWeight.w800, color: dark ? C.goldLight : C.red, height: 1.4)),
+              style: serif(20, weight: FontWeight.w800, color: dark ? C.goldLight : C.accent, height: 1.4)),
         ]),
       );
 }
@@ -312,13 +312,13 @@ class DreamCard extends StatelessWidget {
               height: 90,
               width: double.infinity,
               fit: BoxFit.contain,
-              background: C.card),
+              background: C.surface),
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(name,
                   maxLines: 1, overflow: TextOverflow.ellipsis, style: sans(14, weight: FontWeight.w600)),
-              Text(number, style: serif(numberSize, color: C.redBright, height: 1.3)),
+              Text(number, style: serif(numberSize, color: C.number, height: 1.3)),
             ]),
           ),
         ]),

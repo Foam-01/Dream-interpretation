@@ -1,34 +1,46 @@
 import 'package:flutter/material.dart';
 
-/// Design tokens taken from Claude Design `Dream App.dc.html`.
+/// Design tokens: the blue-gold theme from the "Dream App Blue Gold" canvas (artboard สีและตัวอักษร).
+/// Names describe the role, not the hue, so a palette change stays inside this class.
 class C {
-  static const red = Color(0xFF8E1414);
-  static const redBright = Color(0xFFB81E1E);
-  static const redTile = Color(0xFFC42424);
-  static const redDeep = Color(0xFF5A0E0E);
-  static const gold = Color(0xFFF2C96B);
-  static const goldDeep = Color(0xFFD4A23A);
-  static const goldLight = Color(0xFFFFE3A3);
-  static const goldBorder = Color(0xFFE4C27A);
+  // Fills
+  static const bg = Color(0xFF050E2E);
+  static const surface = Color(0xFF0C1F57);
+  static const input = Color(0xFF0A1B4D);
+  static const brand = Color(0xFF0B2A7A);
+  static const brandBright = Color(0xFF1A4BC2);
+  static const brandTile = Color(0xFF1A4BC2);
+  static const navBar = Color(0xFF040B26);
+  static const highlight = Color(0xFF173275);
+  static const muted = Color(0xFF1A2A5E);
+  static const divider = Color(0xFF1E2F66);
+  static const shadow = Color(0x66000000);
+
+  // Gold
+  static const gold = Color(0xFFE8C46A);
+  static const goldDeep = Color(0xFFD9A93F);
+  static const goldLight = Color(0xFFF6DE9A);
+  static const goldBorder = Color(0x8CE8C46A);
   static const goldMuted = Color(0xFFC9A25A);
-  static const tabInactive = Color(0xFFD9B88A);
-  static const cream = Color(0xFFFBF4E8);
-  static const card = Color(0xFFFFFDF7);
-  static const input = Color(0xFFFFF8EA);
-  static const tileLight = Color(0xFFFBECC8);
-  static const divider = Color(0xFFF0E2C4);
-  static const chipGrey = Color(0xFFE9DCC4);
-  static const onRed = Color(0xFFFFF3D6);
-  static const onRedMuted = Color(0xFFF7D9A8);
-  static const ink = Color(0xFF3A1A10);
-  static const inkBody = Color(0xFF4A2A1A);
-  static const inkSoft = Color(0xFF5A3A2A);
-  static const inkMuted = Color(0xFF7A5A4A);
-  static const caption = Color(0xFF9A7A4A);
-  static const placeholder = Color(0xFFA8796A);
-  static const imgText = Color(0xFF8A6A3A);
-  static const stripeA = Color(0xFFF3E2BF);
-  static const stripeB = Color(0xFFEAD3A3);
+
+  // Text
+  static const text = Color(0xFFFFFFFF);
+  static const textBody = Color(0xFFEAF0FF);
+  static const textSoft = Color(0xFFC9D6FF);
+  static const textMuted = Color(0xFFC9D6FF);
+  static const caption = Color(0xFFAEBBE3);
+  static const placeholder = Color(0xFF8FA3D6);
+  static const accent = Color(0xFFF6DE9A);
+  static const number = Color(0xFFF6DE9A);
+  static const onGold = Color(0xFF061440);
+  static const onBrand = Color(0xFFEAF0FF);
+  static const onBrandMuted = Color(0xFFC9D6FF);
+  static const tabInactive = Color(0xFFAEBBE3);
+
+  // Picture placeholders keep a paper tone: the line drawings are made for a light ground.
+  static const imgText = Color(0xFF6B5A35);
+  static const stripeA = Color(0xFFF4EAD2);
+  static const stripeB = Color(0xFFEADCB8);
 }
 
 TextStyle _font(String family, double size, FontWeight weight, Color color, double? letterSpacing, double? height) =>
@@ -43,18 +55,18 @@ TextStyle _font(String family, double size, FontWeight weight, Color color, doub
       height: height,
     );
 
-TextStyle serif(double size, {FontWeight weight = FontWeight.w700, Color color = C.ink, double? letterSpacing, double? height}) =>
+TextStyle serif(double size, {FontWeight weight = FontWeight.w700, Color color = C.text, double? letterSpacing, double? height}) =>
     _font('NotoSerifThai', size, weight, color, letterSpacing, height);
 
-TextStyle sans(double size, {FontWeight weight = FontWeight.w400, Color color = C.ink, double? height}) =>
+TextStyle sans(double size, {FontWeight weight = FontWeight.w400, Color color = C.text, double? height}) =>
     _font('NotoSansThai', size, weight, color, null, height);
 
 ThemeData buildTheme() {
   return ThemeData(
     useMaterial3: true,
     fontFamily: 'NotoSansThai',
-    colorScheme: ColorScheme.fromSeed(seedColor: C.red, primary: C.red, surface: C.cream),
-    scaffoldBackgroundColor: C.cream,
-    textSelectionTheme: const TextSelectionThemeData(cursorColor: C.redBright),
+    colorScheme: ColorScheme.fromSeed(seedColor: C.brand, primary: C.brand, surface: C.bg, brightness: Brightness.dark),
+    scaffoldBackgroundColor: C.bg,
+    textSelectionTheme: const TextSelectionThemeData(cursorColor: C.gold),
   );
 }

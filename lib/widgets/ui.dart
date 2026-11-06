@@ -47,9 +47,9 @@ class RedHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: C.red,
+        color: C.brand,
         gradient: gradient
-            ? const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [C.red, C.redBright])
+            ? const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [C.brand, C.brandBright])
             : null,
       ),
       child: Stack(children: [
@@ -73,7 +73,7 @@ class FeatureHeader extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           BackLink(label: backLabel, onTap: onBack),
           Text(title, style: serif(22, weight: FontWeight.w800, color: C.goldLight)),
-          if (sub != null) Text(sub!, style: sans(13, color: C.onRedMuted)),
+          if (sub != null) Text(sub!, style: sans(13, color: C.onBrandMuted)),
         ]),
       );
 }
@@ -120,7 +120,7 @@ class CreamCard extends StatelessWidget {
     final r = BorderRadius.circular(radius);
     return Container(
       decoration: BoxDecoration(
-        color: C.card,
+        color: C.surface,
         borderRadius: r,
         border: Border.all(color: C.goldBorder, width: borderWidth),
         boxShadow: shadow,
@@ -202,7 +202,7 @@ class DigitBox extends StatelessWidget {
         height: height,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: C.red,
+          color: C.brand,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: C.gold, width: 2),
         ),
@@ -243,9 +243,9 @@ class GlyphTile extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius),
           gradient: const LinearGradient(
-              begin: Alignment(-0.35, -1), end: Alignment(0.35, 1), colors: [C.redTile, C.red]),
+              begin: Alignment(-0.35, -1), end: Alignment(0.35, 1), colors: [C.brandTile, C.brand]),
           border: Border.all(color: C.goldBorder, width: borderWidth),
-          boxShadow: const [BoxShadow(color: Color(0x33781E0A), blurRadius: 8, offset: Offset(0, 3))],
+          boxShadow: const [BoxShadow(color: C.shadow, blurRadius: 8, offset: Offset(0, 3))],
         ),
         child: Icon(icon, size: size * .5, color: C.goldLight),
       );
@@ -265,10 +265,10 @@ class SelectPill extends StatelessWidget {
     required this.text,
     required this.selected,
     required this.onTap,
-    this.selectedBg = C.red,
+    this.selectedBg = C.brand,
     this.selectedFg = C.goldLight,
-    this.bg = C.card,
-    this.fg = C.red,
+    this.bg = C.surface,
+    this.fg = C.accent,
     this.border = C.goldBorder,
     this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
     this.radius = 18,
@@ -380,7 +380,7 @@ class LoadErrorView extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 decoration: BoxDecoration(color: C.gold, borderRadius: BorderRadius.circular(20)),
-                child: Text('ลองใหม่', style: sans(14, weight: FontWeight.w600, color: C.redDeep)),
+                child: Text('ลองใหม่', style: sans(14, weight: FontWeight.w600, color: C.onGold)),
               ),
             ),
           ),
@@ -491,7 +491,7 @@ class Pager extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text('หน้า $page / $pages', style: sans(14, weight: FontWeight.w600, color: C.redDeep)),
+              child: Text('หน้า $page / $pages', style: sans(14, weight: FontWeight.w600, color: C.accent)),
             ),
           ),
         ),
@@ -524,10 +524,10 @@ class _PagerButton extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: enabled ? C.gold : C.chipGrey,
+              color: enabled ? C.gold : C.muted,
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 22, color: enabled ? C.redDeep : C.caption),
+            child: Icon(icon, size: 22, color: enabled ? C.onGold : C.caption),
           ),
         ),
       ),

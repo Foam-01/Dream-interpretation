@@ -96,7 +96,7 @@ class _ResultScreenState extends State<ResultScreen> {
             height: 220,
             width: double.infinity,
             fit: BoxFit.contain,
-            background: C.card,
+            background: C.surface,
             radius: 16,
             fontSize: 12,
             band: 8,
@@ -104,7 +104,7 @@ class _ResultScreenState extends State<ResultScreen> {
           ),
           if (d.image?.attribution case final credit?) ...[
             const SizedBox(height: 4),
-            Text(credit, style: sans(11, color: C.onRedMuted)),
+            Text(credit, style: sans(11, color: C.onBrandMuted)),
           ],
           const SizedBox(height: 14),
           // The name as written in the source (no added "ฝันเห็น": many names are actions, e.g. กินข้าว).
@@ -113,7 +113,7 @@ class _ResultScreenState extends State<ResultScreen> {
           // Only a cited source is named; no source → no claim about where the text comes from.
           Text(
             [d.cat.startsWith('หมวด') ? d.cat : 'หมวด${d.cat}', ?d.source?.title].join(' · '),
-            style: sans(14, color: C.onRedMuted),
+            style: sans(14, color: C.onBrandMuted),
           ),
         ]),
       ),
@@ -122,7 +122,7 @@ class _ResultScreenState extends State<ResultScreen> {
         child: CreamCard(
           borderWidth: 1.5,
           child: Column(children: [
-            Text('เลขนำโชคจากความฝัน', style: serif(15, color: C.red)),
+            Text('เลขนำโชคจากความฝัน', style: serif(15, color: C.accent)),
             const SizedBox(height: 10),
             if (d.digits.isNotEmpty) ...[
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -158,7 +158,7 @@ class _ResultScreenState extends State<ResultScreen> {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text('คำทำนาย', style: serif(16)),
                 const SizedBox(height: 6),
-                Text(d.meaning, style: sans(15, color: C.inkBody, height: 1.7)),
+                Text(d.meaning, style: sans(15, color: C.textBody, height: 1.7)),
                 if (d.source != null) ...[
                   const SizedBox(height: 10),
                   Text('ที่มา: ${d.source!.citation}', style: sans(12, color: C.caption)),
@@ -184,7 +184,7 @@ class _ResultScreenState extends State<ResultScreen> {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: C.red, borderRadius: BorderRadius.circular(16)),
+            decoration: BoxDecoration(color: C.brand, borderRadius: BorderRadius.circular(16)),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
                 switch (d.good) {
@@ -195,7 +195,7 @@ class _ResultScreenState extends State<ResultScreen> {
                 style: serif(16, color: C.goldLight),
               ),
               const SizedBox(height: 6),
-              Text(advice, style: sans(14, color: C.onRed, height: 1.7)),
+              Text(advice, style: sans(14, color: C.onBrand, height: 1.7)),
               const SizedBox(height: 12),
               Semantics(
                 button: true,
@@ -204,7 +204,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(color: C.gold, borderRadius: BorderRadius.circular(20)),
-                    child: Text('อ่านบทสวด ›', style: sans(14, weight: FontWeight.w600, color: C.redDeep)),
+                    child: Text('อ่านบทสวด ›', style: sans(14, weight: FontWeight.w600, color: C.onGold)),
                   ),
                 ),
               ),
@@ -224,10 +224,10 @@ class _NumTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: C.tileLight, borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration(color: C.highlight, borderRadius: BorderRadius.circular(10)),
         child: Column(children: [
-          Text(label, style: sans(12, color: C.imgText)),
-          Text(value, style: serif(18, color: C.red)),
+          Text(label, style: sans(12, color: C.caption)),
+          Text(value, style: serif(18, color: C.accent)),
         ]),
       );
 }
@@ -241,7 +241,7 @@ class _LuckBar extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Row(children: [
-          SizedBox(width: 56, child: Text(label, style: sans(14, color: C.inkSoft))),
+          SizedBox(width: 56, child: Text(label, style: sans(14, color: C.textSoft))),
           const SizedBox(width: 10),
           Expanded(
             child: ClipRRect(
@@ -253,14 +253,14 @@ class _LuckBar extends StatelessWidget {
                 child: FractionallySizedBox(
                   widthFactor: value / 100,
                   child: Container(
-                    decoration: const BoxDecoration(gradient: LinearGradient(colors: [C.goldDeep, C.redBright])),
+                    decoration: const BoxDecoration(gradient: LinearGradient(colors: [C.goldDeep, C.brandBright])),
                   ),
                 ),
               ),
             ),
           ),
           const SizedBox(width: 10),
-          SizedBox(width: 30, child: Text('$value', textAlign: TextAlign.right, style: sans(13, color: C.red))),
+          SizedBox(width: 30, child: Text('$value', textAlign: TextAlign.right, style: sans(13, color: C.accent))),
         ]),
       );
 }

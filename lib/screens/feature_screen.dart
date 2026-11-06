@@ -184,9 +184,9 @@ class _FeatureScreenState extends State<FeatureScreen> {
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              Container(width: 4, height: 18, color: top ? C.red : C.goldDeep),
+              Container(width: 4, height: 18, color: top ? C.brand : C.goldDeep),
               const SizedBox(width: 8),
-              Text(title, style: serif(17, color: C.red)),
+              Text(title, style: serif(17, color: C.accent)),
             ]),
             const SizedBox(height: 12),
             GridView.count(
@@ -202,12 +202,12 @@ class _FeatureScreenState extends State<FeatureScreen> {
                   Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: top ? C.red : C.tileLight,
+                      color: top ? C.brand : C.highlight,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(color: top ? C.gold : C.goldBorder, width: top ? 1.5 : 1),
                     ),
                     child: Text(n,
-                        style: serif(26, weight: FontWeight.w800, color: top ? C.goldLight : C.red, height: 1.2)),
+                        style: serif(26, weight: FontWeight.w800, color: top ? C.goldLight : C.accent, height: 1.2)),
                   ),
               ],
             ),
@@ -238,7 +238,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
           Text(
             isDrawDay ? 'งวด ${thaiDate(_draw)} · ออกวัน${dayFull[_lockDay]}' : 'ถ้าสลากออกวัน${dayFull[_lockDay]}',
             textAlign: TextAlign.center,
-            style: serif(18, color: C.red),
+            style: serif(18, color: C.accent),
           ),
           const SizedBox(height: 12),
           group('เลขบน', lockTop[_lockDay], top: true),
@@ -247,9 +247,9 @@ class _FeatureScreenState extends State<FeatureScreen> {
           const SizedBox(height: 14),
           Container(
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: C.tileLight.withValues(alpha: .5), borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(color: C.highlight.withValues(alpha: .5), borderRadius: BorderRadius.circular(12)),
             child: Text('$lockNote\n(เลข "ล็อค" ตามกำลังวัน $lockSource)',
-                style: sans(13, color: C.inkSoft, height: 1.7)),
+                style: sans(13, color: C.textSoft, height: 1.7)),
           ),
         ]),
       ),
@@ -275,7 +275,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                     height: 34,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: C.red,
+                      color: C.brand,
                       shape: BoxShape.circle,
                       border: Border.all(color: C.gold, width: 1.5),
                     ),
@@ -286,7 +286,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(s[0], style: sans(16, weight: FontWeight.w600)),
                       const SizedBox(height: 2),
-                      Text(s[1], style: sans(14, color: C.inkSoft, height: 1.7)),
+                      Text(s[1], style: sans(14, color: C.textSoft, height: 1.7)),
                     ]),
                   ),
                 ]),
@@ -297,7 +297,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: C.red,
+                color: C.brand,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: C.goldDeep, width: 2),
               ),
@@ -323,7 +323,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
     Widget group(String title, List<String> nums, {required bool dark}) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: serif(16, color: C.red)),
+            Text(title, style: serif(16, color: C.accent)),
             const SizedBox(height: 8),
             Wrap(spacing: 8, runSpacing: 8, children: [
               for (final n in nums)
@@ -332,11 +332,11 @@ class _FeatureScreenState extends State<FeatureScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: dark ? C.red : C.chipGrey,
+                    color: dark ? C.brand : C.muted,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: dark ? C.goldDeep : C.goldBorder),
                   ),
-                  child: Text(n, style: serif(18, color: dark ? C.goldLight : C.ink, height: 1.2)),
+                  child: Text(n, style: serif(18, color: dark ? C.goldLight : C.text, height: 1.2)),
                 ),
             ]),
           ],
@@ -366,7 +366,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
           width: double.infinity,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: C.red,
+            color: C.brand,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: C.goldDeep, width: 2),
           ),
@@ -429,7 +429,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: C.red,
+            color: C.brand,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: C.goldDeep, width: 2),
           ),
@@ -439,7 +439,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
               style: sans(14, color: C.gold),
             ),
             const SizedBox(height: 2),
-            Text('งวดนั้นจะมีเลขวิ่ง', style: sans(13, color: C.onRedMuted)),
+            Text('งวดนั้นจะมีเลขวิ่ง', style: sans(13, color: C.onBrandMuted)),
             const SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               for (final (i, n) in nums.indexed) ...[
@@ -453,7 +453,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(runningIntro, style: sans(14, color: C.inkBody, height: 1.8)),
+          Text(runningIntro, style: sans(14, color: C.textBody, height: 1.8)),
           const SizedBox(height: 14),
           CreamCard(
             padding: EdgeInsets.zero,
@@ -462,21 +462,21 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: const BoxDecoration(
-                  color: C.red,
+                  color: C.brand,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
                 ),
                 child: Text(runningTableTitle, textAlign: TextAlign.center, style: serif(16, color: C.goldLight)),
               ),
               for (var i = 0; i < 7; i++)
                 Container(
-                  color: i == _runDay ? C.tileLight : null,
+                  color: i == _runDay ? C.highlight : null,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Row(children: [
                     Expanded(
                       child: Text('วัน${dayFull[i]}',
                           style: sans(15, weight: i == _runDay ? FontWeight.w700 : FontWeight.w400)),
                     ),
-                    Text(runningByDrawDay[i].join('   '), style: serif(18, color: C.red)),
+                    Text(runningByDrawDay[i].join('   '), style: serif(18, color: C.accent)),
                   ]),
                 ),
             ]),
@@ -492,13 +492,13 @@ class _FeatureScreenState extends State<FeatureScreen> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(chantIntro, style: sans(14, color: C.inkBody, height: 1.8)),
+          Text(chantIntro, style: sans(14, color: C.textBody, height: 1.8)),
           const SizedBox(height: 14),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 20),
             decoration: BoxDecoration(
-              color: C.red,
+              color: C.brand,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: C.goldDeep, width: 2),
             ),
@@ -521,7 +521,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
 
   // ---- Nightmare remedies (3): the owner's text — remedies first, then the closing; the long intro folds away ----
   List<Widget> _remediesBody() {
-    Widget label(String text, String body, {Color color = C.inkSoft}) => Padding(
+    Widget label(String text, String body, {Color color = C.textSoft}) => Padding(
           padding: const EdgeInsets.only(top: 8),
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Container(
@@ -529,8 +529,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
               padding: const EdgeInsets.symmetric(vertical: 2),
               margin: const EdgeInsets.only(top: 2, right: 10),
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: C.tileLight, borderRadius: BorderRadius.circular(8)),
-              child: Text(text, style: sans(12, weight: FontWeight.w600, color: C.redDeep)),
+              decoration: BoxDecoration(color: C.highlight, borderRadius: BorderRadius.circular(8)),
+              child: Text(text, style: sans(12, weight: FontWeight.w600, color: C.accent)),
             ),
             Expanded(child: Text(body, style: sans(14, color: color, height: 1.7))),
           ]),
@@ -540,7 +540,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('เคล็ดแก้ฝัน ${num(remedies.length)} ข้อ', style: serif(18, color: C.red)),
+          Text('เคล็ดแก้ฝัน ${num(remedies.length)} ข้อ', style: serif(18, color: C.accent)),
           const SizedBox(height: 10),
           for (final (i, r) in remedies.indexed)
             Padding(
@@ -553,7 +553,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                     height: 34,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: C.red,
+                      color: C.brand,
                       shape: BoxShape.circle,
                       border: Border.all(color: C.gold, width: 1.5),
                     ),
@@ -564,7 +564,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text('ฝันว่า${r.dream}', style: sans(16, weight: FontWeight.w600)),
                       label('ทายว่า', r.omen),
-                      label('วิธีแก้', r.cure, color: C.inkBody),
+                      label('วิธีแก้', r.cure, color: C.textBody),
                     ]),
                   ),
                 ]),
@@ -575,25 +575,25 @@ class _FeatureScreenState extends State<FeatureScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: C.red,
+              color: C.brand,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: C.goldDeep, width: 2),
             ),
-            child: Text(remedyClosing, style: sans(14, color: C.onRed, height: 1.8)),
+            child: Text(remedyClosing, style: sans(14, color: C.onBrand, height: 1.8)),
           ),
           const SizedBox(height: 12),
           CreamCard(
             onTap: () => setState(() => _remedyIntroOpen = !_remedyIntroOpen),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
-                Expanded(child: Text('อ่านเพิ่มเติม', style: serif(16, color: C.red))),
-                Icon(_remedyIntroOpen ? Icons.expand_less_rounded : Icons.expand_more_rounded, color: C.red),
+                Expanded(child: Text('อ่านเพิ่มเติม', style: serif(16, color: C.accent))),
+                Icon(_remedyIntroOpen ? Icons.expand_less_rounded : Icons.expand_more_rounded, color: C.accent),
               ]),
               if (_remedyIntroOpen)
                 for (final p in remedyIntro)
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
-                    child: Text(p, style: sans(14, color: C.inkBody, height: 1.8)),
+                    child: Text(p, style: sans(14, color: C.textBody, height: 1.8)),
                   ),
             ]),
           ),
@@ -616,7 +616,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
     final shown = found.sublist(page * perPage, math.min(found.length, page * perPage + perPage));
     Widget cell(AnimalNumber a) => Container(
           decoration: BoxDecoration(
-            color: C.card,
+            color: C.surface,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: C.goldBorder),
           ),
@@ -628,15 +628,15 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 child: Text(a.name,
                     textAlign: TextAlign.center,
                     maxLines: 2,
-                    style: sans(13, weight: FontWeight.w700, color: C.ink, height: 1.3)),
+                    style: sans(13, weight: FontWeight.w700, color: C.text, height: 1.3)),
               ),
             ),
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: [
-                Text(a.number, style: serif(22, weight: FontWeight.w800, color: C.red, height: 1.2)),
+                Text(a.number, style: serif(22, weight: FontWeight.w800, color: C.accent, height: 1.2)),
                 const SizedBox(width: 14),
-                Text(a.pair, style: serif(16, color: C.inkSoft, height: 1.2)),
+                Text(a.pair, style: serif(16, color: C.textSoft, height: 1.2)),
               ]),
             ),
             const SizedBox(height: 6),
@@ -661,7 +661,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
             border: Border.all(color: C.goldBorder, width: 1.5),
           ),
           child: Row(children: [
-            const Icon(Icons.search, size: 18, color: C.redBright),
+            const Icon(Icons.search, size: 18, color: C.gold),
             const SizedBox(width: 8),
             Expanded(
               child: TextField(
@@ -752,7 +752,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
     final shown = found.sublist(page * perPage, math.min(found.length, page * perPage + perPage));
     Widget cell(PaeNumber p) => Container(
           decoration: BoxDecoration(
-            color: C.card,
+            color: C.surface,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: C.goldBorder),
           ),
@@ -765,13 +765,13 @@ class _FeatureScreenState extends State<FeatureScreen> {
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: sans(13, weight: FontWeight.w700, color: C.ink, height: 1.3)),
+                    style: sans(13, weight: FontWeight.w700, color: C.text, height: 1.3)),
               ),
             ),
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: [
-                Text(p.lucky, style: serif(22, weight: FontWeight.w800, color: C.red, height: 1.2)),
+                Text(p.lucky, style: serif(22, weight: FontWeight.w800, color: C.accent, height: 1.2)),
                 const SizedBox(width: 10),
                 Text('ภาพ ${p.number}', style: sans(11, color: C.caption, height: 1.4)),
               ]),
@@ -796,7 +796,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
             border: Border.all(color: C.goldBorder, width: 1.5),
           ),
           child: Row(children: [
-            const Icon(Icons.search, size: 18, color: C.redBright),
+            const Icon(Icons.search, size: 18, color: C.gold),
             const SizedBox(width: 8),
             Expanded(
               child: TextField(
@@ -921,7 +921,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
       ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
-        child: Text(digitSummaryIntro, style: sans(14, color: C.inkBody, height: 1.8)),
+        child: Text(digitSummaryIntro, style: sans(14, color: C.textBody, height: 1.8)),
       ),
       for (final s in digitSymbols)
         Padding(
@@ -937,14 +937,14 @@ class _FeatureScreenState extends State<FeatureScreen> {
                   height: 48,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: C.red,
+                    color: C.brand,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: C.gold, width: 2),
                   ),
                   child: Text('${s.digit}', style: serif(28, weight: FontWeight.w800, color: C.goldLight, height: 1.1)),
                 ),
                 const SizedBox(width: 12),
-                Text('เลข ${s.digit}', style: serif(18, color: C.red)),
+                Text('เลข ${s.digit}', style: serif(18, color: C.accent)),
               ]),
               const SizedBox(height: 12),
               ClipRRect(
@@ -959,10 +959,10 @@ class _FeatureScreenState extends State<FeatureScreen> {
               const SizedBox(height: 12),
               Text.rich(
                 TextSpan(children: [
-                  TextSpan(text: 'ได้แก่ ฝันเห็น ', style: sans(14, weight: FontWeight.w600, color: C.redDeep, height: 1.8)),
+                  TextSpan(text: 'ได้แก่ ฝันเห็น ', style: sans(14, weight: FontWeight.w600, color: C.accent, height: 1.8)),
                   TextSpan(text: '${s.items.join(', ')} ฯลฯ'),
                 ]),
-                style: sans(14, color: C.inkBody, height: 1.8),
+                style: sans(14, color: C.textBody, height: 1.8),
               ),
             ]),
           ),
@@ -976,7 +976,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(loreIntro, style: sans(14, color: C.inkBody, height: 1.8)),
+            Text(loreIntro, style: sans(14, color: C.textBody, height: 1.8)),
             const SizedBox(height: 12),
             for (final e in loreEntries)
               Padding(
@@ -992,12 +992,12 @@ class _FeatureScreenState extends State<FeatureScreen> {
                         TextSpan(children: [
                           if (e.seen case final seen?) ...[
                             const TextSpan(text: 'ถ้าฝันเห็น '),
-                            TextSpan(text: seen, style: sans(14, weight: FontWeight.w700, color: C.redDeep, height: 1.7)),
+                            TextSpan(text: seen, style: sans(14, weight: FontWeight.w700, color: C.accent, height: 1.7)),
                             TextSpan(text: e.text.substring('ถ้าฝันเห็น '.length + seen.length)),
                           ] else
                             TextSpan(text: e.text),
                         ]),
-                        style: sans(14, color: C.inkBody, height: 1.7),
+                        style: sans(14, color: C.textBody, height: 1.7),
                       ),
                     ),
                   ]),
@@ -1008,11 +1008,11 @@ class _FeatureScreenState extends State<FeatureScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: C.red,
+                color: C.brand,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: C.goldDeep, width: 2),
               ),
-              child: Text(loreClosing, style: sans(14, color: C.onRed, height: 1.8)),
+              child: Text(loreClosing, style: sans(14, color: C.onBrand, height: 1.8)),
             ),
           ]),
         ),
@@ -1025,12 +1025,12 @@ class _FeatureScreenState extends State<FeatureScreen> {
     Widget cell(String text, {bool head = false, bool on = false}) => Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 9),
-            color: on ? C.tileLight : null,
+            color: on ? C.highlight : null,
             child: Text(text,
                 textAlign: TextAlign.center,
                 style: head
                     ? sans(13, weight: FontWeight.w600, color: C.goldLight)
-                    : serif(16, color: on ? C.redDeep : C.red, weight: on ? FontWeight.w800 : FontWeight.w700)),
+                    : serif(16, color: on ? C.accent : C.accent, weight: on ? FontWeight.w800 : FontWeight.w700)),
           ),
         );
     bool isNext(int day, int col) =>
@@ -1046,7 +1046,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: C.red,
+                  color: C.brand,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: C.goldDeep, width: 2),
                 ),
@@ -1067,14 +1067,14 @@ class _FeatureScreenState extends State<FeatureScreen> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(drawIntro, style: sans(14, color: C.inkBody, height: 1.8)),
+          Text(drawIntro, style: sans(14, color: C.textBody, height: 1.8)),
           const SizedBox(height: 14),
           CreamCard(
             padding: EdgeInsets.zero,
             child: Column(children: [
               Container(
                 decoration: const BoxDecoration(
-                  color: C.red,
+                  color: C.brand,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
                 ),
                 child: Row(children: [cell('วัน', head: true), cell('วันที่ 1', head: true), cell('วันที่ 16', head: true)]),

@@ -36,6 +36,16 @@ class _SearchScreenState extends State<SearchScreen> {
   (String, String)? _searched;
 
   final _scroll = ScrollController();
+  final _focus = FocusNode();
+
+  /// Came from Home's search box: put the cursor in the box after this frame (opens the keyboard).
+  void _focusIfAsked() {
+    if (_app!.takeSearchFocus()) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _focus.requestFocus();
+      });
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -45,6 +55,7 @@ class _SearchScreenState extends State<SearchScreen> {
     final app = _app = AppScope.of(context);
     _categories.run(app.repository.categories);
     _search();
+    _focusIfAsked();
     // Listen only after the first synchronous results are in place.
     app.addListener(_appChanged);
     _categories.addListener(_changed);
@@ -55,6 +66,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   /// Query or category changed: search again (debounced for remote data).
   void _appChanged() {
+    _focusIfAsked();
     final app = _app!;
     final key = (app.query.trim(), app.cat);
     if (key == _searched) return; // other state (tab, saved, ...) changed
@@ -127,7 +139,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return Column(children: [
       Container(
         width: double.infinity,
-        color: C.red,
+        color: C.brand,
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('ค้นหาความฝัน', style: serif(20, color: C.goldLight)),
@@ -140,11 +152,13 @@ class _SearchScreenState extends State<SearchScreen> {
               border: Border.all(color: C.gold, width: 1.5),
             ),
             child: Row(children: [
-              const Icon(Icons.search, size: 18, color: C.redBright),
+              const Icon(Icons.search, size: 18, color: C.gold),
               const SizedBox(width: 8),
               Expanded(
                 child: TextField(
+                  key: const ValueKey('dream-search'),
                   controller: _controller,
+                  focusNode: _focus,
                   onChanged: app.setQuery,
                   textInputAction: TextInputAction.search,
                   style: sans(16),
@@ -181,7 +195,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 selected: app.cat == cats[i],
                 onTap: () => app.setCat(cats[i]),
                 selectedBg: C.gold,
-                selectedFg: C.redDeep,
+                selectedFg: C.onGold,
                 bg: Colors.transparent,
                 fg: C.goldLight,
                 border: C.gold,
@@ -236,7 +250,7 @@ class _BookPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: C.input,
         border: Border.all(color: C.goldDeep, width: 1.5),
-        boxShadow: const [BoxShadow(color: Color(0x22000000), blurRadius: 6, offset: Offset(2, 3))],
+        boxShadow: const [BoxShadow(color: C.shadow, blurRadius: 6, offset: Offset(2, 3))],
       ),
       child: Container(
         padding: const EdgeInsets.fromLTRB(14, 4, 14, 12),
@@ -274,17 +288,17 @@ class _ResultRow extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(d.name, style: serif(18, color: C.redDeep)),
+              Text(d.name, style: serif(18, color: C.text)),
               const SizedBox(height: 2),
               Text(d.short,
-                  maxLines: 2, overflow: TextOverflow.ellipsis, style: sans(13, color: C.inkSoft, height: 1.45)),
+                  maxLines: 2, overflow: TextOverflow.ellipsis, style: sans(13, color: C.textSoft, height: 1.45)),
             ]),
           ),
           const SizedBox(width: 10),
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             d.numbers.isNone
-                ? Text(d.firstTwo, style: sans(13, weight: FontWeight.w600, color: C.redBright, height: 1.6))
-                : Text(d.firstTwo, style: serif(22, weight: FontWeight.w800, color: C.redBright, height: 1.2)),
+                ? Text(d.firstTwo, style: sans(13, weight: FontWeight.w600, color: C.number, height: 1.6))
+                : Text(d.firstTwo, style: serif(22, weight: FontWeight.w800, color: C.number, height: 1.2)),
             Text(d.cat, style: sans(11, color: C.caption)),
           ]),
         ]),

@@ -108,18 +108,18 @@ class _DreamRow extends StatelessWidget {
                   d.short,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: sans(13, color: C.inkMuted),
+                  style: sans(13, color: C.textMuted),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 8),
           if (two.isNotEmpty)
-            Text(two.first, style: serif(20, weight: FontWeight.w800, color: C.redBright, height: 1.3))
+            Text(two.first, style: serif(20, weight: FontWeight.w800, color: C.number, height: 1.3))
           else
             Text(
               LuckyNumbers.noLuckyNumbersText,
-              style: sans(13, weight: FontWeight.w600, color: C.redBright, height: 1.6),
+              style: sans(13, weight: FontWeight.w600, color: C.number, height: 1.6),
             ),
         ],
       ),

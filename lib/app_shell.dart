@@ -66,9 +66,21 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void goSearch({bool resetCat = false}) {
+  /// [focus]: the person tapped a search box (Home) and wants to type now, so the search screen
+  /// puts the cursor in its box and opens the keyboard.
+  void goSearch({bool resetCat = false, bool focus = false}) {
     if (resetCat) cat = 'ทั้งหมด';
+    if (focus) _focusSearch = true;
     goTab('dream');
+  }
+
+  bool _focusSearch = false;
+
+  /// True once after goSearch(focus: true); the search screen calls it and focuses its box.
+  bool takeSearchFocus() {
+    final f = _focusSearch;
+    _focusSearch = false;
+    return f;
   }
 
   void openDream(String id) {
@@ -174,15 +186,15 @@ class _AppShellState extends State<AppShell> {
             },
             child: AnnotatedRegion<SystemUiOverlayStyle>(
               value: const SystemUiOverlayStyle(
-                statusBarColor: C.red,
+                statusBarColor: C.brand,
                 statusBarIconBrightness: Brightness.light,
-                systemNavigationBarColor: C.redDeep,
+                systemNavigationBarColor: C.navBar,
                 systemNavigationBarIconBrightness: Brightness.light,
               ),
               child: Scaffold(
-                backgroundColor: C.cream,
+                backgroundColor: C.bg,
                 body: Column(children: [
-                  Container(color: C.red, height: MediaQuery.paddingOf(context).top),
+                  Container(color: C.brand, height: MediaQuery.paddingOf(context).top),
                   Expanded(
                     child: MediaQuery.removePadding(
                       context: context,
@@ -222,7 +234,7 @@ class _BottomTabs extends StatelessWidget {
     final bottom = MediaQuery.paddingOf(context).bottom;
     return Container(
       decoration: const BoxDecoration(
-        color: C.redDeep,
+        color: C.navBar,
         border: Border(top: BorderSide(color: C.goldDeep, width: 2)),
       ),
       padding: EdgeInsets.fromLTRB(4, 6, 4, 6 + (bottom > 0 ? bottom : 8)),
@@ -247,7 +259,7 @@ class _BottomTabs extends StatelessWidget {
                         color: key == current ? C.gold : Colors.transparent,
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Icon(icon, size: 20, color: key == current ? C.redDeep : C.tabInactive),
+                      child: Icon(icon, size: 20, color: key == current ? C.onGold : C.tabInactive),
                     ),
                     const SizedBox(height: 3),
                     Flexible(

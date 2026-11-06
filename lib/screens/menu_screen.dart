@@ -22,7 +22,7 @@ class MenuScreen extends StatelessWidget {
           width: double.infinity,
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(m.title, style: serif(22, weight: FontWeight.w800, color: C.goldLight)),
-            Text(m.sub, style: sans(13, color: C.onRedMuted)),
+            Text(m.sub, style: sans(13, color: C.onBrandMuted)),
           ]),
         ),
       ),
@@ -42,7 +42,7 @@ class MenuScreen extends StatelessWidget {
                   Expanded(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(item.title, style: sans(16, weight: FontWeight.w600)),
-                      Text(item.desc, style: sans(13, color: C.inkMuted)),
+                      Text(item.desc, style: sans(13, color: C.textMuted)),
                     ]),
                   ),
                   Text('›', style: sans(20, color: C.goldMuted)),
