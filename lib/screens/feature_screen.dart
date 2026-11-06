@@ -42,6 +42,7 @@ import '../data/digit_summary.dart';
 import '../data/draw_numbers.dart';
 import '../data/dream_chant.dart';
 import '../data/formulas.dart';
+import '../data/pae_numbers.dart';
 import '../data/lock_numbers.dart';
 import '../data/running_numbers.dart';
 import '../data/sound_numbers.dart';
@@ -101,15 +102,16 @@ class _FeatureScreenState extends State<FeatureScreen> {
   // Initialised once per State from the injected time (same lifecycle as before).
   int? _digit;
   final _digitKeys = [for (var i = 0; i < 10; i++) GlobalKey()];
-  int _hund = 0;
-  int _pae = 59;
   late final DateTime _draw = nextDrawDate(widget.now);
   late int _runDay = weekdayIndex(_draw);
   late int _lockDay = weekdayIndex(_draw);
   late int _soundDay = weekdayIndex(_draw);
   final _paeQuery = TextEditingController();
+  int _paePage = 0;
+  int _paeRange = -1; // -1 = all
   final _animalQuery = TextEditingController();
   int _animalPage = 0;
+  int _animalRange = -1; // -1 = all
 
   @override
   void dispose() {
@@ -118,21 +120,28 @@ class _FeatureScreenState extends State<FeatureScreen> {
     super.dispose();
   }
 
-  String _paeWord = '';
-  final _paeCardKey = GlobalKey();
+  /// Menus 5 and 6 show 21 pictures a page: 7 full rows of 3.
+  static const perPage = 21;
 
-  /// One box for both: 1–3 digits select that number and its hundred block; words list the matching pictures.
-  void _searchPae(String q) {
-    final t = q.trim();
-    final n = RegExp(r'^\d{1,3}$').hasMatch(t) ? int.parse(t) : null;
-    setState(() {
-      _paeWord = n == null ? t : '';
-      if (n != null) {
-        _hund = n ~/ 100;
-        _pae = n;
-      }
-    });
+  /// Turns a page and goes back to the top so the new page starts in view.
+  void _turnPage(BuildContext context, VoidCallback change) {
+    setState(change);
+    Scrollable.of(context).position.jumpTo(0);
   }
+
+  /// Filter chips for menus 5 and 6: ทั้งหมด, then one chip per number range; [selected] -1 means all.
+  Widget _rangeChips(List<String> ranges, int selected, ValueChanged<int> onSelect) => SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+        child: Row(children: [
+          SelectPill(text: 'ทั้งหมด', selected: selected < 0, onTap: () => onSelect(-1)),
+          for (final (i, r) in ranges.indexed) ...[
+            const SizedBox(width: 6),
+            SelectPill(text: r, selected: selected == i, onTap: () => onSelect(i)),
+          ],
+        ]),
+      );
+
   bool _remedyIntroOpen = false;
 
   @override
@@ -593,14 +602,18 @@ class _FeatureScreenState extends State<FeatureScreen> {
     ];
   }
 
-  // ---- Animals (5): the book's pages of 9 (last page 10), each animal with its number pair and picture;
+  // ---- Animals (5): each animal with its number pair and picture, 21 a page; range chips filter by number,
   // the search box looks across all 100 ----
   List<Widget> _animalsBody() {
     final q = _animalQuery.text.trim();
-    final pages = animalPages;
-    final shown = q.isEmpty
-        ? pages[_animalPage]
-        : [for (final a in animalNumbers) if (a.name.contains(q) || a.number == q || a.pair == q) a];
+    final found = q.isNotEmpty
+        ? [for (final a in animalNumbers) if (a.name.contains(q) || a.number == q || a.pair == q) a]
+        : _animalRange < 0
+            ? animalNumbers
+            : animalNumbers.sublist(_animalRange * 20, _animalRange * 20 + 20);
+    final pages = math.max(1, (found.length / perPage).ceil());
+    final page = math.min(_animalPage, pages - 1);
+    final shown = found.sublist(page * perPage, math.min(found.length, page * perPage + perPage));
     Widget cell(AnimalNumber a) => Container(
           decoration: BoxDecoration(
             color: C.card,
@@ -654,7 +667,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
               child: TextField(
                 key: const ValueKey('animal-search'),
                 controller: _animalQuery,
-                onChanged: (_) => setState(() {}),
+                onChanged: (_) => setState(() => _animalPage = 0),
                 textInputAction: TextInputAction.search,
                 style: sans(16),
                 decoration: InputDecoration(
@@ -671,32 +684,33 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 tooltip: 'ล้างคำค้นหา',
                 visualDensity: VisualDensity.compact,
                 icon: const Icon(Icons.close, size: 18, color: C.placeholder),
-                onPressed: () => setState(_animalQuery.clear),
+                onPressed: () => setState(() {
+                  _animalQuery.clear();
+                  _animalPage = 0;
+                }),
               ),
           ]),
         ),
       ),
       if (q.isEmpty)
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-          child: Row(children: [
-            for (final (i, p) in pages.indexed) ...[
-              if (i > 0) const SizedBox(width: 6),
-              SelectPill(
-                text: '${p.first.number}–${p.last.number}',
-                selected: _animalPage == i,
-                onTap: () => setState(() => _animalPage = i),
-              ),
-            ],
-          ]),
-        )
-      else
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-          child: Text(shown.isEmpty ? 'ไม่พบสัตว์ที่ตรงกับ "$q"' : 'พบ ${shown.length} ตัว',
-              style: sans(13, color: C.caption)),
+        _rangeChips(
+          [for (var i = 0; i < 5; i++) '${animalNumbers[i * 20].number}–${animalNumbers[i * 20 + 19].number}'],
+          _animalRange,
+          (r) => setState(() {
+            _animalRange = r;
+            _animalPage = 0;
+          }),
         ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+        child: Text(
+            q.isEmpty
+                ? '${found.length} ตัว'
+                : found.isEmpty
+                    ? 'ไม่พบสัตว์ที่ตรงกับ "$q"'
+                    : 'พบ ${found.length} ตัว',
+            style: sans(13, color: C.caption)),
+      ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         child: GridView.count(
@@ -710,15 +724,67 @@ class _FeatureScreenState extends State<FeatureScreen> {
           children: [for (final a in shown) cell(a)],
         ),
       ),
+      if (pages > 1)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          child: Builder(
+            builder: (context) => Pager(
+              page: page + 1,
+              pages: pages,
+              onPage: (p) => _turnPage(context, () => _animalPage = p - 1),
+            ),
+          ),
+        ),
     ];
   }
 
-  // ---- Pae Kong 000-999 (6) ----
+  // ---- Pae Kong (6): the book's 1,000 pictures 21 a page with range chips, each with its picture number, lucky number
+  // and picture; the search box looks across all 1,000 by dream word or either number ----
   List<Widget> _paeBody() {
-    final cur = paeOf(_pae);
-    final shown = _paeWord.isEmpty
-        ? [for (var i = 0; i < 100; i++) _hund * 100 + i]
-        : [for (var i = 0; i < 1000; i++) if (paeOf(i).name.contains(_paeWord)) i];
+    final q = _paeQuery.text.trim();
+    final found = q.isNotEmpty
+        ? [for (final p in paeNumbers) if (p.name.contains(q) || p.number == q || p.lucky == q) p]
+        : _paeRange < 0
+            ? paeNumbers
+            : paeNumbers.sublist(_paeRange * 100, _paeRange * 100 + 100);
+    final pages = math.max(1, (found.length / perPage).ceil());
+    final page = math.min(_paePage, pages - 1);
+    final shown = found.sublist(page * perPage, math.min(found.length, page * perPage + perPage));
+    Widget cell(PaeNumber p) => Container(
+          decoration: BoxDecoration(
+            color: C.card,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: C.goldBorder),
+          ),
+          padding: const EdgeInsets.all(8),
+          child: Column(children: [
+            SizedBox(
+              height: 36,
+              child: Center(
+                child: Text(p.name,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: sans(13, weight: FontWeight.w700, color: C.ink, height: 1.3)),
+              ),
+            ),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: [
+                Text(p.lucky, style: serif(22, weight: FontWeight.w800, color: C.red, height: 1.2)),
+                const SizedBox(width: 10),
+                Text('ภาพ ${p.number}', style: sans(11, color: C.caption, height: 1.4)),
+              ]),
+            ),
+            const SizedBox(height: 6),
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset(p.image, fit: BoxFit.contain, cacheWidth: 300, semanticLabel: p.name),
+              ),
+            ),
+          ]),
+        );
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
@@ -736,11 +802,11 @@ class _FeatureScreenState extends State<FeatureScreen> {
               child: TextField(
                 key: const ValueKey('pae-search'),
                 controller: _paeQuery,
-                onChanged: _searchPae,
+                onChanged: (_) => setState(() => _paePage = 0),
                 textInputAction: TextInputAction.search,
                 style: sans(16),
                 decoration: InputDecoration(
-                  hintText: 'ค้นหาคำ เช่น ม้า หรือเลข 000–999',
+                  hintText: 'ค้นหาสิ่งที่ฝัน เช่น ม้า หรือเลข',
                   hintStyle: sans(16, color: C.placeholder),
                   border: InputBorder.none,
                   isDense: true,
@@ -748,114 +814,63 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 ),
               ),
             ),
-            if (_paeQuery.text.isNotEmpty)
+            if (q.isNotEmpty)
               IconButton(
                 tooltip: 'ล้างคำค้นหา',
                 visualDensity: VisualDensity.compact,
                 icon: const Icon(Icons.close, size: 18, color: C.placeholder),
-                onPressed: () {
+                onPressed: () => setState(() {
                   _paeQuery.clear();
-                  _searchPae('');
-                },
+                  _paePage = 0;
+                }),
               ),
           ]),
         ),
       ),
-      // Row height follows the pills (was a fixed 48 that clipped text at large scale).
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
-        child: Row(children: [
-          for (var i = 0; i < 10; i++) ...[
-            if (i > 0) const SizedBox(width: 6),
-            SelectPill(
-              text: '${i}00–${i}99',
-              selected: _paeWord.isEmpty && _hund == i,
-              onTap: () => setState(() {
-                _hund = i;
-                _pae = i * 100;
-                _paeWord = '';
-                _paeQuery.clear();
-              }),
-            ),
-          ],
-        ]),
-      ),
-      Container(
-        key: _paeCardKey,
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: C.red,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: C.goldDeep, width: 2),
-        ),
-        child: Row(children: [
-          ImagePlaceholder('ภาพแป๊ะกง\n${cur.num}', width: 92, height: 92, radius: 12, fontSize: 9),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(cur.num, style: serif(34, weight: FontWeight.w800, color: C.goldLight, letterSpacing: 3, height: 1.1)),
-              Text(cur.name, style: sans(16, weight: FontWeight.w600, color: C.onRed)),
-              const SizedBox(height: 2),
-              Text('เลขกลับ ${cur.rev}', style: sans(12, color: C.gold)),
-            ]),
-          ),
-        ]),
-      ),
-      if (_paeWord.isNotEmpty)
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: Text(
-            shown.isEmpty ? 'ไม่พบภาพที่มีคำว่า "$_paeWord"' : 'พบ ${shown.length} เลข ที่มีคำว่า "$_paeWord"',
-            style: sans(13, color: C.caption),
-          ),
+      if (q.isEmpty)
+        _rangeChips(
+          [for (var i = 0; i < 10; i++) '${paeNumbers[i * 100].number}–${paeNumbers[i * 100 + 99].number}'],
+          _paeRange,
+          (r) => setState(() {
+            _paeRange = r;
+            _paePage = 0;
+          }),
         ),
       Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-        child: ContentGrid(
-          columns: 5,
-          spacing: 6,
-          runSpacing: 6,
-          minRowHeight: 52,
-          children: [for (final n in shown) _paeCell(n)],
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+        child: Text(
+            q.isEmpty
+                ? '${found.length} ภาพ'
+                : found.isEmpty
+                    ? 'ไม่พบภาพที่ตรงกับ "$q"'
+                    : 'พบ ${found.length} ภาพ',
+            style: sans(13, color: C.caption)),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        child: GridView.count(
+          crossAxisCount: 3,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 0.72,
+          children: [for (final p in shown) cell(p)],
         ),
       ),
-    ];
-  }
-
-  Widget _paeCell(int n) {
-    final p = paeOf(n);
-    final sel = n == _pae;
-    return Semantics(
-      button: true,
-      selected: sel,
-      child: GestureDetector(
-        onTap: () {
-          setState(() => _pae = n);
-          // In a word search the list can push the big card off screen: bring it back into view.
-          final card = _paeCardKey.currentContext;
-          if (_paeWord.isNotEmpty && card != null) {
-            Scrollable.ensureVisible(card, duration: const Duration(milliseconds: 250));
-          }
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-          decoration: BoxDecoration(
-            color: sel ? C.red : C.card,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: C.goldBorder),
+      if (pages > 1)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          child: Builder(
+            builder: (context) => Pager(
+              page: page + 1,
+              pages: pages,
+              onPage: (p) => _turnPage(context, () => _paePage = p - 1),
+            ),
           ),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text(p.num, style: serif(16, color: sel ? C.goldLight : C.red, height: 1.2)),
-            Text(p.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: sans(10, color: sel ? C.onRedMuted : C.caption, height: 1.2)),
-          ]),
         ),
-      ),
-    );
+    ];
   }
 
   // ---- Lucky digits 0-9 summary (2): the owner's book pages, one card per digit; pills jump to a card ----

@@ -471,3 +471,66 @@ class DreamImageView extends StatelessWidget {
     );
   }
 }
+
+/// Pager at the end of a paged list (search results, menus 5 and 6): first, previous, "หน้า X / Y", next, last.
+class Pager extends StatelessWidget {
+  final int page, pages;
+  final ValueChanged<int> onPage;
+  const Pager({super.key, required this.page, required this.pages, required this.onPage});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        _PagerButton(Icons.first_page_rounded, 'ไปหน้าแรก', page > 1 ? () => onPage(1) : null),
+        _PagerButton(Icons.chevron_left_rounded, 'ไปหน้าก่อนหน้า', page > 1 ? () => onPage(page - 1) : null),
+        // Shrinks instead of overflowing when space is tight (narrow screens, large text, many pages).
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text('หน้า $page / $pages', style: sans(14, weight: FontWeight.w600, color: C.redDeep)),
+            ),
+          ),
+        ),
+        _PagerButton(Icons.chevron_right_rounded, 'ไปหน้าถัดไป', page < pages ? () => onPage(page + 1) : null),
+        _PagerButton(Icons.last_page_rounded, 'ไปหน้าสุดท้าย', page < pages ? () => onPage(pages) : null),
+      ]),
+    );
+  }
+}
+
+/// Round gold page button; greyed out and inert when [onTap] is null.
+class _PagerButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+  const _PagerButton(this.icon, this.label, this.onTap);
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = onTap != null;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      child: Semantics(
+        button: true,
+        enabled: enabled,
+        label: label,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: enabled ? C.gold : C.chipGrey,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 22, color: enabled ? C.redDeep : C.caption),
+          ),
+        ),
+      ),
+    );
+  }
+}

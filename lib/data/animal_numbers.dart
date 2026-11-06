@@ -1,6 +1,6 @@
 /// Feature 5 (ทำนายฝันสัตว์ต่าง ๆ 100 ตัวเลข): the owner's book pages 166–176, transcribed in
 /// backend/content/incoming/feature-05-animals/source.md (fixes in REVIEW.md there). Book order: 01–99, then 00;
-/// pages of 9, the last page 10.
+/// the app shows 21 a page.
 library;
 
 class AnimalNumber {
@@ -114,9 +114,3 @@ const animalNumbers = [
   AnimalNumber('99', 'ไก่.ไก่ขัน', '30', image: 'assets/animals/99.jpg'),
   AnimalNumber('00', 'ผึ้ง', '48', image: 'assets/animals/00.jpg'),
 ];
-
-/// The book's pages: 9 animals each, the last one 10.
-List<List<AnimalNumber>> get animalPages => [
-      for (var i = 0; i < 10; i++) animalNumbers.sublist(i * 9, i * 9 + 9),
-      animalNumbers.sublist(90),
-    ];

@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:maha_dream/data/design_data.dart';
 import 'package:maha_dream/data/formulas.dart';
+import 'package:maha_dream/data/pae_numbers.dart';
 import 'package:maha_dream/data/lock_numbers.dart';
 import 'package:maha_dream/main.dart';
 import 'package:maha_dream/screens/home_screen.dart' show DreamCard;
 import 'package:maha_dream/widgets/ui.dart';
 
 import 'fixtures/legacy_sample_data.dart';
+import 'pager_helper.dart';
 
 Future<void> pumpApp(WidgetTester tester, {double textScale = 1.0}) async {
   tester.view.physicalSize = const Size(390, 844);
@@ -64,6 +66,7 @@ Future<void> systemBack(WidgetTester tester) async {
   await tester.binding.handlePopRoute();
   await tester.pump();
 }
+
 
 void main() {
   group('A. Search and category', () {
@@ -319,20 +322,14 @@ void main() {
       expect(dreams.expand((d) => d.digits), isEmpty);
     });
 
-    testWidgets('pae kong: selecting 300–399 jumps to 300 and cells are selectable', (tester) async {
+    testWidgets('pae kong: the pager shows the next 21 of the book', (tester) async {
       await pumpApp(tester);
       await tapTab(tester, 'ตำรา');
       await tapText(tester, 'ภาพแป๊ะกงชี้โชค');
-      expect(find.text('เลขกลับ 950'), findsOneWidget); // default 059
-      await tapPill(tester, '300–399');
-      expect(find.text('เลขกลับ 003'), findsOneWidget);
-      expect(find.text(paeOf(300).name), findsWidgets);
-      // Direct tap: ensureVisible inside the nested non-scrolling grid moves
-      // the target away (harness quirk, not app behavior).
-      await tester.tap(find.text('301'));
-      await tester.pump();
-      expect(find.text('เลขกลับ 103'), findsOneWidget);
-      expect(find.text('301'), findsNWidgets(2)); // header + grid cell
+      expect(find.text(paeNumbers.first.name), findsOneWidget);
+      await tapPager(tester, 'ไปหน้าถัดไป');
+      expect(find.text(paeNumbers[21].lucky, skipOffstage: false), findsOneWidget);
+      expect(find.text(paeNumbers.first.name), findsNothing);
     });
   });
 

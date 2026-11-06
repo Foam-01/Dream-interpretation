@@ -1,16 +1,6 @@
 import 'design_data.dart';
 import 'draw_schedule.dart';
 
-class Pae {
-  final String num, name, rev;
-  const Pae(this.num, this.name, this.rev);
-}
-
-Pae paeOf(int n) {
-  final num = n.toString().padLeft(3, '0');
-  return Pae(num, paeWords[(n * 7 + n ~/ 10) % paeWords.length], num.split('').reversed.join());
-}
-
 /// Weekday index with Sunday = 0 (design convention).
 int weekdayIndex(DateTime d) => d.weekday % 7;
 

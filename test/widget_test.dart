@@ -13,12 +13,6 @@ void main() {
     expect(d.firstTwo, '08');
   });
 
-  test('pae number is zero-padded and reversible', () {
-    final p = paeOf(59);
-    expect(p.num, '059');
-    expect(p.rev, '950');
-  });
-
   test('next draw date is 1st or 16th', () {
     expect(nextDrawDate(DateTime(2026, 10, 23)), DateTime(2026, 11, 1));
     expect(nextDrawDate(DateTime(2026, 10, 5)), DateTime(2026, 10, 16));
