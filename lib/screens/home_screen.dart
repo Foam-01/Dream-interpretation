@@ -164,17 +164,19 @@ class _LockTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.all(10),
+        // บน is the highlighted row (gold, like the design); ล่าง is the outlined one.
         decoration: BoxDecoration(
-          color: dark ? C.brand : C.highlight,
-          borderRadius: BorderRadius.circular(12),
-          border: dark ? null : Border.all(color: C.goldBorder),
+          gradient: dark ? goldGradient : null,
+          color: dark ? null : C.input,
+          borderRadius: BorderRadius.circular(14),
+          border: dark ? null : Border.all(color: C.gold, width: 1.5),
         ),
         child: Column(children: [
-          Text(label, style: sans(12, color: dark ? C.gold : C.accent)),
+          Text(label, style: sans(13, weight: FontWeight.w600, color: dark ? C.onGold : C.accent)),
           const SizedBox(height: 4),
           Text('${numbers.take(3).join('  ')}\n${numbers.skip(3).join('  ')}',
               textAlign: TextAlign.center,
-              style: serif(20, weight: FontWeight.w800, color: dark ? C.goldLight : C.accent, height: 1.4)),
+              style: serif(20, weight: FontWeight.w800, color: dark ? C.onGold : C.accent, height: 1.4)),
         ]),
       );
 }
@@ -311,7 +313,10 @@ class DreamCard extends StatelessWidget {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(name,
                   maxLines: 1, overflow: TextOverflow.ellipsis, style: sans(14, weight: FontWeight.w600)),
-              Text(number, style: serif(numberSize, color: C.number, height: 1.3)),
+              // "ไม่ควรเสี่ยง" is a warning, not a number: same colour as in search and the letter lists.
+              number == LuckyNumbers.noLuckyNumbersText
+                  ? Text(number, style: sans(14, weight: FontWeight.w600, color: C.warning, height: 1.6))
+                  : Text(number, style: serif(numberSize, color: C.number, height: 1.3)),
             ]),
           ),
         ]),
