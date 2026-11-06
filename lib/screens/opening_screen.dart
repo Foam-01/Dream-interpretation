@@ -142,7 +142,7 @@ class _OpeningView extends StatelessWidget {
                         Flexible(
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
-                            child: Text('ตำราทำนายฝัน พร้อมเลขนำโชค', style: sans(15, color: C.goldLight)),
+                            child: Text('ค้นหาความหมายของฝัน พร้อมเลขนำโชค', style: sans(15, color: C.goldLight)),
                           ),
                         ),
                         const SizedBox(width: 10),

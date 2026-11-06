@@ -55,4 +55,18 @@ void main() {
     }
     expect(tester.takeException(), isNull);
   });
+
+  test('the app shows the rules sorted by number, odd-number rules last, book order within a number', () {
+    final sorted = loreEntriesByNumber;
+    expect(sorted.toSet(), loreEntries.toSet(), reason: 'same 28 rules, none lost');
+    final badges = sorted.map((e) => e.badge).toList();
+    expect(badges.first, '0');
+    expect(badges.sublist(badges.length - 2), ['คี่', 'คี่']);
+    int key(String b) => int.tryParse(b) ?? 10;
+    for (var i = 1; i < badges.length; i++) {
+      expect(key(badges[i]), greaterThanOrEqualTo(key(badges[i - 1])));
+    }
+    final ones = loreEntries.where((e) => e.badge == '1').toList();
+    expect(sorted.where((e) => e.badge == '1').toList(), ones);
+  });
 }

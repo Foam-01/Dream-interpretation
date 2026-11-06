@@ -77,3 +77,15 @@ const loreEntries = [
 
 const loreClosing =
     'ที่ยกตัวอย่างมานี้เป็นแนวทางตัวอย่างของอิทธิพลตัวเลขแทนสิ่งต่าง ๆ ในฝัน ตามเหตุผลของเจ้าของตำรับเดิมแต่โบราณกาลมา ซึ่งท่านจะเชื่อหรือไม่ก็ตามที ก็ลองพิจารณาสังเกตเอาตามที่ท่านฝันดูสัก 2–3 ครั้ง บางทีจะช่วยให้ท่านได้ประสบการณ์แปลก ๆ ใหม่ ๆ ขึ้นบ้าง';
+
+/// The rules grouped by number for reading in the app: 0–9, then the odd-number rules (คี่) last.
+/// Same text as [loreEntries]; inside one number they keep the book's order.
+List<LoreEntry> get loreEntriesByNumber {
+  int key(LoreEntry e) => int.tryParse(e.badge) ?? 10;
+  final indexed = loreEntries.indexed.toList()
+    ..sort((a, b) {
+      final c = key(a.$2).compareTo(key(b.$2));
+      return c != 0 ? c : a.$1.compareTo(b.$1);
+    });
+  return [for (final (_, e) in indexed) e];
+}

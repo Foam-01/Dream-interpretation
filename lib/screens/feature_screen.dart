@@ -1020,14 +1020,14 @@ class _FeatureScreenState extends State<FeatureScreen> {
     ];
   }
 
-  // ---- Number lore (12): the owner's book pages — intro, 28 rules with the number as a badge, closing ----
+  // ---- Number lore (12): the owner's book pages — intro, 28 rules sorted by their number (badge), closing ----
   List<Widget> _tableBody() => [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(loreIntro, style: sans(14, color: C.textBody, height: 1.8)),
             const SizedBox(height: 12),
-            for (final e in loreEntries)
+            for (final e in loreEntriesByNumber)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: AppCard(
