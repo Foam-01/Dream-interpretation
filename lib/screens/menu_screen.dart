@@ -14,15 +14,13 @@ class MenuScreen extends StatelessWidget {
     final app = AppScope.of(context);
     final m = menus[tab]!;
     return ListView(padding: EdgeInsets.zero, children: [
-      RedHeader(
-        pattern: false,
-        gradient: false,
+      PageHeader(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 18),
         child: SizedBox(
           width: double.infinity,
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(m.title, style: serif(22, weight: FontWeight.w800, color: C.goldLight)),
-            Text(m.sub, style: sans(13, color: C.onBrandMuted)),
+            Text(m.title, style: serif(26, weight: FontWeight.w800, color: C.goldLight)),
+            Text(m.sub, style: sans(14, color: C.onBrandMuted)),
           ]),
         ),
       ),
@@ -32,7 +30,7 @@ class MenuScreen extends StatelessWidget {
           for (final item in m.items)
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: CreamCard(
+              child: AppCard(
                 radius: 14,
                 padding: const EdgeInsets.all(14),
                 onTap: () => app.openFeat(item.key),

@@ -189,7 +189,7 @@ void main() {
 
     testWidgets('"‹ กลับ" returns to search keeping the query', (tester) async {
       await openToothDream(tester);
-      await tapText(tester, '‹ กลับ');
+      await tapText(tester, 'กลับ');
       expect(find.text('ค้นหาความฝัน'), findsOneWidget);
       expect(find.text('พบ 1 รายการ'), findsOneWidget);
     });
@@ -215,11 +215,11 @@ void main() {
       await openSearch(tester);
       await tapText(tester, 'งู');
       await tapText(tester, 'บันทึก');
-      await tapText(tester, '‹ กลับ');
+      await tapText(tester, 'กลับ');
       await tapText(tester, 'ช้าง');
       expect(find.text('บันทึก'), findsOneWidget);
       expect(find.text('บันทึกแล้ว'), findsNothing);
-      await tapText(tester, '‹ กลับ');
+      await tapText(tester, 'กลับ');
       await tapText(tester, 'งู');
       expect(find.text('บันทึกแล้ว'), findsOneWidget);
     });
@@ -250,7 +250,8 @@ void main() {
       await pumpApp(tester);
       await tapTab(tester, 'เลขเด็ด');
       await tapText(tester, 'เลขล็อคตามวัน');
-      await tapText(tester, '‹ เลขเด็ด');
+      await tester.tap(find.byType(BackLink));
+      await tester.pumpAndSettle();
       expect(find.text('สูตรเลขประจำงวด'), findsOneWidget);
     });
 
@@ -266,7 +267,7 @@ void main() {
 
       await systemBack(tester);
       // Home header title (the label also appears on the quick link and tab).
-      expect(find.descendant(of: find.byType(RedHeader), matching: find.text('ทำนายฝัน')), findsOneWidget);
+      expect(find.descendant(of: find.byType(PageHeader), matching: find.text('ทำนายฝัน')), findsOneWidget);
       expect(find.text('หมวดยอดนิยม'), findsOneWidget);
 
       // At home root PopScope allows the pop; the test harness has no

@@ -126,6 +126,7 @@ class _SearchScreenState extends State<SearchScreen> {
     _categories.dispose();
     _results.dispose();
     _scroll.dispose();
+    _focus.dispose();
     _controller?.dispose();
     super.dispose();
   }

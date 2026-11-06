@@ -179,7 +179,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
   // ---- Lock numbers (7): the book's บน / ล่าง table by weekday; opens on the next draw's day ----
   List<Widget> _lockBody() {
     final isDrawDay = _lockDay == weekdayIndex(_draw);
-    Widget group(String title, List<String> nums, {required bool top}) => CreamCard(
+    Widget group(String title, List<String> nums, {required bool top}) => AppCard(
           borderWidth: 1.5,
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -267,7 +267,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
           for (final (i, s) in list.indexed)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: CreamCard(
+              child: AppCard(
                 padding: const EdgeInsets.all(14),
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Container(
@@ -455,7 +455,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(runningIntro, style: sans(14, color: C.textBody, height: 1.8)),
           const SizedBox(height: 14),
-          CreamCard(
+          AppCard(
             padding: EdgeInsets.zero,
             child: Column(children: [
               Container(
@@ -545,7 +545,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
           for (final (i, r) in remedies.indexed)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: CreamCard(
+              child: AppCard(
                 padding: const EdgeInsets.all(14),
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Container(
@@ -582,7 +582,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
             child: Text(remedyClosing, style: sans(14, color: C.onBrand, height: 1.8)),
           ),
           const SizedBox(height: 12),
-          CreamCard(
+          AppCard(
             onTap: () => setState(() => _remedyIntroOpen = !_remedyIntroOpen),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
@@ -927,7 +927,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
         Padding(
           key: _digitKeys[s.digit],
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
-          child: CreamCard(
+          child: AppCard(
             borderWidth: 1.5,
             padding: const EdgeInsets.all(14),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -981,7 +981,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
             for (final e in loreEntries)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
-                child: CreamCard(
+                child: AppCard(
                   radius: 14,
                   padding: const EdgeInsets.all(12),
                   child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1069,7 +1069,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(drawIntro, style: sans(14, color: C.textBody, height: 1.8)),
           const SizedBox(height: 14),
-          CreamCard(
+          AppCard(
             padding: EdgeInsets.zero,
             child: Column(children: [
               Container(

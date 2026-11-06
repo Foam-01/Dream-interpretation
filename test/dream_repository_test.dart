@@ -80,8 +80,10 @@ void main() {
       expect(ids(await repo.list(q: '   ')), hasLength(10));
     });
 
-    test('does not search meaning or numbers', () async {
-      expect((await repo.list(q: '08')).items, isEmpty);
+    test('finds a dream by one of its lucky numbers; not by meaning or single digits', () async {
+      expect(ids(await repo.list(q: '08')), contains('tooth-falling-out'));
+      expect(ids(await repo.list(q: '098')), ['tooth-falling-out']);
+      expect((await repo.list(q: '8')).items, isEmpty, reason: 'single digits are not lucky numbers');
       expect((await repo.list(q: 'ตำราโบราณ')).items, isEmpty);
     });
 
@@ -100,11 +102,18 @@ void main() {
     test('gives the same results as the search screen filter for every category and query', () async {
       final catId = {for (final c in legacySampleCategories) c.name: c.id};
       for (final cat in legacySampleCats) {
-        for (final raw in ['', 'งู', ' ฝัน ', 'จะ', 'โชค', 'xyz']) {
+        for (final raw in ['', 'งู', ' ฝัน ', 'จะ', 'โชค', 'xyz', '08', '809']) {
           final q = raw.trim();
           final expected = [
             for (final d in legacySampleDreams)
-              if ((cat == 'ทั้งหมด' || d.cat == cat) && (q.isEmpty || d.name.contains(q) || d.short.contains(q))) d.id,
+              if ((cat == 'ทั้งหมด' || d.cat == cat) &&
+                  (q.isEmpty ||
+                      d.name.contains(q) ||
+                      d.short.contains(q) ||
+                      d.aliases.contains(q) ||
+                      d.numbers.twoDigit.contains(q) ||
+                      d.numbers.threeDigit.contains(q)))
+                d.id,
           ];
           final p = await repo.list(q: raw, categoryId: cat == 'ทั้งหมด' ? null : catId[cat], limit: 100);
           expect(ids(p), expected, reason: 'cat=$cat q="$raw"');

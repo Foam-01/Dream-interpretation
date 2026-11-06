@@ -27,20 +27,21 @@ class _LatticePainter extends CustomPainter {
   bool shouldRepaint(_LatticePainter old) => old.opacity != opacity;
 }
 
-/// Red gradient header with gold lattice pattern.
-class RedHeader extends StatelessWidget {
+/// Screen header: blue light falling from the top into the night ground, gold hairline below.
+/// [pattern] adds the faint gold lattice (home only).
+class PageHeader extends StatelessWidget {
   final Widget child;
   final EdgeInsets padding;
   final bool pattern;
   final bool gradient;
   final double patternOpacity;
-  const RedHeader({
+  const PageHeader({
     super.key,
     required this.child,
     this.padding = const EdgeInsets.fromLTRB(16, 6, 16, 16),
-    this.pattern = true,
+    this.pattern = false,
     this.gradient = true,
-    this.patternOpacity = .12,
+    this.patternOpacity = .06,
   });
 
   @override
@@ -49,8 +50,13 @@ class RedHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: C.brand,
         gradient: gradient
-            ? const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [C.brand, C.brandBright])
+            ? const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [C.brandBright, C.brand, C.headerEnd],
+                stops: [0, .55, 1])
             : null,
+        border: const Border(bottom: BorderSide(color: C.goldBorder)),
       ),
       child: Stack(children: [
         if (pattern) Positioned.fill(child: CustomPaint(painter: _LatticePainter(patternOpacity))),
@@ -69,11 +75,12 @@ class FeatureHeader extends StatelessWidget {
   const FeatureHeader({super.key, required this.backLabel, required this.onBack, required this.title, this.sub});
 
   @override
-  Widget build(BuildContext context) => RedHeader(
+  Widget build(BuildContext context) => PageHeader(
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 18),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           BackLink(label: backLabel, onTap: onBack),
-          Text(title, style: serif(22, weight: FontWeight.w800, color: C.goldLight)),
-          if (sub != null) Text(sub!, style: sans(13, color: C.onBrandMuted)),
+          Text(title, style: serif(26, weight: FontWeight.w800, color: C.goldLight)),
+          if (sub != null) Text(sub!, style: sans(14, color: C.onBrandMuted)),
         ]),
       );
 }
@@ -89,23 +96,26 @@ class BackLink extends StatelessWidget {
         label: 'กลับ',
         child: InkWell(
           onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text('‹ $label', style: sans(15, color: C.gold)),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 44),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              const Icon(Icons.chevron_left_rounded, size: 22, color: C.goldLight),
+              Text(label, style: sans(15, color: C.goldLight)),
+            ]),
           ),
         ),
       );
 }
 
-/// Cream card with gold border.
-class CreamCard extends StatelessWidget {
+/// Surface card with a soft gold border.
+class AppCard extends StatelessWidget {
   final Widget child;
   final EdgeInsets padding;
   final double radius;
   final double borderWidth;
   final VoidCallback? onTap;
   final List<BoxShadow>? shadow;
-  const CreamCard({
+  const AppCard({
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(16),
@@ -190,7 +200,7 @@ class ImagePlaceholder extends StatelessWidget {
       );
 }
 
-/// Big red tile showing one digit.
+/// Big gold tile showing one digit.
 class DigitBox extends StatelessWidget {
   final String digit;
   final double width, height, fontSize;
@@ -201,12 +211,8 @@ class DigitBox extends StatelessWidget {
         width: width,
         height: height,
         alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: C.brand,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: C.gold, width: 2),
-        ),
-        child: Text(digit, style: serif(fontSize, weight: FontWeight.w800, color: C.goldLight, height: 1.2)),
+        decoration: BoxDecoration(gradient: goldGradient, borderRadius: BorderRadius.circular(14)),
+        child: Text(digit, style: serif(fontSize, weight: FontWeight.w800, color: C.onGold, height: 1.2)),
       );
 }
 
@@ -229,7 +235,7 @@ IconData featureIcon(String key) => switch (key) {
       _ => Icons.star_rounded,
     };
 
-/// Red gradient square holding a gold icon (menu / quick links).
+/// Blue gradient square holding a gold icon (menu / quick links).
 class GlyphTile extends StatelessWidget {
   final IconData icon;
   final double size, radius, borderWidth;
@@ -244,7 +250,7 @@ class GlyphTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius),
           gradient: const LinearGradient(
               begin: Alignment(-0.35, -1), end: Alignment(0.35, 1), colors: [C.brandTile, C.brand]),
-          border: Border.all(color: C.goldBorder, width: borderWidth),
+          border: Border.all(color: C.gold.withValues(alpha: .7), width: borderWidth),
           boxShadow: const [BoxShadow(color: C.shadow, blurRadius: 8, offset: Offset(0, 3))],
         ),
         child: Icon(icon, size: size * .5, color: C.goldLight),
@@ -265,10 +271,10 @@ class SelectPill extends StatelessWidget {
     required this.text,
     required this.selected,
     required this.onTap,
-    this.selectedBg = C.brand,
-    this.selectedFg = C.goldLight,
-    this.bg = C.surface,
-    this.fg = C.accent,
+    this.selectedBg = C.gold,
+    this.selectedFg = C.onGold,
+    this.bg = Colors.transparent,
+    this.fg = C.goldLight,
     this.border = C.goldBorder,
     this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
     this.radius = 18,
@@ -303,7 +309,7 @@ class SectionLabel extends StatelessWidget {
   const SectionLabel(this.text, {super.key, this.padding = const EdgeInsets.fromLTRB(16, 22, 16, 8), this.size = 17});
 
   @override
-  Widget build(BuildContext context) => Padding(padding: padding, child: Text(text, style: serif(size)));
+  Widget build(BuildContext context) => Padding(padding: padding, child: Text(text, style: serif(size, color: C.accent)));
 }
 
 /// Fixed-column grid whose rows size to their content, so cells grow with the

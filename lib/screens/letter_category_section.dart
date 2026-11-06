@@ -84,7 +84,7 @@ class _DreamRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final d = dream;
     final two = d.numbers.twoDigit;
-    return CreamCard(
+    return AppCard(
       radius: 14,
       padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
       onTap: () => AppScope.of(context).openDream(d.id),

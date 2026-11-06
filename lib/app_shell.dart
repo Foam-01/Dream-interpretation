@@ -235,7 +235,7 @@ class _BottomTabs extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: C.navBar,
-        border: Border(top: BorderSide(color: C.goldDeep, width: 2)),
+        border: Border(top: BorderSide(color: C.goldBorder)),
       ),
       padding: EdgeInsets.fromLTRB(4, 6, 4, 6 + (bottom > 0 ? bottom : 8)),
       child: Row(children: [
@@ -252,12 +252,12 @@ class _BottomTabs extends StatelessWidget {
                   height: 48,
                   child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Container(
-                      width: 34,
-                      height: 28,
+                      width: 52,
+                      height: 30,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: key == current ? C.gold : Colors.transparent,
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       child: Icon(icon, size: 20, color: key == current ? C.onGold : C.tabInactive),
                     ),
@@ -267,7 +267,7 @@ class _BottomTabs extends StatelessWidget {
                         fit: BoxFit.scaleDown,
                         child: Text(label,
                             maxLines: 1,
-                            style: sans(11, color: key == current ? C.goldLight : C.tabInactive, height: 1.1)),
+                            style: sans(12, weight: FontWeight.w600, color: key == current ? C.goldLight : C.tabInactive, height: 1.1)),
                       ),
                     ),
                   ]),

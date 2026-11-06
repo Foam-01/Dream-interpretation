@@ -102,6 +102,15 @@ class SampleDreamRepository implements DreamRepository {
     DreamSort sort = DreamSort.catalogue,
   }) => _guard(() => _list(q, categoryId, page, limit, sort));
 
+  /// Same rule as the API: name or short contains the query, an alias equals it, or it is one of the
+  /// dream's lucky numbers (people often remember the number, e.g. 46).
+  static bool _matches(Dream d, String q) =>
+      d.name.contains(q) ||
+      d.short.contains(q) ||
+      d.aliases.contains(q) ||
+      d.numbers.twoDigit.contains(q) ||
+      d.numbers.threeDigit.contains(q);
+
   DreamPage _list(String? q, String? categoryId, int page, int limit, DreamSort sort) {
     // Dart has no Thai collation; code-point order would put เ แ โ ใ ไ words after ฮ.
     if (sort != DreamSort.catalogue) throw _invalid('sort=name is only available from the API');
@@ -123,7 +132,7 @@ class SampleDreamRepository implements DreamRepository {
     final matches = [
       for (final d in source)
         if ((catName == null || d.cat == catName) &&
-            (query.isEmpty || d.name.contains(query) || d.short.contains(query)))
+            (query.isEmpty || _matches(d, query)))
           DreamSummary.fromDream(d, category: byName[d.cat]!),
     ];
     final start = (page - 1) * limit;

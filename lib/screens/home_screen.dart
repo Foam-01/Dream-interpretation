@@ -43,8 +43,8 @@ class HomeScreen extends StatelessWidget {
     final running = runningByDrawDay[drawDay];
 
     return ListView(padding: EdgeInsets.zero, children: [
-      RedHeader(
-        patternOpacity: .13,
+      PageHeader(
+        pattern: true,
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
         child: Column(children: [
           Row(children: [
@@ -126,7 +126,7 @@ class HomeScreen extends StatelessWidget {
       // Daily lock numbers, at the bottom of the page (owner request).
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: CreamCard(
+          child: AppCard(
             radius: 18,
             borderWidth: 1.5,
             shadow: const [BoxShadow(color: C.shadow, blurRadius: 24, offset: Offset(0, 8))],
@@ -300,7 +300,7 @@ class DreamCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      child: CreamCard(
+      child: AppCard(
         radius: 14,
         padding: EdgeInsets.zero,
         onTap: () => AppScope.of(context).openDream(dreamId),

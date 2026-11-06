@@ -10,6 +10,7 @@ class C {
   static const brand = Color(0xFF0B2A7A);
   static const brandBright = Color(0xFF1A4BC2);
   static const brandTile = Color(0xFF1A4BC2);
+  static const headerEnd = Color(0xFF081642);
   static const navBar = Color(0xFF040B26);
   static const highlight = Color(0xFF173275);
   static const muted = Color(0xFF1A2A5E);
@@ -42,6 +43,10 @@ class C {
   static const stripeA = Color(0xFFF4EAD2);
   static const stripeB = Color(0xFFEADCB8);
 }
+
+/// Fill for the highlighted number tiles (lock top row, digit boxes, lead numbers).
+const goldGradient = LinearGradient(
+    begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [C.goldLight, C.goldDeep]);
 
 TextStyle _font(String family, double size, FontWeight weight, Color color, double? letterSpacing, double? height) =>
     TextStyle(

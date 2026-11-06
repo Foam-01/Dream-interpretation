@@ -63,7 +63,7 @@ class _ResultScreenState extends State<ResultScreen> {
     final saved = app.saved.contains(d.id);
 
     return ListView(padding: EdgeInsets.zero, children: [
-      RedHeader(
+      PageHeader(
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
@@ -119,7 +119,7 @@ class _ResultScreenState extends State<ResultScreen> {
       ),
       Padding(
         padding: const EdgeInsets.all(16),
-        child: CreamCard(
+        child: AppCard(
           borderWidth: 1.5,
           child: Column(children: [
             Text('เลขนำโชคจากความฝัน', style: serif(15, color: C.accent)),
@@ -152,7 +152,7 @@ class _ResultScreenState extends State<ResultScreen> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
         child: Column(children: [
-          CreamCard(
+          AppCard(
             child: SizedBox(
               width: double.infinity,
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -169,7 +169,7 @@ class _ResultScreenState extends State<ResultScreen> {
           // Forecast scores and advice are optional: sourced content shows only what its source gives.
           if (d.luckForecast case final f?) ...[
             const SizedBox(height: 12),
-            CreamCard(
+            AppCard(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text('พยากรณ์โชคชะตา', style: serif(16)),
                 const SizedBox(height: 10),
@@ -273,7 +273,7 @@ class _Placeholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListView(padding: EdgeInsets.zero, children: [
-        RedHeader(
+        PageHeader(
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
           child: Align(alignment: Alignment.centerLeft, child: BackLink(label: 'กลับ', onTap: onBack)),
         ),
