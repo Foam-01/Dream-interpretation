@@ -7,12 +7,16 @@ import 'data/api_dream_repository.dart';
 import 'data/design_data.dart';
 import 'data/dream_repository.dart';
 import 'data/sample_dream_repository.dart';
+import 'screens/opening_screen.dart';
 import 'theme.dart';
 
 void main() {
   // Debug builds fail fast on malformed sample data (no-op in release).
   assert(debugValidateDreams());
-  runApp(MahaDreamApp(repository: repositoryFromEnvironment(const String.fromEnvironment('API_BASE_URL'))));
+  runApp(MahaDreamApp(
+    repository: repositoryFromEnvironment(const String.fromEnvironment('API_BASE_URL')),
+    opening: true,
+  ));
 }
 
 /// `--dart-define=API_BASE_URL=<versioned API root>` (e.g. `http://10.0.2.2:3000/api/v1`)
@@ -32,7 +36,15 @@ DreamRepository repositoryFromEnvironment(String apiBaseUrl, {bool requireHttps 
 }
 
 class MahaDreamApp extends StatelessWidget {
-  const MahaDreamApp({super.key, this.clock = DateTime.now, this.repository = const SampleDreamRepository()});
+  const MahaDreamApp({
+    super.key,
+    this.clock = DateTime.now,
+    this.repository = const SampleDreamRepository(),
+    this.opening = false,
+  });
+
+  /// Play the opening animation over the app at start-up (the real app; tests leave it off).
+  final bool opening;
 
   /// Source of the current time; injectable so date-dependent screens can be
   /// tested with a fixed date. Defaults to the real clock.
@@ -54,7 +66,9 @@ class MahaDreamApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: AppShell(clock: clock, repository: repository),
+      home: opening
+          ? OpeningGate(child: AppShell(clock: clock, repository: repository))
+          : AppShell(clock: clock, repository: repository),
     );
   }
 }

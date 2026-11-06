@@ -24,9 +24,17 @@ export class DreamsRepository {
       contentStatus: { in: PUBLIC_STATUSES },
       ...(filter.categoryId ? { categoryId: filter.categoryId } : {}),
       // Parameterised substring match on name OR short (case-sensitive), mirroring the app's search,
-      // plus an exact match on an alias.
+      // plus an exact match on an alias or on one of the lucky numbers ("46", "146").
       ...(filter.q
-        ? { OR: [{ name: { contains: filter.q } }, { short: { contains: filter.q } }, { aliases: { has: filter.q } }] }
+        ? {
+            OR: [
+              { name: { contains: filter.q } },
+              { short: { contains: filter.q } },
+              { aliases: { has: filter.q } },
+              { twoDigit: { has: filter.q } },
+              { threeDigit: { has: filter.q } },
+            ],
+          }
         : {}),
     };
     if (filter.sort === 'name') return this.findPageByThaiName(where, filter);

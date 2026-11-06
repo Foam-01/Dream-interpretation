@@ -91,10 +91,14 @@ describe('Dreams API (e2e, real PostgreSQL)', () => {
       expect(res.body.data.map((d: { id: string }) => d.id)).toEqual(['fish']);
     });
 
-    it('does not search meaning or numbers (same as the app)', async () => {
+    it('finds a dream by one of its lucky numbers, not by meaning (same as the app)', async () => {
+      const two = await http().get('/api/v1/dreams').query({ q: '08' }).expect(200);
+      expect(two.body.data.map((d: { id: string }) => d.id)).toContain('tooth-falling-out');
+      const three = await http().get('/api/v1/dreams').query({ q: '098' }).expect(200);
+      expect(three.body.data.map((d: { id: string }) => d.id)).toEqual(['tooth-falling-out']);
       await http()
         .get('/api/v1/dreams')
-        .query({ q: '08' })
+        .query({ q: 'ตำราโบราณ' })
         .expect(200)
         .expect((r) => expect(r.body.data).toEqual([]));
     });

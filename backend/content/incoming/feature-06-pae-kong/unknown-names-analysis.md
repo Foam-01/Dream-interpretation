@@ -125,7 +125,7 @@
 | 690 | อ้วงเจง | ONG CHAN | a Chinese official in a winged hat | รูป p34 |
 | 692 | กุ้ยเหียน | QUEE HEAN (Wei Yan) | a fierce bearded Chinese general in armour | รูป p34 |
 | 695 | ตังยัง | TAN HIONG (Shan Xiongxin) | a Chinese warrior in armour holding a spear | รูป p34 |
-| 701 | เท่งเกียง | (label unclear) | a Chinese woman seated on a stool bending forward | รูป p21 |
+| 701 | เท่งเกียง | HENG KIAN DRINKS URINE (廷堅) | a Chinese man in a long robe on a low stool, washing a small chamber pot with a cloth | รูปที่เจ้าของถ่ายหน้า 212 |
 | 707 | ล่อเส็ง | LOH SENG (Luo Cheng) | a young Chinese warrior in armour holding a spear | รูป p21 |
 | 720 | ตัน | SWEET TREE | a flowering tree branch with clusters of blossoms | รูป p22 |
 | 723 | ก้วยหัว | KOAY HWA (Guo Hua) | a Chinese man holding up a shoe beside a basket | รูป p22 |
@@ -179,4 +179,4 @@
 
 รวม 170 รายการ ทุกเลขมีรูปอ้างอิงจากหนังสือ
 
-หมายเหตุ: 701 ป้ายในหนังสืออ่านไม่ชัด วาดตามรูปที่เห็น (ผู้หญิงนั่งบนตั่ง)
+หมายเหตุ: 701 ตรวจกับรูปหน้า 212 ที่เจ้าของถ่ายเพิ่มแล้ว วาดใหม่เป็นชายล้างกระโถน (ภาพ fix-701.png)
