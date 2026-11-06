@@ -110,7 +110,6 @@ class _FeatureScreenState extends State<FeatureScreen> {
   int _paePage = 0;
   int _paeRange = -1; // -1 = all
   final _animalQuery = TextEditingController();
-  final _remedyQuery = TextEditingController();
   int _animalPage = 0;
   int _animalRange = -1; // -1 = all
 
@@ -118,7 +117,6 @@ class _FeatureScreenState extends State<FeatureScreen> {
   void dispose() {
     _paeQuery.dispose();
     _animalQuery.dispose();
-    _remedyQuery.dispose();
     super.dispose();
   }
 
@@ -583,34 +581,14 @@ class _FeatureScreenState extends State<FeatureScreen> {
           ]),
         );
     String num(int n) => n.toString().split('').map((d) => thaiDigits[int.parse(d)]).join();
-    final q = _remedyQuery.text.trim();
-    // Keeps the book's numbering when filtered.
-    final shown = [
-      for (final (i, r) in remedies.indexed)
-        if (q.isEmpty || r.dream.contains(q) || r.omen.contains(q) || r.cure.contains(q)) (i, r)
-    ];
+    // 18 short items: no search box, the owner asked for it to go (people read them all).
     return [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-        child: _searchBox(
-          key: const ValueKey('remedy-search'),
-          controller: _remedyQuery,
-          hint: 'ฝันร้ายเรื่องอะไร เช่น ตกน้ำ',
-          onChanged: () => setState(() {}),
-        ),
-      ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(q.isEmpty ? 'เคล็ดแก้ฝัน ${num(remedies.length)} ข้อ' : 'พบ ${num(shown.length)} ข้อ',
-              style: serif(18, color: C.accent)),
+          Text('เคล็ดแก้ฝัน ${num(remedies.length)} ข้อ', style: serif(18, color: C.accent)),
           const SizedBox(height: 10),
-          if (shown.isEmpty)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Text('ไม่พบเคล็ดแก้ฝันที่มีคำนี้ ลองคำสั้นลง', style: sans(14, color: C.textSoft)),
-            ),
-          for (final (i, r) in shown)
+          for (final (i, r) in remedies.indexed)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: AppCard(
@@ -669,47 +647,6 @@ class _FeatureScreenState extends State<FeatureScreen> {
       ),
     ];
   }
-
-  /// Search field used on list features (remedies); clears with one tap.
-  Widget _searchBox({required Key key, required TextEditingController controller, required String hint, required VoidCallback onChanged}) =>
-      Container(
-        constraints: const BoxConstraints(minHeight: 52),
-        padding: const EdgeInsets.fromLTRB(16, 2, 4, 2),
-        decoration: BoxDecoration(
-          color: C.input,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: C.gold, width: 1.5),
-        ),
-        child: Row(children: [
-          const Icon(Icons.search, size: 20, color: C.gold),
-          const SizedBox(width: 10),
-          Expanded(
-            child: TextField(
-              key: key,
-              controller: controller,
-              onChanged: (_) => onChanged(),
-              textInputAction: TextInputAction.search,
-              style: sans(16),
-              decoration: InputDecoration(
-                hintText: hint,
-                hintStyle: sans(16, color: C.placeholder),
-                border: InputBorder.none,
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-            ),
-          ),
-          if (controller.text.isNotEmpty)
-            IconButton(
-              tooltip: 'ล้างคำค้นหา',
-              icon: const Icon(Icons.close, size: 18, color: C.placeholder),
-              onPressed: () {
-                controller.clear();
-                onChanged();
-              },
-            ),
-        ]),
-      );
 
   // ---- Animals (5): each animal with its number pair and picture, 21 a page; range chips filter by number,
   // the search box looks across all 100 ----

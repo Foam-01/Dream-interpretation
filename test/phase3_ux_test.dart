@@ -33,19 +33,13 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('remedy search filters the list and keeps the book numbering', (tester) async {
+  testWidgets('remedies show all 18 from the book with no search box', (tester) async {
     await pumpApp(tester);
     await tap(tester, find.text('แก้ฝัน').last);
     await tap(tester, find.text('เคล็ดลับแก้ฝันร้าย'));
-    final r = remedies[2];
-    await tester.enterText(find.byKey(const ValueKey('remedy-search')), r.dream);
-    await tester.pumpAndSettle();
-    expect(find.text('ฝันว่า${r.dream}'), findsOneWidget);
-    expect(find.text('ฝันว่า${remedies[0].dream}'), findsNothing);
-    expect(find.text('๓'), findsOneWidget);
-    await tester.enterText(find.byKey(const ValueKey('remedy-search')), 'ไม่มีคำนี้แน่นอน');
-    await tester.pumpAndSettle();
-    expect(find.text('ไม่พบเคล็ดแก้ฝันที่มีคำนี้ ลองคำสั้นลง'), findsOneWidget);
+    expect(find.byKey(const ValueKey('remedy-search')), findsNothing);
+    expect(find.text('เคล็ดแก้ฝัน ๑๘ ข้อ'), findsOneWidget);
+    expect(find.text('ฝันว่า${remedies[0].dream}'), findsOneWidget);
   });
 
   testWidgets('chant text size grows and shrinks within limits', (tester) async {

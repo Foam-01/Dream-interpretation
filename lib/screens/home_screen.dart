@@ -55,13 +55,6 @@ class HomeScreen extends StatelessWidget {
                 Text('ทำนายฝัน', style: serif(26, weight: FontWeight.w800, color: C.goldLight)),
               ]),
             ),
-            Container(
-              width: 44,
-              height: 44,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: C.gold, width: 2)),
-              child: Text('๙', style: serif(18, color: C.gold)),
-            ),
           ]),
           const SizedBox(height: 18),
           Semantics(

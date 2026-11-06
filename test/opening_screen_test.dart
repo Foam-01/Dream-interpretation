@@ -19,10 +19,10 @@ void main() {
     await start(tester);
     await tester.pump(const Duration(milliseconds: 3000));
     expect(find.text('ทำนายฝัน'), findsWidgets);
-    expect(find.text('ฝันเห็นอะไร เปิดดูได้ทันที'), findsOneWidget);
+    expect(find.text('ตำราทำนายฝัน พร้อมเลขนำโชค'), findsOneWidget);
     await tester.pump(OpeningGate.duration);
     await tester.pumpAndSettle();
-    expect(find.text('ฝันเห็นอะไร เปิดดูได้ทันที'), findsNothing);
+    expect(find.text('ตำราทำนายฝัน พร้อมเลขนำโชค'), findsNothing);
     expect(home.hitTestable(), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
@@ -33,7 +33,7 @@ void main() {
     await tester.tapAt(const Offset(195, 700));
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
-    expect(find.text('ฝันเห็นอะไร เปิดดูได้ทันที'), findsNothing);
+    expect(find.text('ตำราทำนายฝัน พร้อมเลขนำโชค'), findsNothing);
     expect(home.hitTestable(), findsOneWidget);
   });
 
@@ -45,7 +45,7 @@ void main() {
     addTearDown(tester.platformDispatcher.clearAllTestValues);
     await tester.pumpWidget(const SizedBox());
     await start(tester);
-    expect(find.text('ฝันเห็นอะไร เปิดดูได้ทันที'), findsNothing);
+    expect(find.text('ตำราทำนายฝัน พร้อมเลขนำโชค'), findsNothing);
     expect(home.hitTestable(), findsOneWidget);
   });
 }
