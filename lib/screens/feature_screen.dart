@@ -143,6 +143,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
       );
 
   bool _remedyIntroOpen = false;
+  final _remedySearch = TextEditingController();
+  String _remedyQuery = '';
   static const _chantScales = [1.0, 1.15, 1.3, 1.5];
   double _chantScale = 1.0;
 
@@ -206,12 +208,31 @@ class _FeatureScreenState extends State<FeatureScreen> {
   // ---- Lock numbers (7): the book's บน / ล่าง table by weekday; opens on the next draw's day ----
   List<Widget> _lockBody() {
     final isDrawDay = _lockDay == weekdayIndex(_draw);
-    Widget group(String title, List<String> nums, {required bool top}) => AppCard(
-          borderWidth: 1.5,
+    Widget group(String title, List<String> nums, {required bool top}) => Container(
+          decoration: BoxDecoration(
+            gradient: top
+                ? const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0xFF1A4BC2), Color(0xFF0B2A7A), Color(0xFF061B42)],
+                    stops: [0, 0.48, 1],
+                  )
+                : null,
+            color: top ? null : C.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: C.goldBorder, width: 1.5),
+          ),
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              Container(width: 4, height: 18, color: top ? C.brand : C.goldDeep),
+              Container(
+                width: 4,
+                height: 18,
+                decoration: BoxDecoration(
+                  color: top ? C.gold : C.goldDeep,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
               const SizedBox(width: 8),
               Text(title, style: serif(17, color: C.accent)),
             ]),
@@ -229,12 +250,23 @@ class _FeatureScreenState extends State<FeatureScreen> {
                   Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: top ? C.brand : C.highlight,
+                      gradient: top ? goldGradient : null,
+                      color: top ? null : C.surface,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: top ? C.gold : C.goldBorder, width: top ? 1.5 : 1),
+                      border: Border.all(color: top ? C.goldDeep : C.goldBorder, width: 1),
+                      boxShadow: top
+                          ? const [BoxShadow(color: C.shadow, blurRadius: 4, offset: Offset(0, 2))]
+                          : null,
                     ),
-                    child: Text(n,
-                        style: serif(26, weight: FontWeight.w800, color: top ? C.goldLight : C.accent, height: 1.2)),
+                    child: Text(
+                      n,
+                      style: serif(
+                        26,
+                        weight: FontWeight.w800,
+                        color: top ? C.onGold : C.goldLight,
+                        height: 1.2,
+                      ),
+                    ),
                   ),
               ],
             ),
@@ -355,26 +387,54 @@ class _FeatureScreenState extends State<FeatureScreen> {
     final lead = soundLead[_soundDay];
     final block = soundBlock[_soundDay];
     final isDrawDay = _soundDay == weekdayIndex(_draw);
-    Widget group(String title, List<String> nums, {required bool dark}) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: serif(16, color: C.accent)),
-            const SizedBox(height: 8),
-            Wrap(spacing: 8, runSpacing: 8, children: [
-              for (final n in nums)
-                Container(
-                  width: 52,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: dark ? C.brand : C.muted,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: dark ? C.goldDeep : C.goldBorder),
+    Widget group(String title, List<String> nums, {required bool dark}) => Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            gradient: dark
+                ? const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [C.brandBright, C.brand],
+                  )
+                : null,
+            color: dark ? null : C.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: C.goldDeep, width: 1.5),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: serif(16, color: C.accent)),
+              const SizedBox(height: 8),
+              Wrap(spacing: 8, runSpacing: 8, children: [
+                for (final n in nums)
+                  Container(
+                    width: 52,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      gradient: dark ? goldGradient : null,
+                      color: dark ? null : C.surface,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: dark ? C.goldDeep : C.goldBorder, width: 1),
+                      boxShadow: dark
+                          ? const [BoxShadow(color: C.shadow, blurRadius: 4, offset: Offset(0, 2))]
+                          : null,
+                    ),
+                    child: Text(
+                      n,
+                      style: serif(
+                        18,
+                        weight: dark ? FontWeight.w800 : FontWeight.w600,
+                        color: dark ? C.onGold : C.goldLight,
+                        height: 1.2,
+                      ),
+                    ),
                   ),
-                  child: Text(n, style: serif(18, color: dark ? C.goldLight : C.text, height: 1.2)),
-                ),
-            ]),
-          ],
+              ]),
+            ],
+          ),
         );
     return [
       Padding(
@@ -417,8 +477,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
               const SizedBox(height: 10),
             ],
             Text(
-              // Every day names its coming draw, not only the next draw's weekday.
-              'งวด ${thaiDate(nextDrawOnWeekday(widget.now, _soundDay))} สลากออกวัน${dayFull[_soundDay]}',
+              isDrawDay ? 'งวด ${thaiDate(_draw)} สลากออกวัน${dayFull[_soundDay]}' : 'ถ้าสลากออกวัน${dayFull[_soundDay]}',
               textAlign: TextAlign.center,
               style: serif(17, color: C.goldLight),
             ),
@@ -465,9 +524,14 @@ class _FeatureScreenState extends State<FeatureScreen> {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: C.brand,
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [C.brandBright, C.brand],
+            ),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: C.goldDeep, width: 2),
+            boxShadow: const [BoxShadow(color: C.shadow, blurRadius: 18, offset: Offset(0, 6))],
           ),
           child: Column(children: [
             Text(
@@ -565,85 +629,151 @@ class _FeatureScreenState extends State<FeatureScreen> {
     ];
   }
 
-  // ---- Nightmare remedies (3): the owner's text — remedies first, then the closing; the long intro folds away ----
+  // ---- Nightmare remedies (3): search box + gold-premium card list; long intro folds away ----
   List<Widget> _remediesBody() {
-    Widget label(String text, String body, {Color color = C.textSoft}) => Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-              width: 56,
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              margin: const EdgeInsets.only(top: 2, right: 10),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(color: C.highlight, borderRadius: BorderRadius.circular(8)),
-              child: Text(text, style: sans(12, weight: FontWeight.w600, color: C.accent)),
+    // badge pill helper: ทายว่า (dark/gold) or วิธีแก้ (muted/accent-outline)
+    Widget label(String text, String body, {bool dark = true}) {
+      final bg = dark ? C.brand : C.muted;
+      final fg = dark ? C.goldLight : C.accent;
+      return Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            margin: const EdgeInsets.only(top: 2, right: 10),
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(20),
+              border: dark ? null : Border.all(color: C.accent.withAlpha(100), width: 1),
             ),
-            Expanded(child: Text(body, style: sans(14, color: color, height: 1.7))),
-          ]),
-        );
+            child: Text(text, style: sans(12, weight: FontWeight.w600, color: fg)),
+          ),
+          Expanded(child: Text(body, style: sans(14, color: dark ? C.textSoft : C.textBody, height: 1.7))),
+        ]),
+      );
+    }
+
     String num(int n) => n.toString().split('').map((d) => thaiDigits[int.parse(d)]).join();
-    // 18 short items: no search box, the owner asked for it to go (people read them all).
+    final q = _remedyQuery.trim().toLowerCase();
+    final filtered = q.isEmpty
+        ? remedies
+        : remedies.where((r) {
+            final hay = '${r.dream}${r.omen}${r.cure}'.toLowerCase();
+            return hay.contains(q);
+          }).toList();
+
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('เคล็ดแก้ฝัน ${num(remedies.length)} ข้อ', style: serif(18, color: C.accent)),
-          const SizedBox(height: 10),
-          for (final (i, r) in remedies.indexed)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: AppCard(
-                padding: const EdgeInsets.all(14),
-                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Container(
-                    width: 34,
-                    height: 34,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: C.brand,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: C.gold, width: 1.5),
-                    ),
-                    child: Text(num(i + 1), style: serif(14, color: C.goldLight, height: 1.2)),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text('ฝันว่า${r.dream}', style: sans(16, weight: FontWeight.w600)),
-                      label('ทายว่า', r.omen),
-                      label('วิธีแก้', r.cure, color: C.textBody),
-                    ]),
-                  ),
-                ]),
-              ),
-            ),
-          const SizedBox(height: 6),
+          // ── Search box ──
           Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(18),
+            key: const ValueKey('remedy-search'),
             decoration: BoxDecoration(
-              color: C.brand,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: C.goldDeep, width: 2),
+              color: C.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: C.goldBorder, width: 1),
             ),
-            child: Text(remedyClosing, style: sans(14, color: C.onBrand, height: 1.8)),
-          ),
-          const SizedBox(height: 12),
-          AppCard(
-            onTap: () => setState(() => _remedyIntroOpen = !_remedyIntroOpen),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                Expanded(child: Text('อ่านเพิ่มเติม', style: serif(16, color: C.accent))),
-                Icon(_remedyIntroOpen ? Icons.expand_less_rounded : Icons.expand_more_rounded, color: C.accent),
-              ]),
-              if (_remedyIntroOpen)
-                for (final p in remedyIntro)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Text(p, style: sans(14, color: C.textBody, height: 1.8)),
+            child: Row(children: [
+              const SizedBox(width: 12),
+              Icon(Icons.search_rounded, color: C.textSoft, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TextField(
+                  controller: _remedySearch,
+                  style: sans(14, color: C.text),
+                  decoration: InputDecoration(
+                    hintText: 'ฝันร้ายเรื่องอะไร เช่น ตกน้ำ',
+                    hintStyle: sans(14, color: C.textSoft),
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
                   ),
+                  onChanged: (v) => setState(() => _remedyQuery = v),
+                ),
+              ),
+              if (_remedyQuery.isNotEmpty)
+                GestureDetector(
+                  onTap: () {
+                    _remedySearch.clear();
+                    setState(() => _remedyQuery = '');
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Icon(Icons.close_rounded, color: C.textSoft, size: 18),
+                  ),
+                ),
             ]),
           ),
+          const SizedBox(height: 16),
+
+          // ── Remedy cards ──
+          if (filtered.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: Center(child: Text('ไม่พบฝันที่ตรงกัน', style: sans(14, color: C.textSoft))),
+            )
+          else
+            for (final (i, r) in filtered.indexed)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: AppCard(
+                  padding: const EdgeInsets.all(14),
+                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    // numbered circle
+                    Container(
+                      width: 36,
+                      height: 36,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: C.brand,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: C.gold, width: 1.5),
+                      ),
+                      child: Text(num(remedies.indexOf(r) + 1), style: serif(14, color: C.goldLight, height: 1.2)),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('ฝันว่า${r.dream}', style: sans(16, weight: FontWeight.w600)),
+                        label('ทายว่า', r.omen, dark: true),
+                        label('วิธีแก้', r.cure, dark: false),
+                      ]),
+                    ),
+                  ]),
+                ),
+              ),
+
+          // ── Closing box (only when not filtering) ──
+          if (q.isEmpty) ...[
+            const SizedBox(height: 6),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: C.brand,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: C.goldDeep, width: 2),
+              ),
+              child: Text(remedyClosing, style: sans(14, color: C.onBrand, height: 1.8)),
+            ),
+            const SizedBox(height: 12),
+            AppCard(
+              onTap: () => setState(() => _remedyIntroOpen = !_remedyIntroOpen),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Row(children: [
+                  Expanded(child: Text('อ่านเพิ่มเติม', style: serif(16, color: C.accent))),
+                  Icon(_remedyIntroOpen ? Icons.expand_less_rounded : Icons.expand_more_rounded, color: C.accent),
+                ]),
+                if (_remedyIntroOpen)
+                  for (final p in remedyIntro)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(p, style: sans(14, color: C.textBody, height: 1.8)),
+                    ),
+              ]),
+            ),
+          ],
         ]),
       ),
     ];
@@ -920,8 +1050,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
     ];
   }
 
-  // ---- Lucky digits 0-9 summary (2): the owner's book pages, one card per digit; pills jump to a card ----
-  /// The page list builds cards lazily, so a far card may not exist yet: step down from the top until it does.
+  // ---- Lucky digits 0-9 summary (2): horizontal selector + all 10 cards in order (0–9) ----
   Future<void> _jumpToDigit(ScrollPosition pos, int digit) async {
     final key = _digitKeys[digit];
     if (key.currentContext == null) pos.jumpTo(0);
@@ -936,88 +1065,110 @@ class _FeatureScreenState extends State<FeatureScreen> {
   }
 
   List<Widget> _digitBody() {
+    final sorted = [...digitSymbols]..sort((a, b) => a.digit.compareTo(b.digit));
     return [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+      Container(
+        decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(color: C.goldBorder, width: 0.8)),
+        ),
+        padding: const EdgeInsets.fromLTRB(10, 14, 10, 14),
         child: Builder(
-          builder: (context) => GridView.count(
-            crossAxisCount: 5,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.25,
+          builder: (context) => Row(
             children: [
-              for (final s in digitSymbols)
-                SelectPill(
-                  text: '${s.digit}',
-                  selected: _digit == s.digit,
-                  onTap: () {
-                    setState(() => _digit = s.digit);
-                    _jumpToDigit(Scrollable.of(context).position, s.digit);
-                  },
-                  radius: 12,
-                  padding: EdgeInsets.zero,
-                  fontSize: 24,
-                  weight: FontWeight.w800,
+              for (var d = 0; d <= 9; d++)
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: SelectPill(
+                      text: '$d',
+                      selected: _digit == d,
+                      onTap: () {
+                        setState(() => _digit = d);
+                        _jumpToDigit(Scrollable.of(context).position, d);
+                      },
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      radius: 10,
+                      fontSize: 16,
+                      weight: FontWeight.w700,
+                    ),
+                  ),
                 ),
             ],
           ),
         ),
       ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
-        child: Text(digitSummaryIntro, style: sans(14, color: C.textBody, height: 1.8)),
-      ),
-      for (final s in digitSymbols)
+      for (final s in sorted)
         Padding(
           key: _digitKeys[s.digit],
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
           child: AppCard(
+            radius: 18,
             borderWidth: 1.5,
-            padding: const EdgeInsets.all(14),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                DigitBox('${s.digit}', width: 48, height: 48, fontSize: 28),
-                const SizedBox(width: 12),
-                Text('เลข ${s.digit}', style: serif(18, color: C.accent)),
-              ]),
-              const SizedBox(height: 12),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: s.image == null
-                      ? ImagePlaceholder('ภาพประกอบเลข ${s.digit}', fontSize: 11, band: 8)
-                      : Image.asset(s.image!, fit: BoxFit.cover, semanticLabel: 'ภาพประกอบเลข ${s.digit}'),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text('ได้แก่ ฝันเห็น', style: sans(14, weight: FontWeight.w600, color: C.accent)),
-              const SizedBox(height: 8),
-              // One chip per thing: easier to scan than a comma list. Screen readers get the book's sentence.
-              Semantics(
-                label: 'ได้แก่ ฝันเห็น ${s.items.join(', ')} ฯลฯ',
-                child: ExcludeSemantics(
-                  child: Wrap(key: ValueKey('digit-items-${s.digit}'), spacing: 6, runSpacing: 6, children: [
-                    for (final item in [...s.items, 'ฯลฯ'])
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: C.caption.withValues(alpha: .1),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: C.caption.withValues(alpha: .25)),
-                        ),
-                        child: Text(item, style: sans(14, color: C.textBody)),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        gradient: goldGradient,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: const [BoxShadow(color: C.shadow, blurRadius: 4, offset: Offset(0, 2))],
                       ),
-                  ]),
+                      child: Text(
+                        '${s.digit}',
+                        style: serif(24, weight: FontWeight.w800, color: C.onGold, height: 1.2),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'ฝันแบบไหนเป็นเลข ${s.digit}',
+                      style: serif(18, weight: FontWeight.w700, color: C.accent),
+                    ),
+                  ],
                 ),
-              ),
-            ]),
+                const SizedBox(height: 16),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 10,
+                    child: s.image == null
+                        ? ImagePlaceholder('ภาพประกอบเลข ${s.digit}', fontSize: 13, band: 8)
+                        : Image.asset(s.image!, fit: BoxFit.cover, semanticLabel: 'ภาพประกอบเลข ${s.digit}'),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Semantics(
+                  label: 'ได้แก่ ฝันเห็น ${s.items.join(', ')}',
+                  child: ExcludeSemantics(
+                    child: Wrap(
+                      key: ValueKey('digit-items-${s.digit}'),
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        for (final item in s.items)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: C.input,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: C.goldBorder.withValues(alpha: 0.35)),
+                            ),
+                            child: Text(item, style: sans(14, color: C.textBody)),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      const SizedBox(height: 20),
+      const SizedBox(height: 24),
     ];
   }
 
@@ -1068,7 +1219,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
         ),
       ];
 
-  // ---- Draw lead numbers (8): the book's table (weekday × the 1st / the 16th); the next two draws first ----
+  // ---- Draw lead numbers (8): keep the lead card and the weekday table so the feature stays complete ----
   List<Widget> _drawBody() {
     final first = _draw;
     final second = nextDrawDate(first.add(const Duration(days: 1)));
@@ -1080,7 +1231,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 textAlign: TextAlign.center,
                 style: head
                     ? sans(13, weight: FontWeight.w600, color: C.goldLight)
-                    : serif(16, color: on ? C.accent : C.accent, weight: on ? FontWeight.w800 : FontWeight.w700)),
+                    : serif(16, color: C.accent, weight: on ? FontWeight.w800 : FontWeight.w700)),
           ),
         );
     bool isNext(int day, int col) =>
@@ -1089,16 +1240,25 @@ class _FeatureScreenState extends State<FeatureScreen> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: Column(children: [
-          for (final d in [first, second])
+          for (final (drawIndex, d) in [first, second].indexed)
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: C.brand,
+                  gradient: drawIndex == 0
+                      ? const LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Color(0xFF1A4BC2), Color(0xFF0B2A7A), Color(0xFF061B42)],
+                          stops: [0, 0.48, 1],
+                        )
+                      : null,
+                  color: drawIndex == 0 ? null : C.brand,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: C.goldDeep, width: 2),
+                  boxShadow: const [BoxShadow(color: C.shadow, blurRadius: 20, offset: Offset(0, 8))],
                 ),
                 child: Column(children: [
                   Text('งวด ${thaiDate(d)} ออกวัน${dayFull[weekdayIndex(d)]}', style: sans(14, color: C.gold)),

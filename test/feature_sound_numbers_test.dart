@@ -53,7 +53,7 @@ void main() {
     expect(find.text('98', skipOffstage: false), findsOneWidget); // Friday lead
     await tester.tap(find.widgetWithText(SelectPill, 'ส'));
     await tester.pumpAndSettle();
-    expect(find.text('สลากออกวันเสาร์'), findsOneWidget);
+    expect(find.textContaining('สลากออกวันเสาร์'), findsOneWidget);
     expect(find.text('07', skipOffstage: false), findsOneWidget); // Saturday lead
   });
 

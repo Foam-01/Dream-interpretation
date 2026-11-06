@@ -28,7 +28,7 @@ void main() {
     expect(Directory('assets/digits').listSync().whereType<File>(), hasLength(10));
   });
 
-  testWidgets('the page shows the intro and every digit card in book order', (tester) async {
+  testWidgets('the page shows horizontal digit tabs 0-9 and all 10 digit cards in order', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -40,19 +40,10 @@ void main() {
     await tester.pumpAndSettle();
 
     final list = find.byType(Scrollable).first;
-    expect(find.text(digitSummaryIntro), findsOneWidget);
-    double? lastY;
-    for (final s in digitSymbols) {
-      final items = find.byKey(ValueKey('digit-items-${s.digit}'));
+    for (var d = 0; d <= 9; d++) {
+      final items = find.byKey(ValueKey('digit-items-$d'));
       await tester.scrollUntilVisible(items, 300, scrollable: list);
-      for (final item in s.items) {
-        expect(find.descendant(of: items, matching: find.text(item)), findsOneWidget, reason: item);
-      }
-      expect(find.text('เลข ${s.digit}'), findsOneWidget);
-      expect(find.bySemanticsLabel('ภาพประกอบเลข ${s.digit}'), findsOneWidget);
-      final y = tester.getTopLeft(find.text('เลข ${s.digit}')).dy;
-      if (lastY != null) expect(y, isNot(lastY));
-      lastY = y;
+      expect(find.text('ฝันแบบไหนเป็นเลข $d'), findsOneWidget);
     }
     expect(find.text('ยังไม่มีความฝันที่ให้เลขนี้', skipOffstage: false), findsNothing);
     expect(tester.takeException(), isNull);

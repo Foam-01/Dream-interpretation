@@ -41,7 +41,7 @@ void main() {
 
     final list = find.byType(Scrollable).first;
     // The list comes first; the long intro stays folded until asked for.
-    expect(find.text('เคล็ดแก้ฝัน ๑๘ ข้อ'), findsOneWidget);
+    expect(find.byKey(const ValueKey('remedy-search')), findsOneWidget);
     expect(find.text('ฝันว่า${remedies.first.dream}'), findsOneWidget);
     expect(find.text(remedyIntro.first, skipOffstage: false), findsNothing);
     for (final r in remedies) {

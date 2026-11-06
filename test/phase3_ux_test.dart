@@ -1,4 +1,4 @@
-﻿// UX additions from the blue-gold redesign: letter grid and switcher, remedy search,
+// UX additions from the blue-gold redesign: letter grid and switcher, remedy search,
 // chant text size and copying a dream's numbers.
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,12 +32,11 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('remedies show all 18 from the book with no search box', (tester) async {
+  testWidgets('remedies show search box and all 18 from the book', (tester) async {
     await pumpApp(tester);
     await tap(tester, find.text('แก้ฝัน').last);
     await tap(tester, find.text('เคล็ดลับแก้ฝันร้าย'));
-    expect(find.byKey(const ValueKey('remedy-search')), findsNothing);
-    expect(find.text('เคล็ดแก้ฝัน ๑๘ ข้อ'), findsOneWidget);
+    expect(find.byKey(const ValueKey('remedy-search')), findsOneWidget);
     expect(find.text('ฝันว่า${remedies[0].dream}'), findsOneWidget);
   });
 

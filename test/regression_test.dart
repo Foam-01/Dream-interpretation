@@ -281,14 +281,14 @@ void main() {
       expect(find.textContaining('เลือกวันเกิดของคุณ', skipOffstage: false), findsNothing);
     });
 
-    testWidgets('digit summary: tapping 7 jumps to the เลข 7 card', (tester) async {
+    testWidgets('digit summary: tapping 7 jumps to the ฝันแบบไหนเป็นเลข 7 card', (tester) async {
       await pumpApp(tester);
       await tapTab(tester, 'เลขเด็ด');
       await tapText(tester, 'สรุปเลขนำโชค 0–9');
-      expect(find.text('เลข 7').hitTestable(), findsNothing);
+      expect(find.text('ฝันแบบไหนเป็นเลข 7').hitTestable(), findsNothing);
       await tapPill(tester, '7');
-      await tester.pumpAndSettle(); // steps down to the card, then animates it into view
-      expect(find.text('เลข 7').hitTestable(), findsOneWidget);
+      await tester.pumpAndSettle();
+      expect(find.text('ฝันแบบไหนเป็นเลข 7').hitTestable(), findsOneWidget);
     });
 
     test('the bundled real content has no single lucky digits', () {
