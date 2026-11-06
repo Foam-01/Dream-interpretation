@@ -32,6 +32,8 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+# Golden test diff output, regenerated on every failing run
+test/golden/failures/
 
 # Symbolication related
 app.*.symbols
@@ -56,3 +58,7 @@ app.*.map.json
 .agents/
 CLAUDE.md
 AGENTS.md
+# Pulled skills (Foam-01/Global-Skills); .claude/ and .agents/ above already cover the folders
+.claude/skills/
+.agents/skills/
+skills-lock.json
