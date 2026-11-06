@@ -71,7 +71,7 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(MahaDreamApp(clock: () => DateTime(2026, 10, 5)));
     await tester.pumpAndSettle();
-    final link = find.text('ตัวเด่น · ตัวกัน ›');
+    final link = find.descendant(of: find.byKey(const ValueKey('lock-badges')), matching: find.text('ตัวเด่น'));
     await tester.scrollUntilVisible(link.hitTestable(), 200, scrollable: find.byType(Scrollable).first);
     await tester.tap(link);
     await tester.pumpAndSettle();

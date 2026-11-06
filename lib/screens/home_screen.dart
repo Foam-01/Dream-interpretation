@@ -9,6 +9,7 @@ import '../data/dream_repository.dart';
 import '../data/formulas.dart';
 import '../data/lock_numbers.dart';
 import '../data/running_numbers.dart';
+import '../data/sound_numbers.dart';
 import '../state/daily_pick.dart';
 import '../state/load_request.dart';
 import '../theme.dart';
@@ -112,18 +113,31 @@ class HomeScreen extends StatelessWidget {
                 Expanded(child: _LockTile(label: 'ล่าง', numbers: lockBottom[drawDay], dark: false)),
               ]),
               const SizedBox(height: 12),
-              Wrap(spacing: 8, runSpacing: 4, crossAxisAlignment: WrapCrossAlignment.center, children: [
-                Semantics(
-                  button: true,
-                  child: GestureDetector(
-                    onTap: () => app.openFeat('9'),
-                    child: Text('ตัวเด่น · ตัวกัน ›', style: sans(13, weight: FontWeight.w600, color: C.accent)),
-                  ),
-                ),
-                Text('เลขวิ่ง', style: sans(13, color: C.textSoft)),
-                Text(running.join(' · '),
-                    style: sans(13, weight: FontWeight.w700, color: C.number)),
-              ]),
+              // As in the design: label + badge pairs. The book gives ตัวเด่น / ตัวกัน as groups
+              // (15 and 10 numbers), so the badges count them and open the full page.
+              Wrap(
+                  key: const ValueKey('lock-badges'),
+                  spacing: 8,
+                  runSpacing: 6,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Semantics(
+                      button: true,
+                      label: 'ตัวเด่น ${soundLead[drawDay].length} ตัว ตัวกัน ${soundBlock[drawDay].length} ตัว',
+                      excludeSemantics: true,
+                      child: GestureDetector(
+                        onTap: () => app.openFeat('9'),
+                        child: Wrap(spacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
+                          Text('ตัวเด่น', style: sans(13, color: C.textSoft)),
+                          _Badge('${soundLead[drawDay].length} ตัว', bg: C.aqua, fg: C.onGold),
+                          Text('ตัวกัน', style: sans(13, color: C.textSoft)),
+                          _Badge('${soundBlock[drawDay].length} ตัว', bg: C.muted, fg: C.textBody),
+                        ]),
+                      ),
+                    ),
+                    Text('เลขวิ่ง', style: sans(13, color: C.textSoft)),
+                    Text(running.join(' · '), style: sans(14, weight: FontWeight.w700, color: C.goldLight)),
+                  ]),
             ]),
           ),
       ),
@@ -179,6 +193,20 @@ class HomeScreen extends StatelessWidget {
       const SizedBox(height: 24),
     ]);
   }
+}
+
+/// Small rounded label (ตัวเด่น / ตัวกัน counts on the lock card).
+class _Badge extends StatelessWidget {
+  final String text;
+  final Color bg, fg;
+  const _Badge(this.text, {required this.bg, required this.fg});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+        decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
+        child: Text(text, style: sans(13, weight: FontWeight.w700, color: fg)),
+      );
 }
 
 class _LockTile extends StatelessWidget {

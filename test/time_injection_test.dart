@@ -22,7 +22,7 @@ Future<void> openFeature(WidgetTester tester, String tab, String menuTitle) asyn
 
 /// Text inside the home lock card's badge row (link to ตัวเด่น · ตัวกัน, then เลขวิ่ง).
 Finder inBadgeRow(String text) => find.descendant(
-    of: find.ancestor(of: find.text('ตัวเด่น · ตัวกัน ›'), matching: find.byType(Wrap)).first,
+    of: find.byKey(const ValueKey('lock-badges')),
     matching: find.text(text));
 
 void expectHome(
