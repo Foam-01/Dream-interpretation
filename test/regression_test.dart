@@ -268,12 +268,12 @@ void main() {
       await systemBack(tester);
       // Home header title (the label also appears on the quick link and tab).
       expect(find.descendant(of: find.byType(PageHeader), matching: find.text('ทำนายฝัน')), findsOneWidget);
-      expect(find.text('หมวดยอดนิยม'), findsOneWidget);
+      expect(find.text('เมนูยอดนิยม'), findsOneWidget);
 
       // At home root PopScope allows the pop; the test harness has no
       // activity to close, so the home page must still be shown.
       await systemBack(tester);
-      expect(find.text('หมวดยอดนิยม'), findsOneWidget);
+      expect(find.text('เมนูยอดนิยม'), findsOneWidget);
     });
 
     testWidgets('system back on detail returns to search', (tester) async {
@@ -283,7 +283,7 @@ void main() {
       await systemBack(tester);
       expect(find.text('ค้นหาความฝัน'), findsOneWidget);
       await systemBack(tester);
-      expect(find.text('หมวดยอดนิยม'), findsOneWidget);
+      expect(find.text('เมนูยอดนิยม'), findsOneWidget);
     });
   });
 
@@ -423,6 +423,8 @@ void main() {
         // Home is a lazy list: scroll the page until the hot row is built.
         // The hot list is a daily random draw, so check whichever card comes first.
         await scrollTo(tester, find.text('ฝันยอดฮิตวันนี้'));
+        // The row now sits mid-page and may still be loading when its title appears.
+        await tester.pumpAndSettle();
         await scrollTo(tester, find.byType(DreamCard).first);
         final card = find.byType(DreamCard).first;
         final shown = tester.widget<DreamCard>(card);

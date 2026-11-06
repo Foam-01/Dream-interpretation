@@ -82,43 +82,9 @@ class HomeScreen extends StatelessWidget {
           ),
         ]),
       ),
-      const SectionLabel('หมวดยอดนิยม'),
+      // Daily lock numbers right under the search box, as in the design (owner request).
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: ContentGrid(
-          columns: 4,
-          spacing: 10,
-          runSpacing: 10,
-          minRowHeight: 98,
-          children: [
-            for (final (t, k) in _quick)
-              Semantics(
-                button: true,
-                label: t,
-                excludeSemantics: true,
-                child: GestureDetector(
-                  onTap: () => k == 'dream' ? app.goSearch(resetCat: true) : app.openFeat(k),
-                  child: Column(children: [
-                    GlyphTile(featureIcon(k)),
-                    const SizedBox(height: 6),
-                    Text(t,
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
-                        style: sans(12, height: 1.3)),
-                  ]),
-                ),
-              ),
-          ],
-        ),
-      ),
-      const SectionLabel('ฝันยอดฮิตวันนี้'),
-      _HotDreams(clock: clock),
-      const SizedBox(height: 24),
-      // Daily lock numbers, at the bottom of the page (owner request).
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
           child: AppCard(
             radius: 18,
             borderWidth: 1.5,
@@ -150,6 +116,54 @@ class HomeScreen extends StatelessWidget {
             ]),
           ),
       ),
+      const SectionLabel('เมนูยอดนิยม'),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: ContentGrid(
+          columns: 4,
+          spacing: 10,
+          runSpacing: 10,
+          minRowHeight: 98,
+          children: [
+            for (final (t, k) in _quick)
+              Semantics(
+                button: true,
+                label: t,
+                excludeSemantics: true,
+                child: GestureDetector(
+                  onTap: () => k == 'dream' ? app.goSearch(resetCat: true) : app.openFeat(k),
+                  child: Column(children: [
+                    GlyphTile(featureIcon(k)),
+                    const SizedBox(height: 6),
+                    Text(t,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
+                        style: sans(12, height: 1.3)),
+                  ]),
+                ),
+              ),
+          ],
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 22, 16, 8),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          Expanded(child: Text('ฝันยอดฮิตวันนี้', style: serif(17, color: C.accent))),
+          Semantics(
+            button: true,
+            child: GestureDetector(
+              onTap: () => app.goSearch(resetCat: true),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Text('ดูทั้งหมด', style: sans(14, color: C.goldLight)),
+              ),
+            ),
+          ),
+        ]),
+      ),
+      _HotDreams(clock: clock),
       const SizedBox(height: 24),
     ]);
   }
@@ -183,8 +197,8 @@ class _LockTile extends StatelessWidget {
 
 /// Card with image placeholder + dream name + number (home hot list, digit screen).
 /// "ฝันยอดฮิตวันนี้": ten dreams drawn at random from those with a picture, a new draw every day at 04:00,
-/// as two scrolling rows.
-const _perRow = 5;
+/// in one scrolling row (as in the design).
+const _count = 10;
 
 class _HotDreams extends StatefulWidget {
   final DateTime Function() clock;
@@ -239,7 +253,7 @@ class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMix
     final all = _request.value?.items ?? const <DreamSummary>[];
     final pictured = [for (final d in all) if (dreamImageFor(d.id, d.image) != null) d];
     // A catalogue without any pictures still gets a daily list.
-    final items = dailyPick(pictured.isEmpty ? all : pictured, widget.clock(), _perRow * 2, (d) => d.id);
+    final items = dailyPick(pictured.isEmpty ? all : pictured, widget.clock(), _count, (d) => d.id);
     return switch (_request.status) {
       LoadStatus.idle || LoadStatus.loading => const GoldLoading(height: 136),
       LoadStatus.failure => LoadErrorView(message: loadErrorMessage(_request.error), onRetry: _request.retry),
@@ -247,30 +261,18 @@ class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMix
           padding: const EdgeInsets.symmetric(vertical: 24),
           child: Text('ยังไม่มีความฝันยอดฮิต', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
         ),
-      // Two rows of _perRow cards; each row sizes to its tallest card.
-      // Both rows scroll together horizontally.
+      // One row; it sizes to its tallest card.
       LoadStatus.success => SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            for (var r = 0; r * _perRow < items.length; r++) ...[
-              if (r > 0) const SizedBox(height: 10),
-              IntrinsicHeight(
-                child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                  for (var c = 0; c < _perRow && r * _perRow + c < items.length; c++) ...[
-                    if (c > 0) const SizedBox(width: 10),
-                    DreamCard(
-                        dreamId: items[r * _perRow + c].id,
-                        name: items[r * _perRow + c].name,
-                        image: items[r * _perRow + c].image,
-                        // Pictures are ~1.8:1; 160 wide fills the 90-high image box edge to edge.
-                        width: 160,
-                        number: items[r * _perRow + c].firstTwo),
-                  ],
-                ]),
-              ),
-            ],
-          ]),
+          child: IntrinsicHeight(
+            child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              for (final (i, d) in items.indexed) ...[
+                if (i > 0) const SizedBox(width: 10),
+                DreamCard(dreamId: d.id, name: d.name, image: d.image, width: 140, number: d.firstTwo),
+              ],
+            ]),
+          ),
         ),
     };
   }
