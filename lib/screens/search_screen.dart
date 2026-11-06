@@ -52,6 +52,7 @@ class _SearchScreenState extends State<SearchScreen> {
     super.didChangeDependencies();
     _controller ??= TextEditingController(text: AppScope.of(context).query);
     if (_app != null) return;
+    _focus.addListener(_focusChanged);
     final app = _app = AppScope.of(context);
     _categories.run(app.repository.categories);
     _search();
@@ -114,6 +115,8 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
 
+  void _focusChanged() => setState(() {});
+
   void _retry() {
     if (_categories.status == LoadStatus.failure) _categories.retry();
     _search();
@@ -138,23 +141,22 @@ class _SearchScreenState extends State<SearchScreen> {
     final page = _results.value;
 
     return Column(children: [
-      Container(
-        width: double.infinity,
-        color: C.brand,
+      PageHeader(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('ค้นหาความฝัน', style: serif(20, color: C.goldLight)),
-          const SizedBox(height: 10),
+          Text('ค้นหาความฝัน', style: serif(24, weight: FontWeight.w800, color: C.goldLight)),
+          const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+            constraints: const BoxConstraints(minHeight: 52),
+            padding: const EdgeInsets.fromLTRB(16, 2, 4, 2),
             decoration: BoxDecoration(
               color: C.input,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: C.gold, width: 1.5),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: _focus.hasFocus ? C.aqua : C.gold, width: 1.5),
             ),
             child: Row(children: [
-              const Icon(Icons.search, size: 18, color: C.gold),
-              const SizedBox(width: 8),
+              const Icon(Icons.search, size: 20, color: C.gold),
+              const SizedBox(width: 10),
               Expanded(
                 child: TextField(
                   key: const ValueKey('dream-search'),
@@ -186,7 +188,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           const SizedBox(height: 12),
           SizedBox(
-            height: 34,
+            height: 40,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: cats.length,
@@ -224,8 +226,8 @@ class _SearchScreenState extends State<SearchScreen> {
             const SizedBox(height: 12),
             if (page.items.isEmpty)
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 40),
-                child: Text('ไม่พบความฝันนี้ ลองคำอื่น', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
+                padding: const EdgeInsets.only(top: 24),
+                child: _NoResultTip(),
               ),
             if (page.items.isNotEmpty) _BookPage(dreams: page.items),
             // At the end of the list: seen only after scrolling past the last result.
@@ -306,4 +308,23 @@ class _ResultRow extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Empty result: says so, then how to search better (shorter word, other category).
+class _NoResultTip extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: C.caption.withValues(alpha: .35)),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('ไม่พบความฝันนี้ ลองคำอื่น', style: sans(15, weight: FontWeight.w600, color: C.textBody)),
+          const SizedBox(height: 4),
+          Text('ลองพิมพ์คำสั้นลง เช่น “งู” แทน “งูเหลือมตัวใหญ่” หรือเลือกหมวด “ทั้งหมด”',
+              style: sans(14, color: C.textSoft, height: 1.6)),
+        ]),
+      );
 }

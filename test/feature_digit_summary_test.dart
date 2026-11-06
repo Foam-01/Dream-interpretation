@@ -43,8 +43,11 @@ void main() {
     expect(find.text(digitSummaryIntro), findsOneWidget);
     double? lastY;
     for (final s in digitSymbols) {
-      final items = find.text('ได้แก่ ฝันเห็น ${s.items.join(', ')} ฯลฯ', findRichText: true);
+      final items = find.byKey(ValueKey('digit-items-${s.digit}'));
       await tester.scrollUntilVisible(items, 300, scrollable: list);
+      for (final item in s.items) {
+        expect(find.descendant(of: items, matching: find.text(item)), findsOneWidget, reason: item);
+      }
       expect(find.text('เลข ${s.digit}'), findsOneWidget);
       expect(find.bySemanticsLabel('ภาพประกอบเลข ${s.digit}'), findsOneWidget);
       final y = tester.getTopLeft(find.text('เลข ${s.digit}')).dy;

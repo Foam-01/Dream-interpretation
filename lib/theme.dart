@@ -10,6 +10,8 @@ class C {
   static const brand = Color(0xFF0B2A7A);
   static const brandBright = Color(0xFF1A4BC2);
   static const brandTile = Color(0xFF1A4BC2);
+  static const aqua = Color(0xFF4FD1FF);
+  static const aquaText = Color(0xFF8FE3FF);
   static const headerEnd = Color(0xFF081642);
   static const navBar = Color(0xFF040B26);
   static const highlight = Color(0xFF173275);

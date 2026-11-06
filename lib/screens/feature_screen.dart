@@ -110,6 +110,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
   int _paePage = 0;
   int _paeRange = -1; // -1 = all
   final _animalQuery = TextEditingController();
+  final _remedyQuery = TextEditingController();
   int _animalPage = 0;
   int _animalRange = -1; // -1 = all
 
@@ -117,6 +118,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
   void dispose() {
     _paeQuery.dispose();
     _animalQuery.dispose();
+    _remedyQuery.dispose();
     super.dispose();
   }
 
@@ -143,6 +145,32 @@ class _FeatureScreenState extends State<FeatureScreen> {
       );
 
   bool _remedyIntroOpen = false;
+  static const _chantScales = [1.0, 1.15, 1.3, 1.5];
+  double _chantScale = 1.0;
+
+  Widget _sizeButton(String text, String label, bool enabled, int step) => Semantics(
+        button: true,
+        enabled: enabled,
+        label: label,
+        excludeSemantics: true,
+        child: SizedBox(
+          width: 48,
+          height: 44,
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              padding: EdgeInsets.zero,
+              backgroundColor: enabled && step > 0 ? C.gold : Colors.transparent,
+              side: BorderSide(color: C.gold.withValues(alpha: enabled ? .8 : .3)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            onPressed: enabled
+                ? () => setState(() => _chantScale = _chantScales[_chantScales.indexOf(_chantScale) + step])
+                : null,
+            child: Text(text,
+                style: sans(16, weight: FontWeight.w700, color: !enabled ? C.caption : step > 0 ? C.onGold : C.goldLight)),
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -162,6 +190,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
       FeatType.table => _tableBody(),
       FeatType.draw => _drawBody(),
       FeatType.letter => [
+          _LetterSwitcher(current: k, onPick: app.openFeat),
           LetterCategorySection(categoryId: _letterCategories[k]!),
         ],
     };
@@ -264,33 +293,41 @@ class _FeatureScreenState extends State<FeatureScreen> {
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         child: Column(children: [
+          // A timeline: the rite is done in order, so each step hangs off one line.
           for (final (i, s) in list.indexed)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: AppCard(
-                padding: const EdgeInsets.all(14),
-                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Container(
-                    width: 34,
-                    height: 34,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: C.brand,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: C.gold, width: 1.5),
+            IntrinsicHeight(
+              child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                SizedBox(
+                  width: 34,
+                  child: Column(children: [
+                    Container(
+                      width: 34,
+                      height: 34,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: i == 0 ? C.gold : C.brand,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: C.gold, width: 1.5),
+                      ),
+                      child: Text(thaiDigits[i + 1],
+                          style: serif(15, color: i == 0 ? C.onGold : C.goldLight, height: 1.2)),
                     ),
-                    child: Text(thaiDigits[i + 1], style: serif(15, color: C.goldLight, height: 1.2)),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
+                    if (i < list.length - 1)
+                      Expanded(child: Container(width: 2, color: C.gold.withValues(alpha: .35))),
+                  ]),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 18),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(s[0], style: sans(16, weight: FontWeight.w600)),
                       const SizedBox(height: 2),
                       Text(s[1], style: sans(14, color: C.textSoft, height: 1.7)),
                     ]),
                   ),
-                ]),
-              ),
+                ),
+              ]),
             ),
           if (prayer != null)
             Container(
@@ -494,6 +531,14 @@ class _FeatureScreenState extends State<FeatureScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(chantIntro, style: sans(14, color: C.textBody, height: 1.8)),
           const SizedBox(height: 14),
+          // Chanted from the screen, often by older readers: let them enlarge just the verses.
+          Row(children: [
+            Expanded(child: Text('ขนาดตัวอักษร', style: sans(14, color: C.textSoft))),
+            _sizeButton('ก-', 'ลดขนาดตัวอักษร', _chantScale > _chantScales.first, -1),
+            const SizedBox(width: 8),
+            _sizeButton('ก+', 'เพิ่มขนาดตัวอักษร', _chantScale < _chantScales.last, 1),
+          ]),
+          const SizedBox(height: 12),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 20),
@@ -509,8 +554,10 @@ class _FeatureScreenState extends State<FeatureScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     child: Container(width: 48, height: 1, color: C.goldDeep),
                   ),
+                Text('บทที่ ${thaiDigits[i + 1]}', style: sans(13, weight: FontWeight.w600, color: C.aquaText)),
+                const SizedBox(height: 4),
                 SelectableText(stanza.join('\n'),
-                    textAlign: TextAlign.center, style: serif(17, color: C.goldLight, height: 1.9)),
+                    textAlign: TextAlign.center, style: serif(17 * _chantScale, color: C.goldLight, height: 1.9)),
               ],
             ]),
           ),
@@ -536,13 +583,34 @@ class _FeatureScreenState extends State<FeatureScreen> {
           ]),
         );
     String num(int n) => n.toString().split('').map((d) => thaiDigits[int.parse(d)]).join();
+    final q = _remedyQuery.text.trim();
+    // Keeps the book's numbering when filtered.
+    final shown = [
+      for (final (i, r) in remedies.indexed)
+        if (q.isEmpty || r.dream.contains(q) || r.omen.contains(q) || r.cure.contains(q)) (i, r)
+    ];
     return [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+        child: _searchBox(
+          key: const ValueKey('remedy-search'),
+          controller: _remedyQuery,
+          hint: 'ฝันร้ายเรื่องอะไร เช่น ตกน้ำ',
+          onChanged: () => setState(() {}),
+        ),
+      ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('เคล็ดแก้ฝัน ${num(remedies.length)} ข้อ', style: serif(18, color: C.accent)),
+          Text(q.isEmpty ? 'เคล็ดแก้ฝัน ${num(remedies.length)} ข้อ' : 'พบ ${num(shown.length)} ข้อ',
+              style: serif(18, color: C.accent)),
           const SizedBox(height: 10),
-          for (final (i, r) in remedies.indexed)
+          if (shown.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Text('ไม่พบเคล็ดแก้ฝันที่มีคำนี้ ลองคำสั้นลง', style: sans(14, color: C.textSoft)),
+            ),
+          for (final (i, r) in shown)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: AppCard(
@@ -601,6 +669,47 @@ class _FeatureScreenState extends State<FeatureScreen> {
       ),
     ];
   }
+
+  /// Search field used on list features (remedies); clears with one tap.
+  Widget _searchBox({required Key key, required TextEditingController controller, required String hint, required VoidCallback onChanged}) =>
+      Container(
+        constraints: const BoxConstraints(minHeight: 52),
+        padding: const EdgeInsets.fromLTRB(16, 2, 4, 2),
+        decoration: BoxDecoration(
+          color: C.input,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: C.gold, width: 1.5),
+        ),
+        child: Row(children: [
+          const Icon(Icons.search, size: 20, color: C.gold),
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              key: key,
+              controller: controller,
+              onChanged: (_) => onChanged(),
+              textInputAction: TextInputAction.search,
+              style: sans(16),
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: sans(16, color: C.placeholder),
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+          if (controller.text.isNotEmpty)
+            IconButton(
+              tooltip: 'ล้างคำค้นหา',
+              icon: const Icon(Icons.close, size: 18, color: C.placeholder),
+              onPressed: () {
+                controller.clear();
+                onChanged();
+              },
+            ),
+        ]),
+      );
 
   // ---- Animals (5): each animal with its number pair and picture, 21 a page; range chips filter by number,
   // the search box looks across all 100 ----
@@ -932,17 +1041,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
             padding: const EdgeInsets.all(14),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: C.brand,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: C.gold, width: 2),
-                  ),
-                  child: Text('${s.digit}', style: serif(28, weight: FontWeight.w800, color: C.goldLight, height: 1.1)),
-                ),
+                DigitBox('${s.digit}', width: 48, height: 48, fontSize: 28),
                 const SizedBox(width: 12),
                 Text('เลข ${s.digit}', style: serif(18, color: C.accent)),
               ]),
@@ -957,12 +1056,25 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              Text.rich(
-                TextSpan(children: [
-                  TextSpan(text: 'ได้แก่ ฝันเห็น ', style: sans(14, weight: FontWeight.w600, color: C.accent, height: 1.8)),
-                  TextSpan(text: '${s.items.join(', ')} ฯลฯ'),
-                ]),
-                style: sans(14, color: C.textBody, height: 1.8),
+              Text('ได้แก่ ฝันเห็น', style: sans(14, weight: FontWeight.w600, color: C.accent)),
+              const SizedBox(height: 8),
+              // One chip per thing: easier to scan than a comma list. Screen readers get the book's sentence.
+              Semantics(
+                label: 'ได้แก่ ฝันเห็น ${s.items.join(', ')} ฯลฯ',
+                child: ExcludeSemantics(
+                  child: Wrap(key: ValueKey('digit-items-${s.digit}'), spacing: 6, runSpacing: 6, children: [
+                    for (final item in [...s.items, 'ฯลฯ'])
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: C.caption.withValues(alpha: .1),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: C.caption.withValues(alpha: .25)),
+                        ),
+                        child: Text(item, style: sans(14, color: C.textBody)),
+                      ),
+                  ]),
+                ),
               ),
             ]),
           ),
@@ -1095,5 +1207,62 @@ class _FeatureScreenState extends State<FeatureScreen> {
         ]),
       ),
     ];
+  }
+}
+
+/// Row of letter pills on a letter-category page, so the next letter is one tap away
+/// instead of back to the menu. Scrolls the current letter into view.
+class _LetterSwitcher extends StatefulWidget {
+  final String current;
+  final ValueChanged<String> onPick;
+  const _LetterSwitcher({required this.current, required this.onPick});
+
+  @override
+  State<_LetterSwitcher> createState() => _LetterSwitcherState();
+}
+
+class _LetterSwitcherState extends State<_LetterSwitcher> {
+  final _currentKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ctx = _currentKey.currentContext;
+      if (ctx != null) Scrollable.ensureVisible(ctx, alignment: .5);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final keys = _letterCategories.keys.toList();
+    return Container(
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: C.caption.withValues(alpha: .12)))),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        child: Row(children: [
+          for (final (i, k) in keys.indexed) ...[
+            if (i > 0) const SizedBox(width: 6),
+            SizedBox(
+              key: k == widget.current ? _currentKey : null,
+              width: 44,
+              height: 44,
+              child: Semantics(
+                label: feats[k]!.title,
+                child: SelectPill(
+                  text: feats[k]!.title.split(' ').last,
+                  selected: k == widget.current,
+                  onTap: () => k == widget.current ? null : widget.onPick(k),
+                  padding: EdgeInsets.zero,
+                  radius: 10,
+                  fontSize: 17,
+                ),
+              ),
+            ),
+          ],
+        ]),
+      ),
+    );
   }
 }

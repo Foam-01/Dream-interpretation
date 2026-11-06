@@ -74,7 +74,9 @@ Future<void> openSearch(WidgetTester tester) => tap(tester, _text('เมื่�
 
 Future<void> openFeature(WidgetTester tester, String tab, String menuTitle) async {
   await tap(tester, _tab(tab));
-  await tap(tester, _text(menuTitle));
+  // Letter categories sit in the book menu's letter grid, labelled by tooltip.
+  final byText = _text(menuTitle);
+  await tap(tester, byText.evaluate().isNotEmpty ? byText : find.byTooltip(menuTitle));
 }
 
 void main() {

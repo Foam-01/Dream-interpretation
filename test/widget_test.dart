@@ -75,7 +75,11 @@ void main() {
       await tester.tap(find.text(const {'lucky': 'เลขเด็ด', 'ritual': 'แก้ฝัน', 'book': 'ตำรา'}[tabOf(k)]!).last);
       await tester.pump();
       final item = menus[tabOf(k)]!.items.firstWhere((i) => i.key == k);
-      await tester.tap(find.text(item.title));
+      final byText = find.text(item.title);
+      final target = byText.evaluate().isNotEmpty ? byText : find.byTooltip(item.title);
+      await tester.ensureVisible(target);
+      await tester.pump();
+      await tester.tap(target);
       await tester.pump();
       expect(find.text(feats[k]!.title), findsOneWidget, reason: k);
       expect(tester.takeException(), isNull, reason: k);

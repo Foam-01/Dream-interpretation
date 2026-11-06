@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../app_shell.dart';
 import '../data/design_data.dart';
@@ -122,7 +123,7 @@ class _ResultScreenState extends State<ResultScreen> {
         child: AppCard(
           borderWidth: 1.5,
           child: Column(children: [
-            Text('เลขนำโชคจากความฝัน', style: serif(15, color: C.accent)),
+            Text('เลขนำโชคจากความฝัน', style: serif(17, color: C.accent)),
             const SizedBox(height: 10),
             if (d.digits.isNotEmpty) ...[
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -146,6 +147,10 @@ class _ResultScreenState extends State<ResultScreen> {
                 const SizedBox(width: 8),
                 Expanded(child: _NumTile(label: 'สามตัว', value: d.three)),
               ]),
+            if (!d.numbers.isNone) ...[
+              const SizedBox(height: 12),
+              _CopyNumbersButton([d.two, if (d.numbers.threeDigit.isNotEmpty) d.three].join(' · ')),
+            ],
           ]),
         ),
       ),
@@ -156,7 +161,7 @@ class _ResultScreenState extends State<ResultScreen> {
             child: SizedBox(
               width: double.infinity,
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('คำทำนาย', style: serif(16)),
+                Text('คำทำนาย', style: serif(17, color: C.accent)),
                 const SizedBox(height: 6),
                 Text(d.meaning, style: sans(15, color: C.textBody, height: 1.7)),
                 if (d.source != null) ...[
@@ -171,7 +176,7 @@ class _ResultScreenState extends State<ResultScreen> {
             const SizedBox(height: 12),
             AppCard(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('พยากรณ์โชคชะตา', style: serif(16)),
+                Text('พยากรณ์โชคชะตา', style: serif(17, color: C.accent)),
                 const SizedBox(height: 10),
                 _LuckBar(label: 'การเงิน', value: f.money),
                 _LuckBar(label: 'ความรัก', value: f.love),
@@ -279,4 +284,32 @@ class _Placeholder extends StatelessWidget {
         ),
         Padding(padding: const EdgeInsets.symmetric(vertical: 40), child: child),
       ]);
+}
+
+/// Copies the dream's lucky numbers, so they can be pasted into a chat or a lottery note.
+class _CopyNumbersButton extends StatelessWidget {
+  final String numbers;
+  const _CopyNumbersButton(this.numbers);
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+        width: double.infinity,
+        height: 44,
+        child: TextButton.icon(
+          style: TextButton.styleFrom(
+            backgroundColor: C.aqua.withValues(alpha: .14),
+            foregroundColor: C.aquaText,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          icon: const Icon(Icons.copy_rounded, size: 18),
+          label: Text('คัดลอกเลขทั้งหมด', style: sans(15, weight: FontWeight.w600, color: C.aquaText)),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: numbers));
+            if (!context.mounted) return;
+            ScaffoldMessenger.maybeOf(context)
+              ?..hideCurrentSnackBar()
+              ..showSnackBar(SnackBar(content: Text('คัดลอกแล้ว: $numbers', style: sans(14, color: C.onGold)), backgroundColor: C.gold));
+          },
+        ),
+      );
 }
