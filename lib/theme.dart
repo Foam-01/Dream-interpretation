@@ -35,6 +35,7 @@ class C {
   static const placeholder = Color(0xFF8FA3D6);
   static const accent = Color(0xFFF6DE9A);
   static const number = Color(0xFFF6DE9A);
+  static const warning = Color(0xFFFF9B8A);
   static const onGold = Color(0xFF061440);
   static const onBrand = Color(0xFFEAF0FF);
   static const onBrandMuted = Color(0xFFC9D6FF);

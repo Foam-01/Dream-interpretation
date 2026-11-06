@@ -298,12 +298,18 @@ class _ResultRow extends StatelessWidget {
             ]),
           ),
           const SizedBox(width: 10),
-          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            d.numbers.isNone
-                ? Text(d.firstTwo, style: sans(13, weight: FontWeight.w600, color: C.number, height: 1.6))
-                : Text(d.firstTwo, style: serif(22, weight: FontWeight.w800, color: C.number, height: 1.2)),
-            Text(d.cat, style: sans(11, color: C.caption)),
-          ]),
+          // Capped so "ไม่ควรเสี่ยง" and long category names wrap on small phones with large text.
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 84),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+              d.numbers.isNone
+                  ? Text(d.firstTwo,
+                      textAlign: TextAlign.right,
+                      style: sans(13, weight: FontWeight.w600, color: C.warning, height: 1.4))
+                  : Text(d.firstTwo, style: serif(22, weight: FontWeight.w800, color: C.number, height: 1.2)),
+              Text(d.cat, textAlign: TextAlign.right, style: sans(12, color: C.caption)),
+            ]),
+          ),
         ]),
       ),
     );

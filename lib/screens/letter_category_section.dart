@@ -117,9 +117,14 @@ class _DreamRow extends StatelessWidget {
           if (two.isNotEmpty)
             Text(two.first, style: serif(20, weight: FontWeight.w800, color: C.number, height: 1.3))
           else
-            Text(
-              LuckyNumbers.noLuckyNumbersText,
-              style: sans(13, weight: FontWeight.w600, color: C.number, height: 1.6),
+            // Capped so it wraps instead of pushing the row past a small screen.
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 76),
+              child: Text(
+                LuckyNumbers.noLuckyNumbersText,
+                textAlign: TextAlign.right,
+                style: sans(13, weight: FontWeight.w600, color: C.warning, height: 1.4),
+              ),
             ),
         ],
       ),

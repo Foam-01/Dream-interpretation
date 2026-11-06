@@ -100,7 +100,9 @@ class BackLink extends StatelessWidget {
             constraints: const BoxConstraints(minHeight: 44),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               const Icon(Icons.chevron_left_rounded, size: 22, color: C.goldLight),
-              Text(label, style: sans(15, color: C.goldLight)),
+              Flexible(
+                child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: sans(15, color: C.goldLight)),
+              ),
             ]),
           ),
         ),
