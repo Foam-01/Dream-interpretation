@@ -56,6 +56,33 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('number filters show matching rules and All restores every rule', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(const MahaDreamApp());
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('ตำรา').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('หลักทำนายฝันตัวเลข'));
+    await tester.pumpAndSettle();
+
+    final oneRules = loreEntries.where((entry) => entry.badge == '1');
+    final zeroRule = loreEntries.firstWhere((entry) => entry.badge == '0');
+    await tester.tap(find.byKey(const ValueKey('lore-filter-1')));
+    await tester.pumpAndSettle();
+    for (final entry in oneRules) {
+      expect(find.text(entry.text, findRichText: true), findsOneWidget);
+    }
+    expect(find.text(zeroRule.text, findRichText: true, skipOffstage: false), findsNothing);
+
+    await tester.tap(find.byKey(const ValueKey('lore-filter-all')));
+    await tester.pumpAndSettle();
+    expect(find.text(oneRules.first.text, findRichText: true), findsOneWidget);
+    expect(find.text(zeroRule.text, findRichText: true, skipOffstage: false), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   test('the app shows the rules sorted by number, odd-number rules last, book order within a number', () {
     final sorted = loreEntriesByNumber;
     expect(sorted.toSet(), loreEntries.toSet(), reason: 'same 28 rules, none lost');

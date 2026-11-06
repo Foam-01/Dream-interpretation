@@ -101,28 +101,16 @@ class _ResultScreenState extends State<ResultScreen> {
           borderWidth: 1.5,
           child: Column(children: [
             Text('เลขนำโชคจากความฝัน', style: serif(17, color: C.accent)),
-            const SizedBox(height: 10),
-            if (d.digits.isNotEmpty) ...[
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                for (final n in d.digits)
-                  Padding(padding: const EdgeInsets.symmetric(horizontal: 4), child: DigitBox(n)),
-              ]),
-              const SizedBox(height: 14),
-            ],
-            // "ไม่ควรเสี่ยง" is shown as the source says it, never as numbers.
+            const SizedBox(height: 14),
             if (d.numbers.isNone)
-              const SizedBox(
-                width: double.infinity,
-                child: _NumTile(label: 'เลขเสี่ยงโชค', value: LuckyNumbers.noLuckyNumbersText),
-              )
+              _LuckyNumberTile(label: 'เลขเสี่ยงโชค', value: LuckyNumbers.noLuckyNumbersText)
             else if (d.numbers.threeDigit.isEmpty)
-              // The source gives only two-digit numbers.
-              SizedBox(width: double.infinity, child: _NumTile(label: 'สองตัว', value: d.two))
+              _LuckyNumberTile(label: 'สองตัว', value: d.two)
             else
               Row(children: [
-                Expanded(child: _NumTile(label: 'สองตัว', value: d.two)),
+                Expanded(child: _LuckyNumberTile(label: 'สองตัว', value: d.two)),
                 const SizedBox(width: 8),
-                Expanded(child: _NumTile(label: 'สามตัว', value: d.three)),
+                Expanded(child: _LuckyNumberTile(label: 'สามตัว', value: d.three)),
               ]),
           ]),
         ),
@@ -195,17 +183,27 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 }
 
-class _NumTile extends StatelessWidget {
+class _LuckyNumberTile extends StatelessWidget {
   final String label, value;
-  const _NumTile({required this.label, required this.value});
+  const _LuckyNumberTile({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: C.highlight, borderRadius: BorderRadius.circular(10)),
-        child: Column(children: [
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        decoration: BoxDecoration(
+          color: C.highlight,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(label, style: sans(12, color: C.caption)),
-          Text(value, style: serif(18, color: C.accent)),
+          Text(
+            value,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: serif(18, color: C.accent),
+          ),
         ]),
       );
 }

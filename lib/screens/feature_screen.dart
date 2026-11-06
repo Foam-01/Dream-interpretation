@@ -101,6 +101,7 @@ class FeatureScreen extends StatefulWidget {
 class _FeatureScreenState extends State<FeatureScreen> {
   // Initialised once per State from the injected time (same lifecycle as before).
   int? _digit;
+  int? _loreDigit;
   final _digitKeys = [for (var i = 0; i < 10; i++) GlobalKey()];
   late final DateTime _draw = nextDrawDate(widget.now);
   late int _runDay = weekdayIndex(_draw);
@@ -224,18 +225,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
           ),
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              Container(
-                width: 4,
-                height: 18,
-                decoration: BoxDecoration(
-                  color: top ? C.gold : C.goldDeep,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(title, style: serif(17, color: C.accent)),
-            ]),
+            Text(title, style: sans(17, weight: FontWeight.w700, color: C.goldLight)),
             const SizedBox(height: 12),
             GridView.count(
               crossAxisCount: 3,
@@ -244,16 +234,16 @@ class _FeatureScreenState extends State<FeatureScreen> {
               padding: EdgeInsets.zero,
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
-              childAspectRatio: 1.7,
+              childAspectRatio: top ? 1.7 : 1.85,
               children: [
                 for (final n in nums)
                   Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       gradient: top ? goldGradient : null,
-                      color: top ? null : C.surface,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: top ? C.goldDeep : C.goldBorder, width: 1),
+                      color: top ? null : C.input,
+                      borderRadius: BorderRadius.circular(top ? 14 : 18),
+                      border: Border.all(color: top ? C.goldDeep : C.gold, width: top ? 1 : 1.8),
                       boxShadow: top
                           ? const [BoxShadow(color: C.shadow, blurRadius: 4, offset: Offset(0, 2))]
                           : null,
@@ -261,7 +251,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                     child: Text(
                       n,
                       style: serif(
-                        26,
+                        top ? 26 : 30,
                         weight: FontWeight.w800,
                         color: top ? C.onGold : C.goldLight,
                         height: 1.2,
@@ -1172,14 +1162,52 @@ class _FeatureScreenState extends State<FeatureScreen> {
     ];
   }
 
-  // ---- Number lore (12): the owner's book pages — intro, 28 rules sorted by their number (badge), closing ----
-  List<Widget> _tableBody() => [
+  // ---- Number lore (12): filter the book's rules by their leading number ----
+  List<Widget> _tableBody() {
+    final entries = _loreDigit == null
+        ? loreEntriesByNumber
+        : loreEntriesByNumber.where((entry) => entry.badge == '$_loreDigit').toList();
+    return [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+              key: const ValueKey('lore-digit-filter'),
+              children: [
+                SelectPill(
+                  key: const ValueKey('lore-filter-all'),
+                  text: 'ทั้งหมด',
+                  selected: _loreDigit == null,
+                  onTap: () => setState(() => _loreDigit = null),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  radius: 10,
+                  fontSize: 13,
+                  weight: FontWeight.w700,
+                ),
+                const SizedBox(width: 4),
+                for (final digit in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0])
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: SelectPill(
+                      key: ValueKey('lore-filter-$digit'),
+                      text: '$digit',
+                      selected: _loreDigit == digit,
+                      onTap: () => setState(() => _loreDigit = _loreDigit == digit ? null : digit),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      radius: 10,
+                      fontSize: 15,
+                      weight: FontWeight.w700,
+                    ),
+                  ),
+              ],
+            ),
+            ),
+            const SizedBox(height: 12),
             Text(loreIntro, style: sans(14, color: C.textBody, height: 1.8)),
             const SizedBox(height: 12),
-            for (final e in loreEntriesByNumber)
+            for (final e in entries)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: AppCard(
@@ -1218,6 +1246,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
           ]),
         ),
       ];
+  }
 
   // ---- Draw lead numbers (8): keep the lead card and the weekday table so the feature stays complete ----
   List<Widget> _drawBody() {
