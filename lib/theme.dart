@@ -51,6 +51,14 @@ class C {
 const goldGradient = LinearGradient(
     begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [C.goldLight, C.goldDeep]);
 
+/// Bright blue fill for the highlighted card (the lock บน group, the next draw's lead numbers).
+const blueGlowGradient = LinearGradient(
+  begin: Alignment.topCenter,
+  end: Alignment.bottomCenter,
+  colors: [Color(0xFF2868FF), Color(0xFF0B388E), Color(0xFF002344)],
+  stops: [0, 0.38, 1],
+);
+
 TextStyle _font(String family, double size, FontWeight weight, Color color, double? letterSpacing, double? height) =>
     TextStyle(
       fontFamily: family,

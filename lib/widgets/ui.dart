@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import '../data/design_data.dart';
 import '../theme.dart';
@@ -300,7 +301,9 @@ class SelectPill extends StatelessWidget {
         button: true,
         child: GestureDetector(
           onTap: onTap,
-          child: Container(
+          behavior: HitTestBehavior.opaque,
+          child: MinTapTarget(
+            child: Container(
             padding: padding,
             alignment: Alignment.center,
             decoration: BoxDecoration(
@@ -313,6 +316,7 @@ class SelectPill extends StatelessWidget {
               fit: BoxFit.scaleDown,
               child: Text(text, style: sans(fontSize, weight: weight, color: selected ? selectedFg : fg)),
             ),
+          ),
           ),
         ),
       );
@@ -542,17 +546,106 @@ class _PagerButton extends StatelessWidget {
         label: label,
         child: GestureDetector(
           onTap: onTap,
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: enabled ? C.gold : C.muted,
-              shape: BoxShape.circle,
+          behavior: HitTestBehavior.opaque,
+          child: MinTapTarget(
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: enabled ? C.gold : C.muted,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, size: 22, color: enabled ? C.onGold : C.caption),
             ),
-            child: Icon(icon, size: 22, color: enabled ? C.onGold : C.caption),
           ),
         ),
       ),
     );
   }
+}
+
+/// Gives a small button a tap area of at least 48 x 48 (Android's minimum), where its parent allows,
+/// without changing how big the button looks: the visible child keeps its size and sits in the middle.
+/// Wrap it in a GestureDetector with HitTestBehavior.opaque so the extra area counts as a tap.
+class MinTapTarget extends SingleChildRenderObjectWidget {
+  const MinTapTarget({super.key, super.child});
+  static const size = 48.0;
+  @override
+  RenderObject createRenderObject(BuildContext context) => _RenderMinTapTarget();
+}
+
+class _RenderMinTapTarget extends RenderShiftedBox {
+  _RenderMinTapTarget() : super(null);
+
+  @override
+  void performLayout() {
+    final c = child!;
+    // Same width rules as before (a pill stretched in a row keeps its width); height is free.
+    c.layout(constraints.copyWith(minHeight: 0), parentUsesSize: true);
+    size = constraints.constrain(Size(
+      c.size.width < MinTapTarget.size ? MinTapTarget.size : c.size.width,
+      c.size.height < MinTapTarget.size ? MinTapTarget.size : c.size.height,
+    ));
+    (c.parentData! as BoxParentData).offset =
+        Offset((size.width - c.size.width) / 2, (size.height - c.size.height) / 2);
+  }
+
+  @override
+  double computeMinIntrinsicWidth(double height) => (child?.getMinIntrinsicWidth(height) ?? 0).clamp(MinTapTarget.size, double.infinity);
+  @override
+  double computeMaxIntrinsicWidth(double height) => (child?.getMaxIntrinsicWidth(height) ?? 0).clamp(MinTapTarget.size, double.infinity);
+  @override
+  double computeMinIntrinsicHeight(double width) => (child?.getMinIntrinsicHeight(width) ?? 0).clamp(MinTapTarget.size, double.infinity);
+  @override
+  double computeMaxIntrinsicHeight(double width) => (child?.getMaxIntrinsicHeight(width) ?? 0).clamp(MinTapTarget.size, double.infinity);
+}
+
+/// Search box on a list page (menus 5 and 6): gold-bordered field with a clear button.
+/// [onChanged] also runs after the clear button empties the field.
+class SearchField extends StatelessWidget {
+  final Key? fieldKey;
+  final TextEditingController controller;
+  final String hint;
+  final VoidCallback onChanged;
+  const SearchField({super.key, this.fieldKey, required this.controller, required this.hint, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+        decoration: BoxDecoration(
+          color: C.input,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: C.goldBorder, width: 1.5),
+        ),
+        child: Row(children: [
+          const Icon(Icons.search, size: 18, color: C.gold),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextField(
+              key: fieldKey,
+              controller: controller,
+              onChanged: (_) => onChanged(),
+              textInputAction: TextInputAction.search,
+              style: sans(16),
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: sans(16, color: C.placeholder),
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(vertical: 10),
+              ),
+            ),
+          ),
+          if (controller.text.trim().isNotEmpty)
+            IconButton(
+              tooltip: 'ล้างคำค้นหา',
+              visualDensity: VisualDensity.compact,
+              icon: const Icon(Icons.close, size: 18, color: C.placeholder),
+              onPressed: () {
+                controller.clear();
+                onChanged();
+              },
+            ),
+        ]),
+      );
 }

@@ -154,7 +154,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
         excludeSemantics: true,
         child: SizedBox(
           width: 48,
-          height: 44,
+          height: 48,
           child: OutlinedButton(
             style: OutlinedButton.styleFrom(
               padding: EdgeInsets.zero,
@@ -213,12 +213,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
     Widget group(String title, List<String> nums, {required bool top}) => Container(
           decoration: BoxDecoration(
             gradient: top
-                ? const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color(0xFF2868FF), Color(0xFF0B388E), Color(0xFF002344)],
-                    stops: [0, 0.38, 1],
-                  )
+                ? blueGlowGradient
                 : null,
             color: top ? null : C.surface,
             borderRadius: BorderRadius.circular(16),
@@ -782,43 +777,11 @@ class _FeatureScreenState extends State<FeatureScreen> {
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-          decoration: BoxDecoration(
-            color: C.input,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: C.goldBorder, width: 1.5),
-          ),
-          child: Row(children: [
-            const Icon(Icons.search, size: 18, color: C.gold),
-            const SizedBox(width: 8),
-            Expanded(
-              child: TextField(
-                key: const ValueKey('animal-search'),
-                controller: _animalQuery,
-                onChanged: (_) => setState(() => _animalPage = 0),
-                textInputAction: TextInputAction.search,
-                style: sans(16),
-                decoration: InputDecoration(
-                  hintText: 'ค้นหาชื่อสัตว์ เช่น ช้าง หรือเลข',
-                  hintStyle: sans(16, color: C.placeholder),
-                  border: InputBorder.none,
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                ),
-              ),
-            ),
-            if (q.isNotEmpty)
-              IconButton(
-                tooltip: 'ล้างคำค้นหา',
-                visualDensity: VisualDensity.compact,
-                icon: const Icon(Icons.close, size: 18, color: C.placeholder),
-                onPressed: () => setState(() {
-                  _animalQuery.clear();
-                  _animalPage = 0;
-                }),
-              ),
-          ]),
+        child: SearchField(
+          fieldKey: const ValueKey('animal-search'),
+          controller: _animalQuery,
+          hint: 'ค้นหาชื่อสัตว์ เช่น ช้าง หรือเลข',
+          onChanged: () => setState(() => _animalPage = 0),
         ),
       ),
       if (q.isEmpty)
@@ -919,43 +882,11 @@ class _FeatureScreenState extends State<FeatureScreen> {
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-          decoration: BoxDecoration(
-            color: C.input,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: C.goldBorder, width: 1.5),
-          ),
-          child: Row(children: [
-            const Icon(Icons.search, size: 18, color: C.gold),
-            const SizedBox(width: 8),
-            Expanded(
-              child: TextField(
-                key: const ValueKey('pae-search'),
-                controller: _paeQuery,
-                onChanged: (_) => setState(() => _paePage = 0),
-                textInputAction: TextInputAction.search,
-                style: sans(16),
-                decoration: InputDecoration(
-                  hintText: 'ค้นหาสิ่งที่ฝัน เช่น ม้า หรือเลข',
-                  hintStyle: sans(16, color: C.placeholder),
-                  border: InputBorder.none,
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                ),
-              ),
-            ),
-            if (q.isNotEmpty)
-              IconButton(
-                tooltip: 'ล้างคำค้นหา',
-                visualDensity: VisualDensity.compact,
-                icon: const Icon(Icons.close, size: 18, color: C.placeholder),
-                onPressed: () => setState(() {
-                  _paeQuery.clear();
-                  _paePage = 0;
-                }),
-              ),
-          ]),
+        child: SearchField(
+          fieldKey: const ValueKey('pae-search'),
+          controller: _paeQuery,
+          hint: 'ค้นหาสิ่งที่ฝัน เช่น ม้า หรือเลข',
+          onChanged: () => setState(() => _paePage = 0),
         ),
       ),
       if (q.isEmpty)
@@ -1249,12 +1180,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   gradient: drawIndex == 0
-                      ? const LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Color(0xFF2868FF), Color(0xFF0B388E), Color(0xFF002344)],
-                          stops: [0, 0.38, 1],
-                        )
+                      ? blueGlowGradient
                       : null,
                   color: drawIndex == 0 ? null : C.brand,
                   borderRadius: BorderRadius.circular(16),
