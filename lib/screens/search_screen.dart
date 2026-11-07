@@ -188,7 +188,8 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           const SizedBox(height: 12),
           SizedBox(
-            height: 40,
+            // Grows with the phone's text size so the chip labels are never cut off.
+            height: 40 * MediaQuery.textScalerOf(context).scale(14) / 14,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: cats.length,

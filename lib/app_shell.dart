@@ -154,8 +154,27 @@ class AppShell extends StatefulWidget {
   State<AppShell> createState() => _AppShellState();
 }
 
+/// Widest the pages grow on tablets and landscape screens (logical pixels).
+const maxContentWidth = 720.0;
+
+/// Phones (shortest side under 600) stay upright: in landscape the header, search box and tab bar
+/// leave almost no room for content. Tablets and foldables keep turning freely.
+bool keepsPortrait(Size screen) => screen.shortestSide < 600;
+
 class _AppShellState extends State<AppShell> {
   late final _controller = AppController(repository: widget.repository);
+  bool? _portraitOnly;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final portrait = keepsPortrait(MediaQuery.sizeOf(context));
+    if (portrait == _portraitOnly) return;
+    _portraitOnly = portrait;
+    SystemChrome.setPreferredOrientations(
+      portrait ? const [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown] : const [],
+    );
+  }
 
   @override
   void dispose() {
@@ -199,14 +218,23 @@ class _AppShellState extends State<AppShell> {
                     child: MediaQuery.removePadding(
                       context: context,
                       removeTop: true,
-                      child: KeyedSubtree(
-                        // New key per page so scroll position resets like the design.
-                        key: ValueKey('${_controller.tab}/${_controller.depth}/${page.runtimeType}/${_pageId(page)}'),
-                        child: _screenFor(page),
+                      // Tablets and landscape: keep the phone-width layout, centred, instead of
+                      // stretching cards and grids across the whole screen.
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: maxContentWidth),
+                          child: KeyedSubtree(
+                            // New key per page so scroll position resets like the design.
+                            key: ValueKey('${_controller.tab}/${_controller.depth}/${page.runtimeType}/${_pageId(page)}'),
+                            child: _screenFor(page),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  _BottomTabs(current: _controller.tab, onTap: _controller.goTab),
+                  // Hidden while the keyboard is up, so search results keep the space on small phones.
+                  if (MediaQuery.viewInsetsOf(context).bottom == 0)
+                    _BottomTabs(current: _controller.tab, onTap: _controller.goTab),
                 ]),
               ),
             ),

@@ -220,7 +220,11 @@ class DigitBox extends StatelessWidget {
         height: height,
         alignment: Alignment.center,
         decoration: BoxDecoration(gradient: goldGradient, borderRadius: BorderRadius.circular(14)),
-        child: Text(digit, style: serif(fontSize, weight: FontWeight.w800, color: C.onGold, height: 1.2)),
+        // Fixed-size tile: very large text shrinks to fit inside it.
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(digit, style: serif(fontSize, weight: FontWeight.w800, color: C.onGold, height: 1.2)),
+        ),
       );
 }
 
@@ -304,7 +308,11 @@ class SelectPill extends StatelessWidget {
               borderRadius: BorderRadius.circular(radius),
               border: Border.all(color: border),
             ),
-            child: Text(text, style: sans(fontSize, weight: weight, color: selected ? selectedFg : fg)),
+            // In a fixed-size grid cell very large text shrinks to fit; elsewhere nothing changes.
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(text, style: sans(fontSize, weight: weight, color: selected ? selectedFg : fg)),
+            ),
           ),
         ),
       );

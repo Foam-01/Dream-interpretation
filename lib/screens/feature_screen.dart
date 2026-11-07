@@ -167,8 +167,11 @@ class _FeatureScreenState extends State<FeatureScreen> {
             onPressed: enabled
                 ? () => setState(() => _chantScale = _chantScales[_chantScales.indexOf(_chantScale) + step])
                 : null,
-            child: Text(text,
-                style: sans(16, weight: FontWeight.w700, color: !enabled ? C.caption : step > 0 ? C.onGold : C.goldLight)),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(text,
+                  style: sans(16, weight: FontWeight.w700, color: !enabled ? C.caption : step > 0 ? C.onGold : C.goldLight)),
+            ),
           ),
         ),
       );
@@ -248,13 +251,17 @@ class _FeatureScreenState extends State<FeatureScreen> {
                           ? const [BoxShadow(color: C.shadow, blurRadius: 4, offset: Offset(0, 2))]
                           : null,
                     ),
-                    child: Text(
-                      n,
-                      style: serif(
-                        top ? 26 : 30,
-                        weight: FontWeight.w800,
-                        color: top ? C.onGold : C.goldLight,
-                        height: 1.2,
+                    // Fixed-ratio tile: very large text shrinks to fit inside it.
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        n,
+                        style: serif(
+                          top ? 26 : 30,
+                          weight: FontWeight.w800,
+                          color: top ? C.onGold : C.goldLight,
+                          height: 1.2,
+                        ),
                       ),
                     ),
                   ),
@@ -329,8 +336,12 @@ class _FeatureScreenState extends State<FeatureScreen> {
                         shape: BoxShape.circle,
                         border: Border.all(color: C.gold, width: 1.5),
                       ),
-                      child: Text(thaiDigits[i + 1],
-                          style: serif(15, color: i == 0 ? C.onGold : C.goldLight, height: 1.2)),
+                      // Fixed-size circle: very large text shrinks to fit inside it.
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(thaiDigits[i + 1],
+                            style: serif(15, color: i == 0 ? C.onGold : C.goldLight, height: 1.2)),
+                      ),
                     ),
                     if (i < list.length - 1)
                       Expanded(child: Container(width: 2, color: C.gold.withValues(alpha: .35))),
@@ -720,7 +731,11 @@ class _FeatureScreenState extends State<FeatureScreen> {
                         shape: BoxShape.circle,
                         border: Border.all(color: C.gold, width: 1.5),
                       ),
-                      child: Text(num(remedies.indexOf(r) + 1), style: serif(14, color: C.goldLight, height: 1.2)),
+                      // Fixed-size circle: very large text shrinks to fit inside it.
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(num(remedies.indexOf(r) + 1), style: serif(14, color: C.goldLight, height: 1.2)),
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -790,11 +805,13 @@ class _FeatureScreenState extends State<FeatureScreen> {
           padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
           child: Column(children: [
             SizedBox(
-              height: 36,
+              // Two lines of the name at the phone's text size.
+              height: 36 * MediaQuery.textScalerOf(context).scale(13) / 13,
               child: Center(
                 child: Text(a.name,
                     textAlign: TextAlign.center,
                     maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: sans(13, weight: FontWeight.w700, color: C.text, height: 1.3)),
               ),
             ),
@@ -887,7 +904,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
           padding: EdgeInsets.zero,
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
-          childAspectRatio: 0.72,
+          // Taller cards when the phone's text is large, so the picture keeps its room.
+          childAspectRatio: 0.72 / (1 + (MediaQuery.textScalerOf(context).scale(1) - 1) * 0.6),
           children: [for (final a in shown) cell(a)],
         ),
       ),
@@ -926,7 +944,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
           padding: const EdgeInsets.all(8),
           child: Column(children: [
             SizedBox(
-              height: 36,
+              // Two lines of the name at the phone's text size.
+              height: 36 * MediaQuery.textScalerOf(context).scale(13) / 13,
               child: Center(
                 child: Text(p.name,
                     textAlign: TextAlign.center,
@@ -1022,7 +1041,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
           padding: EdgeInsets.zero,
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
-          childAspectRatio: 0.72,
+          // Taller cards when the phone's text is large, so the picture keeps its room.
+          childAspectRatio: 0.72 / (1 + (MediaQuery.textScalerOf(context).scale(1) - 1) * 0.6),
           children: [for (final p in shown) cell(p)],
         ),
       ),
@@ -1109,15 +1129,22 @@ class _FeatureScreenState extends State<FeatureScreen> {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: const [BoxShadow(color: C.shadow, blurRadius: 4, offset: Offset(0, 2))],
                       ),
-                      child: Text(
-                        '${s.digit}',
-                        style: serif(24, weight: FontWeight.w800, color: C.onGold, height: 1.2),
+                      // Fixed-size badge: very large text shrinks to fit inside it.
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '${s.digit}',
+                          style: serif(24, weight: FontWeight.w800, color: C.onGold, height: 1.2),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Text(
-                      'ฝันแบบไหนเป็นเลข ${s.digit}',
-                      style: serif(18, weight: FontWeight.w700, color: C.accent),
+                    // Wraps with large text instead of running off the card.
+                    Expanded(
+                      child: Text(
+                        'ฝันแบบไหนเป็นเลข ${s.digit}',
+                        style: serif(18, weight: FontWeight.w700, color: C.accent),
+                      ),
                     ),
                   ],
                 ),
