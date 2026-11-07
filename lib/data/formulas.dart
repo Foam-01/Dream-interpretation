@@ -18,16 +18,6 @@ DateTime nextDrawDate(DateTime from) {
   throw StateError('no draw found after $from');
 }
 
-/// The first draw on or after [from] that falls on [weekday] (Sunday = 0, as [weekdayIndex]).
-/// Every weekday comes round within a few years of 1st/16th draws.
-DateTime nextDrawOnWeekday(DateTime from, int weekday) {
-  var d = nextDrawDate(from);
-  for (var i = 0; i < 200 && weekdayIndex(d) != weekday; i++) {
-    d = nextDrawDate(d.add(const Duration(days: 1)));
-  }
-  return d;
-}
-
 /// Which column of the book's tables a draw belongs to: the 1st or the 16th it was due on.
 int drawRound(DateTime draw) {
   for (final MapEntry(:key, :value) in drawShifts.entries) {
