@@ -196,7 +196,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
           LetterCategorySection(categoryId: _letterCategories[k]!),
         ],
     };
-    return ListView(padding: EdgeInsets.zero, children: [
+    // Scrolling puts the keyboard away (menus 5 and 6 have a search box).
+    return ListView(padding: EdgeInsets.zero, keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, children: [
       FeatureHeader(
         backLabel: menus[app.tab]?.title ?? 'กลับ',
         onBack: () => app.goTab(app.tab),

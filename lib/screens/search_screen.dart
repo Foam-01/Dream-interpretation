@@ -215,6 +215,8 @@ class _SearchScreenState extends State<SearchScreen> {
       Expanded(
         child: ListView(
             key: const ValueKey('search-results'),
+            // Scrolling the results puts the keyboard away so they get the whole screen.
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             controller: _scroll,
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
             children: [

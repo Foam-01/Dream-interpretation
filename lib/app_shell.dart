@@ -9,6 +9,7 @@ import 'screens/home_screen.dart';
 import 'screens/menu_screen.dart';
 import 'screens/result_screen.dart';
 import 'screens/search_screen.dart';
+import 'state/daily_pick.dart';
 import 'theme.dart';
 
 sealed class AppPage {
@@ -83,9 +84,12 @@ class AppController extends ChangeNotifier {
     return f;
   }
 
+  /// Opens a dream on top of the page the person is on (Home, a letter list or the search), so Back
+  /// returns there. Opening another dream from a dream page replaces it instead of stacking up.
   void openDream(String id) {
-    tab = 'dream';
-    _stacks['dream'] = [const SearchPage(), ResultPage(id)];
+    final stack = _stacks[tab]!;
+    if (stack.last is ResultPage) stack.removeLast();
+    stack.add(ResultPage(id));
     notifyListeners();
   }
 
@@ -161,9 +165,29 @@ const maxContentWidth = 720.0;
 /// leave almost no room for content. Tablets and foldables keep turning freely.
 bool keepsPortrait(Size screen) => screen.shortestSide < 600;
 
-class _AppShellState extends State<AppShell> {
+class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   late final _controller = AppController(repository: widget.repository);
   bool? _portraitOnly;
+
+  /// The day the pages were built for: the calendar date (next draw, lock numbers) and the daily-pick
+  /// day that turns over at 04:00 Thai time (ฝันยอดฮิตวันนี้).
+  late String _day = _dayOf(widget.clock());
+  static String _dayOf(DateTime t) => '${DateTime(t.year, t.month, t.day)}|${dailyPickDay(t)}';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  /// Back from the background on a new day: rebuild every page with today's date
+  /// (people rarely close the app, they switch away and come back the next day).
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+    final today = _dayOf(widget.clock());
+    if (today != _day) setState(() => _day = today);
+  }
 
   @override
   void didChangeDependencies() {
@@ -178,6 +202,7 @@ class _AppShellState extends State<AppShell> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     super.dispose();
   }
@@ -225,7 +250,7 @@ class _AppShellState extends State<AppShell> {
                           constraints: const BoxConstraints(maxWidth: maxContentWidth),
                           child: KeyedSubtree(
                             // New key per page so scroll position resets like the design.
-                            key: ValueKey('${_controller.tab}/${_controller.depth}/${page.runtimeType}/${_pageId(page)}'),
+                            key: ValueKey('$_day/${_controller.tab}/${_controller.depth}/${page.runtimeType}/${_pageId(page)}'),
                             child: _screenFor(page),
                           ),
                         ),
