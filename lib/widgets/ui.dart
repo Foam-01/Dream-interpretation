@@ -82,7 +82,17 @@ class FeatureHeader extends StatelessWidget {
   final VoidCallback onBack;
   final String title;
   final String? sub;
-  const FeatureHeader({super.key, required this.backLabel, required this.onBack, required this.title, this.sub});
+
+  /// Optional control under the subtitle, inside the header (e.g. menu 3's search box).
+  final Widget? bottom;
+  const FeatureHeader({
+    super.key,
+    required this.backLabel,
+    required this.onBack,
+    required this.title,
+    this.sub,
+    this.bottom,
+  });
 
   @override
   Widget build(BuildContext context) => PageHeader(
@@ -96,6 +106,7 @@ class FeatureHeader extends StatelessWidget {
           style: serif(26, weight: FontWeight.w800, color: C.goldLight),
         ),
         if (sub != null) Text(sub!, style: sans(14, color: C.onBrandMuted)),
+        if (bottom != null) ...[const SizedBox(height: 14), bottom!],
       ],
     ),
   );

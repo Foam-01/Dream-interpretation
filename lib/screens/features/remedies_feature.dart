@@ -6,9 +6,11 @@ import '../../theme.dart';
 import '../../widgets/ui.dart';
 import 'feature_list.dart';
 
-/// Menu 3: the 18 nightmare remedies as cards; the long intro folds away.
+/// Menu 3: the 18 nightmare remedies as cards, as in the design: a search box in the header
+/// (owner request, Nov 2026), the count in the subtitle, and tinted ทายว่า / วิธีแก้ tags.
+/// The long intro folds away.
 class RemediesFeature extends StatefulWidget {
-  final Widget header;
+  final FeatureHeader header;
   const RemediesFeature({super.key, required this.header});
 
   @override
@@ -17,52 +19,78 @@ class RemediesFeature extends StatefulWidget {
 
 class _RemediesFeatureState extends State<RemediesFeature> {
   bool _remedyIntroOpen = false;
+  final _query = TextEditingController();
 
   @override
-  Widget build(BuildContext context) => FeatureList(header: widget.header, children: _remediesBody());
+  void dispose() {
+    _query.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final h = widget.header;
+    return FeatureList(
+      header: FeatureHeader(
+        backLabel: h.backLabel,
+        onBack: h.onBack,
+        title: h.title,
+        sub: '${h.sub} · ${remedies.length} ข้อ',
+        bottom: SearchField(
+          fieldKey: const ValueKey('remedy-search'),
+          controller: _query,
+          hint: 'ฝันร้ายเรื่องอะไร เช่น ตกน้ำ',
+          onChanged: () => setState(() {}),
+        ),
+      ),
+      children: _remediesBody(),
+    );
+  }
 
   List<Widget> _remediesBody() {
-    // badge pill helper: ทายว่า (dark/gold) or วิธีแก้ (muted/accent-outline)
-    Widget label(String text, String body, {bool dark = true}) {
-      final bg = dark ? C.brand : C.muted;
-      final fg = dark ? C.goldLight : C.accent;
-      return Padding(
-        padding: const EdgeInsets.only(top: 8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              margin: const EdgeInsets.only(top: 2, right: 10),
-              decoration: BoxDecoration(
-                color: bg,
-                borderRadius: BorderRadius.circular(20),
-                border: dark ? null : Border.all(color: C.accent.withAlpha(100), width: 1),
-              ),
-              child: Text(
-                text,
-                style: sans(12, weight: FontWeight.w600, color: fg),
-              ),
+    // Tag + text: ทายว่า tinted warm (an omen), วิธีแก้ tinted aqua (what to do), as in the design.
+    Widget label(String text, String body, Color tint, Color fg) => Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+            margin: const EdgeInsets.only(top: 3, right: 10),
+            decoration: BoxDecoration(color: tint.withValues(alpha: .16), borderRadius: BorderRadius.circular(8)),
+            child: Text(
+              text,
+              style: sans(12, weight: FontWeight.w700, color: fg),
             ),
-            Expanded(
-              child: Text(body, style: sans(14, color: dark ? C.textSoft : C.textBody, height: 1.7)),
-            ),
-          ],
-        ),
-      );
-    }
+          ),
+          Expanded(
+            child: Text(body, style: sans(15, color: C.textBody, height: 1.6)),
+          ),
+        ],
+      ),
+    );
 
     String num(int n) => n.toString().split('').map((d) => thaiDigits[int.parse(d)]).join();
-    // 18 short items: no search box (the owner asked for it to go; people read them all).
+    final q = _query.text.trim();
+    // Filtering keeps the book's numbering.
+    final shown = [
+      for (final (i, r) in remedies.indexed)
+        if (q.isEmpty || r.dream.contains(q) || r.omen.contains(q) || r.cure.contains(q)) (i, r),
+    ];
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('เคล็ดแก้ฝัน ${num(remedies.length)} ข้อ', style: serif(18, color: C.accent)),
-            const SizedBox(height: 12),
-            for (final (i, r) in remedies.indexed)
+            if (q.isNotEmpty) ...[
+              Text(
+                shown.isEmpty ? 'ไม่พบเคล็ดแก้ฝันที่มีคำนี้ ลองคำสั้นลง' : 'พบ ${shown.length} ข้อ',
+                style: sans(14, color: C.textSoft),
+              ),
+              const SizedBox(height: 12),
+            ],
+            for (final (i, r) in shown)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: AppCard(
@@ -91,9 +119,9 @@ class _RemediesFeatureState extends State<RemediesFeature> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('ฝันว่า${r.dream}', style: sans(16, weight: FontWeight.w600)),
-                            label('ทายว่า', r.omen, dark: true),
-                            label('วิธีแก้', r.cure, dark: false),
+                            Text('ฝันว่า${r.dream}', style: sans(16, weight: FontWeight.w700)),
+                            label('ทายว่า', r.omen, C.warning, C.warning),
+                            label('วิธีแก้', r.cure, C.aqua, C.aquaText),
                           ],
                         ),
                       ),
