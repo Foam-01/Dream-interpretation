@@ -131,7 +131,7 @@ void main() {
       final repo = await pumpApp(tester);
       repo.of('list').single.fail(DreamRepositoryErrorKind.network);
       await tester.pump();
-      expect(find.text('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาตรวจสอบอินเทอร์เน็ต'), findsOneWidget);
+      expect(find.text('ไม่มีอินเทอร์เน็ต ตรวจการเชื่อมต่อแล้วลองใหม่'), findsOneWidget);
       expect(find.text('งู'), findsNothing);
       await tester.tap(retry);
       await tester.pump();
@@ -237,7 +237,7 @@ void main() {
       repo.of('categories').single.complete([animal, body]);
       repo.of('list').last.fail(DreamRepositoryErrorKind.timeout);
       await tester.pump();
-      expect(find.text('เซิร์ฟเวอร์ตอบช้าเกินไป'), findsOneWidget);
+      expect(find.text('โหลดนานเกินไป กรุณาลองใหม่อีกครั้ง'), findsOneWidget);
       expect(find.text('ไม่พบความฝันนี้ ลองคำอื่น'), findsNothing);
       await tester.tap(retry);
       await tester.pump();
@@ -297,7 +297,7 @@ void main() {
       final repo = await openDream(tester, 'snake');
       repo.of('byId').single.fail(DreamRepositoryErrorKind.server);
       await tester.pump();
-      expect(find.text('เซิร์ฟเวอร์ขัดข้องชั่วคราว'), findsOneWidget);
+      expect(find.text('ระบบขัดข้องชั่วคราว ลองใหม่ภายหลัง'), findsOneWidget);
       expect(find.text('งู'), findsNothing);
       await tester.tap(retry);
       await tester.pump();

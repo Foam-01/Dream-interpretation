@@ -168,9 +168,9 @@ void main() {
       await expectGolden(tester, 'feat02_digit_summary');
     });
 
-    testWidgets('feature 5: ตารางชื่อสัตว์ (animals)', (tester) async {
+    testWidgets('feature 5: ทำนายฝันจากสัตว์ (animals)', (tester) async {
       await pumpApp(tester);
-      await openFeature(tester, 'ตำรา', 'ตารางชื่อสัตว์');
+      await openFeature(tester, 'ตำรา', 'ทำนายฝันจากสัตว์');
       await precacheAssets(tester, [for (final a in animalNumbers.take(21)) a.image!]);
       await expectGolden(tester, 'feat05_animals');
     });

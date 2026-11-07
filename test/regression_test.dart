@@ -182,7 +182,7 @@ void main() {
     testWidgets('"อ่านบทสวด ›" goes to the ritual tab menu (not directly to prayers)', (tester) async {
       await openToothDream(tester);
       await tapText(tester, 'อ่านบทสวด ›');
-      expect(find.text('แก้ฝัน & ขอโชค'), findsOneWidget);
+      expect(find.text('แก้ฝันและขอโชค'), findsOneWidget);
       expect(find.text('บทสวดมนต์ความฝัน'), findsOneWidget);
       expect(find.text('ฟันหลุด'), findsNothing);
     });
@@ -201,12 +201,12 @@ void main() {
     testWidgets('tapping the current tab inside a feature returns to its menu', (tester) async {
       await pumpApp(tester);
       await tapTab(tester, 'ตำรา');
-      await tapText(tester, 'ตารางชื่อสัตว์');
-      expect(find.text('ทำนายฝันจากสัตว์'), findsOneWidget);
+      await tapText(tester, 'ทำนายฝันจากสัตว์');
+      expect(find.byKey(const ValueKey('animal-search')), findsOneWidget, reason: 'on the animals page');
       await tapTab(tester, 'ตำรา');
-      expect(find.text('ทำนายฝันจากสัตว์'), findsNothing);
+      expect(find.byKey(const ValueKey('animal-search')), findsNothing);
       expect(find.text('ตำราทำนาย'), findsOneWidget);
-      expect(find.text('ตารางชื่อสัตว์'), findsOneWidget);
+      expect(find.text('ทำนายฝันจากสัตว์'), findsOneWidget, reason: 'the menu row, same name as the page');
     });
 
     testWidgets('tapping the current tab on detail resets to search', (tester) async {
@@ -230,11 +230,11 @@ void main() {
     testWidgets('system back: feature -> menu -> home, then stays on home', (tester) async {
       await pumpApp(tester);
       await tapTab(tester, 'ตำรา');
-      await tapText(tester, 'ตารางชื่อสัตว์');
-      expect(find.text('ทำนายฝันจากสัตว์'), findsOneWidget);
+      await tapText(tester, 'ทำนายฝันจากสัตว์');
+      expect(find.byKey(const ValueKey('animal-search')), findsOneWidget);
 
       await systemBack(tester);
-      expect(find.text('ทำนายฝันจากสัตว์'), findsNothing);
+      expect(find.byKey(const ValueKey('animal-search')), findsNothing, reason: 'left the animals page');
       expect(find.text('ตำราทำนาย'), findsOneWidget);
 
       await systemBack(tester);

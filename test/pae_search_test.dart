@@ -97,7 +97,7 @@ void main() {
 
     await tester.enterText(box, 'ไม่มีคำนี้');
     await tester.pumpAndSettle();
-    expect(find.text('ไม่พบภาพที่ตรงกับ "ไม่มีคำนี้"'), findsOneWidget);
+    expect(find.text('ไม่พบภาพที่ตรงกับ "ไม่มีคำนี้" ลองคำอื่นหรือพิมพ์เลข'), findsOneWidget);
 
     await tester.tap(find.byTooltip('ล้างคำค้นหา'));
     await tester.pumpAndSettle();

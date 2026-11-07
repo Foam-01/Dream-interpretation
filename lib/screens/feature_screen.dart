@@ -144,8 +144,6 @@ class _FeatureScreenState extends State<FeatureScreen> {
       );
 
   bool _remedyIntroOpen = false;
-  final _remedySearch = TextEditingController();
-  String _remedyQuery = '';
   static const _chantScales = [1.0, 1.15, 1.3, 1.5];
   double _chantScale = 1.0;
 
@@ -655,73 +653,20 @@ class _FeatureScreenState extends State<FeatureScreen> {
     }
 
     String num(int n) => n.toString().split('').map((d) => thaiDigits[int.parse(d)]).join();
-    final q = _remedyQuery.trim().toLowerCase();
-    final filtered = q.isEmpty
-        ? remedies
-        : remedies.where((r) {
-            final hay = '${r.dream}${r.omen}${r.cure}'.toLowerCase();
-            return hay.contains(q);
-          }).toList();
-
+    // 18 short items: no search box (the owner asked for it to go; people read them all).
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // ── Search box ──
-          Container(
-            key: const ValueKey('remedy-search'),
-            decoration: BoxDecoration(
-              color: C.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: C.goldBorder, width: 1),
-            ),
-            child: Row(children: [
-              const SizedBox(width: 12),
-              Icon(Icons.search_rounded, color: C.textSoft, size: 20),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  controller: _remedySearch,
-                  style: sans(14, color: C.text),
-                  decoration: InputDecoration(
-                    hintText: 'ฝันร้ายเรื่องอะไร เช่น ตกน้ำ',
-                    hintStyle: sans(14, color: C.textSoft),
-                    border: InputBorder.none,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  onChanged: (v) => setState(() => _remedyQuery = v),
-                ),
-              ),
-              if (_remedyQuery.isNotEmpty)
-                GestureDetector(
-                  onTap: () {
-                    _remedySearch.clear();
-                    setState(() => _remedyQuery = '');
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Icon(Icons.close_rounded, color: C.textSoft, size: 18),
-                  ),
-                ),
-            ]),
-          ),
-          const SizedBox(height: 16),
-
-          // ── Remedy cards ──
-          if (filtered.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24),
-              child: Center(child: Text('ไม่พบฝันที่ตรงกัน', style: sans(14, color: C.textSoft))),
-            )
-          else
-            for (final (i, r) in filtered.indexed)
+          Text('เคล็ดแก้ฝัน ${num(remedies.length)} ข้อ', style: serif(18, color: C.accent)),
+          const SizedBox(height: 12),
+            for (final (i, r) in remedies.indexed)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: AppCard(
                   padding: const EdgeInsets.all(14),
                   child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    // numbered circle
+                    // numbered circle (book numbering)
                     Container(
                       width: 36,
                       height: 36,
@@ -734,7 +679,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                       // Fixed-size circle: very large text shrinks to fit inside it.
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: Text(num(remedies.indexOf(r) + 1), style: serif(14, color: C.goldLight, height: 1.2)),
+                        child: Text(num(i + 1), style: serif(14, color: C.goldLight, height: 1.2)),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -749,8 +694,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 ),
               ),
 
-          // ── Closing box (only when not filtering) ──
-          if (q.isEmpty) ...[
+          // ── Closing box ──
+          ...[
             const SizedBox(height: 6),
             Container(
               width: double.infinity,
@@ -891,7 +836,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
             q.isEmpty
                 ? '${found.length} ตัว'
                 : found.isEmpty
-                    ? 'ไม่พบสัตว์ที่ตรงกับ "$q"'
+                    ? 'ไม่พบสัตว์ที่ตรงกับ "$q" ลองคำอื่นหรือพิมพ์เลข'
                     : 'พบ ${found.length} ตัว',
             style: sans(13, color: C.caption)),
       ),
@@ -1028,7 +973,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
             q.isEmpty
                 ? '${found.length} ภาพ'
                 : found.isEmpty
-                    ? 'ไม่พบภาพที่ตรงกับ "$q"'
+                    ? 'ไม่พบภาพที่ตรงกับ "$q" ลองคำอื่นหรือพิมพ์เลข'
                     : 'พบ ${found.length} ภาพ',
             style: sans(13, color: C.caption)),
       ),
