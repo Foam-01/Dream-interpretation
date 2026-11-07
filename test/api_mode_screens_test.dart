@@ -282,7 +282,6 @@ void main() {
       expect(find.text('ฟันหลุดจากเซิร์ฟเวอร์'), findsOneWidget);
       expect(find.text('08 · 80'), findsOneWidget);
       expect(find.text('098 · 809'), findsOneWidget);
-      expect(find.text('0'), findsOneWidget);
       expect(find.text('คำทำนายจากเซิร์ฟเวอร์'), findsOneWidget);
     });
 

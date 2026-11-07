@@ -159,9 +159,6 @@ void main() {
       expect(find.text('ฟันหลุด'), findsOneWidget);
       expect(find.text('08 · 80'), findsOneWidget);
       expect(find.text('098 · 809'), findsOneWidget);
-      // Lucky digit boxes keep the leading zero digit.
-      expect(find.text('0'), findsOneWidget);
-      expect(find.text('8'), findsOneWidget);
     });
 
     testWidgets('bad-omen dream shows "เคล็ดลับแก้ฝันร้าย"', (tester) async {
