@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../app_shell.dart';
+import '../state/app_controller.dart';
 import '../data/dream_images_k.dart';
 import '../data/dream_repository.dart';
 import '../state/load_request.dart';
