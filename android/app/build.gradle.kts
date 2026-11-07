@@ -1,8 +1,20 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+// Release signing (upload key) comes from android/key.properties, which git ignores. Without it a release
+// build stops, so a debug-signed build can never reach Play by mistake. For a local test build without the
+// key, set ALLOW_DEBUG_SIGNING=true (never for a build you upload).
+val keystoreProperties = Properties().apply {
+    val file = rootProject.file("key.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+val hasReleaseKey = keystoreProperties.getProperty("storeFile") != null
+val allowDebugSigning = System.getenv("ALLOW_DEBUG_SIGNING") == "true"
 
 android {
     namespace = "com.mahadream.maha_dream"
@@ -29,11 +41,24 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        if (hasReleaseKey) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = when {
+                hasReleaseKey -> signingConfigs.getByName("release")
+                allowDebugSigning -> signingConfigs.getByName("debug")
+                else -> null
+            }
         }
     }
 }
@@ -46,4 +71,15 @@ kotlin {
 
 flutter {
     source = "../.."
+}
+
+// Stop a release build that has no upload key (see the top of this file).
+gradle.taskGraph.whenReady {
+    val releaseTask = allTasks.any { it.project == project && it.name.matches(Regex("(assemble|bundle|package)Release")) }
+    if (releaseTask && !hasReleaseKey && !allowDebugSigning) {
+        throw GradleException(
+            "No release signing key: create android/key.properties (see android/key.properties.example). " +
+                "For a local test build only, set ALLOW_DEBUG_SIGNING=true."
+        )
+    }
 }
