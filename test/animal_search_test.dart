@@ -38,7 +38,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('ตำรา').last);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('ตารางชื่อสัตว์'));
+    await tester.tap(find.text('ทำนายฝันจากสัตว์'));
     await tester.pumpAndSettle();
   }
 
@@ -87,7 +87,7 @@ void main() {
     expect(find.text('หนู'), findsWidgets);
     await tester.enterText(box, 'ไดโนเสาร์');
     await tester.pumpAndSettle();
-    expect(find.text('ไม่พบสัตว์ที่ตรงกับ "ไดโนเสาร์"'), findsOneWidget);
+    expect(find.text('ไม่พบสัตว์ที่ตรงกับ "ไดโนเสาร์" ลองคำอื่นหรือพิมพ์เลข'), findsOneWidget);
     await tester.tap(find.byTooltip('ล้างคำค้นหา'));
     await tester.pumpAndSettle();
     expect(find.text('มังกรบิน'), findsOneWidget);

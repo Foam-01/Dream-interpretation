@@ -32,11 +32,12 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('remedies show search box and all 18 from the book', (tester) async {
+  testWidgets('remedies show all 18 from the book, no search box', (tester) async {
     await pumpApp(tester);
     await tap(tester, find.text('แก้ฝัน').last);
     await tap(tester, find.text('เคล็ดลับแก้ฝันร้าย'));
-    expect(find.byKey(const ValueKey('remedy-search')), findsOneWidget);
+    expect(find.byKey(const ValueKey('remedy-search')), findsNothing);
+    expect(find.text('เคล็ดแก้ฝัน ๑๘ ข้อ'), findsOneWidget);
     expect(find.text('ฝันว่า${remedies[0].dream}'), findsOneWidget);
   });
 

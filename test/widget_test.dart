@@ -48,7 +48,7 @@ void main() {
 
   testWidgets('home quick link opens Pae Kong feature', (tester) async {
     await pumpApp(tester);
-    await tester.tap(find.text('แป๊ะกง 1000'));
+    await tester.tap(find.text('แป๊ะกง 1,000'));
     await tester.pump();
     expect(find.text('ภาพแป๊ะกงชี้โชค'), findsOneWidget);
   });
@@ -90,5 +90,15 @@ void main() {
     await tester.enterText(find.byType(TextField), 'ไม่มีคำนี้');
     await tester.pump();
     expect(find.text('ไม่พบความฝันนี้ ลองคำอื่น'), findsOneWidget);
+  });
+
+  test('each menu row has the same name and description as the page it opens', () {
+    for (final menu in menus.values) {
+      for (final item in menu.items) {
+        final f = feats[item.key];
+        if (f == null) continue; // menu 1 opens the dream search
+        expect((item.title, item.desc), (f.title, f.sub), reason: 'menu ${item.key}');
+      }
+    }
   });
 }

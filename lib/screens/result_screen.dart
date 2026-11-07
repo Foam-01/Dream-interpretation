@@ -44,10 +44,10 @@ class _ResultScreenState extends State<ResultScreen> {
     final app = AppScope.of(context);
     switch (_request.status) {
       case LoadStatus.idle || LoadStatus.loading:
-        return _Placeholder(onBack: () => app.goSearch(), child: const GoldLoading(height: 200));
+        return _Placeholder(onBack: app.back, child: const GoldLoading(height: 200));
       case LoadStatus.failure:
         return _Placeholder(
-          onBack: () => app.goSearch(),
+          onBack: app.back,
           child: LoadErrorView(message: loadErrorMessage(_request.error), onRetry: _request.retry),
         );
       case LoadStatus.success:
@@ -56,7 +56,7 @@ class _ResultScreenState extends State<ResultScreen> {
     // Unknown id: never fall back to another dream; show a not-found state.
     if (d == null) {
       return _Placeholder(
-        onBack: () => app.goSearch(),
+        onBack: app.back,
         child: Text('ไม่พบความฝันนี้', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
       );
     }
@@ -65,7 +65,7 @@ class _ResultScreenState extends State<ResultScreen> {
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           // No save button: there are no accounts yet (owner decision).
-          BackLink(label: 'กลับ', onTap: () => app.goSearch()),
+          BackLink(label: 'กลับ', onTap: app.back),
           const SizedBox(height: 6),
           DreamImageView(
             image: dreamImageFor(d.id, d.image),

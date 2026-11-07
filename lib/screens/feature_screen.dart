@@ -144,8 +144,6 @@ class _FeatureScreenState extends State<FeatureScreen> {
       );
 
   bool _remedyIntroOpen = false;
-  final _remedySearch = TextEditingController();
-  String _remedyQuery = '';
   static const _chantScales = [1.0, 1.15, 1.3, 1.5];
   double _chantScale = 1.0;
 
@@ -156,7 +154,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
         excludeSemantics: true,
         child: SizedBox(
           width: 48,
-          height: 44,
+          height: 48,
           child: OutlinedButton(
             style: OutlinedButton.styleFrom(
               padding: EdgeInsets.zero,
@@ -167,8 +165,11 @@ class _FeatureScreenState extends State<FeatureScreen> {
             onPressed: enabled
                 ? () => setState(() => _chantScale = _chantScales[_chantScales.indexOf(_chantScale) + step])
                 : null,
-            child: Text(text,
-                style: sans(16, weight: FontWeight.w700, color: !enabled ? C.caption : step > 0 ? C.onGold : C.goldLight)),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(text,
+                  style: sans(16, weight: FontWeight.w700, color: !enabled ? C.caption : step > 0 ? C.onGold : C.goldLight)),
+            ),
           ),
         ),
       );
@@ -195,7 +196,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
           LetterCategorySection(categoryId: _letterCategories[k]!),
         ],
     };
-    return ListView(padding: EdgeInsets.zero, children: [
+    // Scrolling puts the keyboard away (menus 5 and 6 have a search box).
+    return ListView(padding: EdgeInsets.zero, keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, children: [
       FeatureHeader(
         backLabel: menus[app.tab]?.title ?? 'กลับ',
         onBack: () => app.goTab(app.tab),
@@ -212,12 +214,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
     Widget group(String title, List<String> nums, {required bool top}) => Container(
           decoration: BoxDecoration(
             gradient: top
-                ? const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color(0xFF2868FF), Color(0xFF0B388E), Color(0xFF002344)],
-                    stops: [0, 0.38, 1],
-                  )
+                ? blueGlowGradient
                 : null,
             color: top ? null : C.surface,
             borderRadius: BorderRadius.circular(16),
@@ -248,13 +245,17 @@ class _FeatureScreenState extends State<FeatureScreen> {
                           ? const [BoxShadow(color: C.shadow, blurRadius: 4, offset: Offset(0, 2))]
                           : null,
                     ),
-                    child: Text(
-                      n,
-                      style: serif(
-                        top ? 26 : 30,
-                        weight: FontWeight.w800,
-                        color: top ? C.onGold : C.goldLight,
-                        height: 1.2,
+                    // Fixed-ratio tile: very large text shrinks to fit inside it.
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        n,
+                        style: serif(
+                          top ? 26 : 30,
+                          weight: FontWeight.w800,
+                          color: top ? C.onGold : C.goldLight,
+                          height: 1.2,
+                        ),
                       ),
                     ),
                   ),
@@ -329,8 +330,12 @@ class _FeatureScreenState extends State<FeatureScreen> {
                         shape: BoxShape.circle,
                         border: Border.all(color: C.gold, width: 1.5),
                       ),
-                      child: Text(thaiDigits[i + 1],
-                          style: serif(15, color: i == 0 ? C.onGold : C.goldLight, height: 1.2)),
+                      // Fixed-size circle: very large text shrinks to fit inside it.
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(thaiDigits[i + 1],
+                            style: serif(15, color: i == 0 ? C.onGold : C.goldLight, height: 1.2)),
+                      ),
                     ),
                     if (i < list.length - 1)
                       Expanded(child: Container(width: 2, color: C.gold.withValues(alpha: .35))),
@@ -644,73 +649,20 @@ class _FeatureScreenState extends State<FeatureScreen> {
     }
 
     String num(int n) => n.toString().split('').map((d) => thaiDigits[int.parse(d)]).join();
-    final q = _remedyQuery.trim().toLowerCase();
-    final filtered = q.isEmpty
-        ? remedies
-        : remedies.where((r) {
-            final hay = '${r.dream}${r.omen}${r.cure}'.toLowerCase();
-            return hay.contains(q);
-          }).toList();
-
+    // 18 short items: no search box (the owner asked for it to go; people read them all).
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // ── Search box ──
-          Container(
-            key: const ValueKey('remedy-search'),
-            decoration: BoxDecoration(
-              color: C.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: C.goldBorder, width: 1),
-            ),
-            child: Row(children: [
-              const SizedBox(width: 12),
-              Icon(Icons.search_rounded, color: C.textSoft, size: 20),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  controller: _remedySearch,
-                  style: sans(14, color: C.text),
-                  decoration: InputDecoration(
-                    hintText: 'ฝันร้ายเรื่องอะไร เช่น ตกน้ำ',
-                    hintStyle: sans(14, color: C.textSoft),
-                    border: InputBorder.none,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  onChanged: (v) => setState(() => _remedyQuery = v),
-                ),
-              ),
-              if (_remedyQuery.isNotEmpty)
-                GestureDetector(
-                  onTap: () {
-                    _remedySearch.clear();
-                    setState(() => _remedyQuery = '');
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Icon(Icons.close_rounded, color: C.textSoft, size: 18),
-                  ),
-                ),
-            ]),
-          ),
-          const SizedBox(height: 16),
-
-          // ── Remedy cards ──
-          if (filtered.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24),
-              child: Center(child: Text('ไม่พบฝันที่ตรงกัน', style: sans(14, color: C.textSoft))),
-            )
-          else
-            for (final (i, r) in filtered.indexed)
+          Text('เคล็ดแก้ฝัน ${num(remedies.length)} ข้อ', style: serif(18, color: C.accent)),
+          const SizedBox(height: 12),
+            for (final (i, r) in remedies.indexed)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: AppCard(
                   padding: const EdgeInsets.all(14),
                   child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    // numbered circle
+                    // numbered circle (book numbering)
                     Container(
                       width: 36,
                       height: 36,
@@ -720,7 +672,11 @@ class _FeatureScreenState extends State<FeatureScreen> {
                         shape: BoxShape.circle,
                         border: Border.all(color: C.gold, width: 1.5),
                       ),
-                      child: Text(num(remedies.indexOf(r) + 1), style: serif(14, color: C.goldLight, height: 1.2)),
+                      // Fixed-size circle: very large text shrinks to fit inside it.
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(num(i + 1), style: serif(14, color: C.goldLight, height: 1.2)),
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -734,8 +690,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 ),
               ),
 
-          // ── Closing box (only when not filtering) ──
-          if (q.isEmpty) ...[
+          // ── Closing box ──
+          ...[
             const SizedBox(height: 6),
             Container(
               width: double.infinity,
@@ -790,11 +746,13 @@ class _FeatureScreenState extends State<FeatureScreen> {
           padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
           child: Column(children: [
             SizedBox(
-              height: 36,
+              // Two lines of the name at the phone's text size.
+              height: 36 * MediaQuery.textScalerOf(context).scale(13) / 13,
               child: Center(
                 child: Text(a.name,
                     textAlign: TextAlign.center,
                     maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: sans(13, weight: FontWeight.w700, color: C.text, height: 1.3)),
               ),
             ),
@@ -820,43 +778,11 @@ class _FeatureScreenState extends State<FeatureScreen> {
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-          decoration: BoxDecoration(
-            color: C.input,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: C.goldBorder, width: 1.5),
-          ),
-          child: Row(children: [
-            const Icon(Icons.search, size: 18, color: C.gold),
-            const SizedBox(width: 8),
-            Expanded(
-              child: TextField(
-                key: const ValueKey('animal-search'),
-                controller: _animalQuery,
-                onChanged: (_) => setState(() => _animalPage = 0),
-                textInputAction: TextInputAction.search,
-                style: sans(16),
-                decoration: InputDecoration(
-                  hintText: 'ค้นหาชื่อสัตว์ เช่น ช้าง หรือเลข',
-                  hintStyle: sans(16, color: C.placeholder),
-                  border: InputBorder.none,
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                ),
-              ),
-            ),
-            if (q.isNotEmpty)
-              IconButton(
-                tooltip: 'ล้างคำค้นหา',
-                visualDensity: VisualDensity.compact,
-                icon: const Icon(Icons.close, size: 18, color: C.placeholder),
-                onPressed: () => setState(() {
-                  _animalQuery.clear();
-                  _animalPage = 0;
-                }),
-              ),
-          ]),
+        child: SearchField(
+          fieldKey: const ValueKey('animal-search'),
+          controller: _animalQuery,
+          hint: 'ค้นหาชื่อสัตว์ เช่น ช้าง หรือเลข',
+          onChanged: () => setState(() => _animalPage = 0),
         ),
       ),
       if (q.isEmpty)
@@ -874,7 +800,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
             q.isEmpty
                 ? '${found.length} ตัว'
                 : found.isEmpty
-                    ? 'ไม่พบสัตว์ที่ตรงกับ "$q"'
+                    ? 'ไม่พบสัตว์ที่ตรงกับ "$q" ลองคำอื่นหรือพิมพ์เลข'
                     : 'พบ ${found.length} ตัว',
             style: sans(13, color: C.caption)),
       ),
@@ -887,7 +813,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
           padding: EdgeInsets.zero,
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
-          childAspectRatio: 0.72,
+          // Taller cards when the phone's text is large, so the picture keeps its room.
+          childAspectRatio: 0.72 / (1 + (MediaQuery.textScalerOf(context).scale(1) - 1) * 0.6),
           children: [for (final a in shown) cell(a)],
         ),
       ),
@@ -926,7 +853,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
           padding: const EdgeInsets.all(8),
           child: Column(children: [
             SizedBox(
-              height: 36,
+              // Two lines of the name at the phone's text size.
+              height: 36 * MediaQuery.textScalerOf(context).scale(13) / 13,
               child: Center(
                 child: Text(p.name,
                     textAlign: TextAlign.center,
@@ -955,43 +883,11 @@ class _FeatureScreenState extends State<FeatureScreen> {
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-          decoration: BoxDecoration(
-            color: C.input,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: C.goldBorder, width: 1.5),
-          ),
-          child: Row(children: [
-            const Icon(Icons.search, size: 18, color: C.gold),
-            const SizedBox(width: 8),
-            Expanded(
-              child: TextField(
-                key: const ValueKey('pae-search'),
-                controller: _paeQuery,
-                onChanged: (_) => setState(() => _paePage = 0),
-                textInputAction: TextInputAction.search,
-                style: sans(16),
-                decoration: InputDecoration(
-                  hintText: 'ค้นหาสิ่งที่ฝัน เช่น ม้า หรือเลข',
-                  hintStyle: sans(16, color: C.placeholder),
-                  border: InputBorder.none,
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                ),
-              ),
-            ),
-            if (q.isNotEmpty)
-              IconButton(
-                tooltip: 'ล้างคำค้นหา',
-                visualDensity: VisualDensity.compact,
-                icon: const Icon(Icons.close, size: 18, color: C.placeholder),
-                onPressed: () => setState(() {
-                  _paeQuery.clear();
-                  _paePage = 0;
-                }),
-              ),
-          ]),
+        child: SearchField(
+          fieldKey: const ValueKey('pae-search'),
+          controller: _paeQuery,
+          hint: 'ค้นหาสิ่งที่ฝัน เช่น ม้า หรือเลข',
+          onChanged: () => setState(() => _paePage = 0),
         ),
       ),
       if (q.isEmpty)
@@ -1009,7 +905,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
             q.isEmpty
                 ? '${found.length} ภาพ'
                 : found.isEmpty
-                    ? 'ไม่พบภาพที่ตรงกับ "$q"'
+                    ? 'ไม่พบภาพที่ตรงกับ "$q" ลองคำอื่นหรือพิมพ์เลข'
                     : 'พบ ${found.length} ภาพ',
             style: sans(13, color: C.caption)),
       ),
@@ -1022,7 +918,8 @@ class _FeatureScreenState extends State<FeatureScreen> {
           padding: EdgeInsets.zero,
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
-          childAspectRatio: 0.72,
+          // Taller cards when the phone's text is large, so the picture keeps its room.
+          childAspectRatio: 0.72 / (1 + (MediaQuery.textScalerOf(context).scale(1) - 1) * 0.6),
           children: [for (final p in shown) cell(p)],
         ),
       ),
@@ -1109,15 +1006,22 @@ class _FeatureScreenState extends State<FeatureScreen> {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: const [BoxShadow(color: C.shadow, blurRadius: 4, offset: Offset(0, 2))],
                       ),
-                      child: Text(
-                        '${s.digit}',
-                        style: serif(24, weight: FontWeight.w800, color: C.onGold, height: 1.2),
+                      // Fixed-size badge: very large text shrinks to fit inside it.
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '${s.digit}',
+                          style: serif(24, weight: FontWeight.w800, color: C.onGold, height: 1.2),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Text(
-                      'ฝันแบบไหนเป็นเลข ${s.digit}',
-                      style: serif(18, weight: FontWeight.w700, color: C.accent),
+                    // Wraps with large text instead of running off the card.
+                    Expanded(
+                      child: Text(
+                        'ฝันแบบไหนเป็นเลข ${s.digit}',
+                        style: serif(18, weight: FontWeight.w700, color: C.accent),
+                      ),
                     ),
                   ],
                 ),
@@ -1277,12 +1181,7 @@ class _FeatureScreenState extends State<FeatureScreen> {
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   gradient: drawIndex == 0
-                      ? const LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Color(0xFF2868FF), Color(0xFF0B388E), Color(0xFF002344)],
-                          stops: [0, 0.38, 1],
-                        )
+                      ? blueGlowGradient
                       : null,
                   color: drawIndex == 0 ? null : C.brand,
                   borderRadius: BorderRadius.circular(16),

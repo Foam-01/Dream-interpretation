@@ -17,10 +17,10 @@ import '../widgets/ui.dart';
 
 const _quick = [
   ('ทำนายฝัน', 'dream'),
-  ('ตารางสัตว์', '5'),
-  ('แป๊ะกง 1000', '6'),
+  ('ฝันจากสัตว์', '5'),
+  ('แป๊ะกง 1,000', '6'),
   ('เลขเสี่ยงโชค', '9'),
-  ('เลขเด่นงวด', '8'),
+  ('เลขเด่น', '8'),
   ('เลขวิ่ง', '10'),
   ('แก้ฝันร้าย', '3'),
   ('บทสวด', '11'),
@@ -228,9 +228,13 @@ class _LockTile extends StatelessWidget {
         child: Column(children: [
           Text(label, style: sans(13, weight: FontWeight.w600, color: dark ? C.onGold : C.accent)),
           const SizedBox(height: 4),
-          Text('${numbers.take(3).join('  ')}\n${numbers.skip(3).join('  ')}',
-              textAlign: TextAlign.center,
-              style: serif(20, weight: FontWeight.w800, color: dark ? C.onGold : C.accent, height: 1.4)),
+          // Two rows of three, always: very large text shrinks to fit rather than breaking a row.
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text('${numbers.take(3).join('  ')}\n${numbers.skip(3).join('  ')}',
+                textAlign: TextAlign.center,
+                style: serif(20, weight: FontWeight.w800, color: dark ? C.onGold : C.accent, height: 1.4)),
+          ),
         ]),
       );
 }

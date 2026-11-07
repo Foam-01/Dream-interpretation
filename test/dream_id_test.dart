@@ -48,11 +48,15 @@ void main() {
   });
 
   group('AppController with ids', () {
-    test('openDream opens the detail page for that id', () {
+    test('openDream opens the detail page for that id on the current tab; Back returns there', () {
       final c = AppController();
       c.openDream('tiger');
-      expect(c.tab, 'dream');
+      expect(c.tab, 'home', reason: 'opened from Home, stays on Home');
       expect((c.page as ResultPage).dreamId, 'tiger');
+      c.openDream('snake');
+      expect(c.depth, 2, reason: 'another dream replaces the open one');
+      c.back();
+      expect(c.page, isA<HomePage>());
     });
 
     test('toggleSave saves and unsaves by id without touching other legacySampleDreams', () {

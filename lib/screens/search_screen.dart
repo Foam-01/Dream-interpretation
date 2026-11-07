@@ -188,7 +188,8 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           const SizedBox(height: 12),
           SizedBox(
-            height: 40,
+            // Grows with the phone's text size so the chip labels are never cut off.
+            height: 40 * MediaQuery.textScalerOf(context).scale(14) / 14,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: cats.length,
@@ -214,6 +215,8 @@ class _SearchScreenState extends State<SearchScreen> {
       Expanded(
         child: ListView(
             key: const ValueKey('search-results'),
+            // Scrolling the results puts the keyboard away so they get the whole screen.
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             controller: _scroll,
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
             children: [
