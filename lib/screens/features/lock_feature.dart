@@ -4,7 +4,6 @@ import '../../data/design_data.dart';
 import '../../data/formulas.dart';
 import '../../data/lock_numbers.dart';
 import '../../theme.dart';
-import '../../widgets/ui.dart';
 import 'feature_list.dart';
 
 /// Menu 7: the book's บน / ล่าง lock numbers by weekday; opens on the next draw's day.
@@ -80,24 +79,7 @@ class _LockFeatureState extends State<LockFeature> {
           ]),
         );
     return [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(12, 14, 12, 4),
-        child: Row(children: [
-          for (var i = 0; i < 7; i++)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: SelectPill(
-                  text: dayShort[i],
-                  selected: _lockDay == i,
-                  onTap: () => setState(() => _lockDay = i),
-                  radius: 10,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                ),
-              ),
-            ),
-        ]),
-      ),
+      WeekdayPills(selected: _lockDay, onSelect: (i) => setState(() => _lockDay = i)),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [

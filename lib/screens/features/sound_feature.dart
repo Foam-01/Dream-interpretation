@@ -4,7 +4,6 @@ import '../../data/design_data.dart';
 import '../../data/formulas.dart';
 import '../../data/sound_numbers.dart';
 import '../../theme.dart';
-import '../../widgets/ui.dart';
 import 'feature_list.dart';
 
 /// Menu 9: the book's lead / block groups by the draw's weekday; opens on the next draw.
@@ -79,24 +78,7 @@ class _SoundFeatureState extends State<SoundFeature> {
           ),
         );
     return [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(12, 14, 12, 4),
-        child: Row(children: [
-          for (var i = 0; i < 7; i++)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: SelectPill(
-                  text: dayShort[i],
-                  selected: _soundDay == i,
-                  onTap: () => setState(() => _soundDay = i),
-                  radius: 10,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                ),
-              ),
-            ),
-        ]),
-      ),
+      WeekdayPills(selected: _soundDay, onSelect: (i) => setState(() => _soundDay = i)),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
         child: Container(

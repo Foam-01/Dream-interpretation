@@ -29,24 +29,7 @@ class _RunningFeatureState extends State<RunningFeature> {
     final nums = runningByDrawDay[_runDay];
     final isDrawDay = _runDay == weekdayIndex(_draw);
     return [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(12, 14, 12, 4),
-        child: Row(children: [
-          for (var i = 0; i < 7; i++)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: SelectPill(
-                  text: dayShort[i],
-                  selected: _runDay == i,
-                  onTap: () => setState(() => _runDay = i),
-                  radius: 10,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                ),
-              ),
-            ),
-        ]),
-      ),
+      WeekdayPills(selected: _runDay, onSelect: (i) => setState(() => _runDay = i)),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
         child: Container(
