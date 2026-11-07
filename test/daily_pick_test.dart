@@ -2,7 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:maha_dream/state/daily_pick.dart';
 
 // Thai wall-clock time (UTC+7) as a UTC moment, so tests do not depend on the machine's time zone.
-DateTime th(int y, int m, int d, [int h = 0, int min = 0]) => DateTime.utc(y, m, d, h, min).subtract(const Duration(hours: 7));
+DateTime th(int y, int m, int d, [int h = 0, int min = 0]) =>
+    DateTime.utc(y, m, d, h, min).subtract(const Duration(hours: 7));
 
 void main() {
   final items = List.generate(114, (i) => 'd${i.toString().padLeft(3, '0')}');

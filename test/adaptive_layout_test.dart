@@ -21,8 +21,7 @@ Future<void> _pump(WidgetTester tester, Size size, double scale) async {
   await tester.pumpAndSettle(const Duration(seconds: 3));
 }
 
-AppController _app(WidgetTester tester) =>
-    AppScope.of(tester.element(find.byType(Scaffold).first));
+AppController _app(WidgetTester tester) => AppScope.of(tester.element(find.byType(Scaffold).first));
 
 /// Scrolls the screen's main list to the end so lazily built rows are laid out too.
 Future<void> _scrollAll(WidgetTester tester) async {

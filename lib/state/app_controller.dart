@@ -42,7 +42,9 @@ class AppController extends ChangeNotifier {
   final DreamRepository repository;
 
   String tab = 'home';
-  final Map<String, List<AppPage>> _stacks = {for (final t in appTabs) t: [_root(t)]};
+  final Map<String, List<AppPage>> _stacks = {
+    for (final t in appTabs) t: [_root(t)],
+  };
   String query = '';
   String cat = 'ทั้งหมด';
 
@@ -50,10 +52,10 @@ class AppController extends ChangeNotifier {
   int get depth => _stacks[tab]!.length;
 
   static AppPage _root(String t) => switch (t) {
-        'home' => const HomePage(),
-        'dream' => const SearchPage(),
-        _ => MenuPage(t),
-      };
+    'home' => const HomePage(),
+    'dream' => const SearchPage(),
+    _ => MenuPage(t),
+  };
 
   void goTab(String t) {
     tab = t;
@@ -120,9 +122,7 @@ class AppController extends ChangeNotifier {
 }
 
 class AppScope extends InheritedNotifier<AppController> {
-  const AppScope({super.key, required AppController controller, required super.child})
-      : super(notifier: controller);
+  const AppScope({super.key, required AppController controller, required super.child}) : super(notifier: controller);
 
-  static AppController of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<AppScope>()!.notifier!;
+  static AppController of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<AppScope>()!.notifier!;
 }

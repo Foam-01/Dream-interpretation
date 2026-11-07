@@ -57,129 +57,161 @@ class _ResultScreenState extends State<ResultScreen> {
     if (d == null) {
       return _Placeholder(
         onBack: app.back,
-        child: Text('ไม่พบความฝันนี้', textAlign: TextAlign.center, style: sans(14, color: C.caption)),
+        child: Text(
+          'ไม่พบความฝันนี้',
+          textAlign: TextAlign.center,
+          style: sans(14, color: C.caption),
+        ),
       );
     }
-    return ListView(padding: EdgeInsets.zero, children: [
-      PageHeader(
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // No save button: there are no accounts yet (owner decision).
-          BackLink(label: 'กลับ', onTap: app.back),
-          const SizedBox(height: 6),
-          DreamImageView(
-            image: dreamImageFor(d.id, d.image),
-            placeholderLabel: 'ภาพประกอบ: ${d.name}',
-            // Taller and contained so the numbers printed in the picture's corners stay visible.
-            height: 220,
-            width: double.infinity,
-            fit: BoxFit.contain,
-            background: C.surface,
-            radius: 16,
-            fontSize: 12,
-            band: 8,
-            border: Border.all(color: C.gold, width: 2),
-          ),
-          if (d.image?.attribution case final credit?) ...[
-            const SizedBox(height: 4),
-            Text(credit, style: sans(11, color: C.onBrandMuted)),
-          ],
-          const SizedBox(height: 14),
-          // The name as written in the source (no added "ฝันเห็น": many names are actions, e.g. กินข้าว).
-          Text(d.name, style: serif(26, weight: FontWeight.w800, color: C.goldLight)),
-          // Sourced content names its source; the bundled SAMPLE data keeps the original design text.
-          // Only a cited source is named; no source → no claim about where the text comes from.
-          Text(
-            [d.cat.startsWith('หมวด') ? d.cat : 'หมวด${d.cat}', ?d.source?.title].join(' · '),
-            style: sans(14, color: C.onBrandMuted),
-          ),
-        ]),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(16),
-        child: AppCard(
-          borderWidth: 1.5,
-          child: Column(children: [
-            Text('เลขนำโชคจากความฝัน', style: serif(17, color: C.accent)),
-            const SizedBox(height: 14),
-            if (d.numbers.isNone)
-              _LuckyNumberTile(label: 'เลขเสี่ยงโชค', value: LuckyNumbers.noLuckyNumbersText)
-            else if (d.numbers.threeDigit.isEmpty)
-              _LuckyNumberTile(label: 'สองตัว', value: d.two)
-            else
-              Row(children: [
-                Expanded(child: _LuckyNumberTile(label: 'สองตัว', value: d.two)),
-                const SizedBox(width: 8),
-                Expanded(child: _LuckyNumberTile(label: 'สามตัว', value: d.three)),
-              ]),
-          ]),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-        child: Column(children: [
-          AppCard(
-            child: SizedBox(
-              width: double.infinity,
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('คำทำนาย', style: serif(17, color: C.accent)),
-                const SizedBox(height: 6),
-                Text(d.meaning, style: sans(15, color: C.textBody, height: 1.7)),
-                if (d.source != null) ...[
-                  const SizedBox(height: 10),
-                  Text('ที่มา: ${d.source!.citation}', style: sans(12, color: C.caption)),
-                ],
-              ]),
-            ),
-          ),
-          // Forecast scores and advice are optional: sourced content shows only what its source gives.
-          if (d.luckForecast case final f?) ...[
-            const SizedBox(height: 12),
-            AppCard(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('พยากรณ์โชคชะตา', style: serif(17, color: C.accent)),
-                const SizedBox(height: 10),
-                _LuckBar(label: 'การเงิน', value: f.money),
-                _LuckBar(label: 'ความรัก', value: f.love),
-                _LuckBar(label: 'สุขภาพ', value: f.health),
-              ]),
-            ),
-          ],
-          if (d.advice case final advice?) ...[
-          const SizedBox(height: 12),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: C.brand, borderRadius: BorderRadius.circular(16)),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                switch (d.good) {
-                  true => 'เคล็ดลับขอโชค',
-                  false => 'เคล็ดลับแก้ฝันร้าย',
-                  null => 'คำแนะนำ',
-                },
-                style: serif(16, color: C.goldLight),
-              ),
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        PageHeader(
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // No save button: there are no accounts yet (owner decision).
+              BackLink(label: 'กลับ', onTap: app.back),
               const SizedBox(height: 6),
-              Text(advice, style: sans(14, color: C.onBrand, height: 1.7)),
-              const SizedBox(height: 12),
-              Semantics(
-                button: true,
-                child: GestureDetector(
-                  onTap: () => app.goTab('ritual'),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(color: C.gold, borderRadius: BorderRadius.circular(20)),
-                    child: Text('อ่านบทสวด ›', style: sans(14, weight: FontWeight.w600, color: C.onGold)),
+              DreamImageView(
+                image: dreamImageFor(d.id, d.image),
+                placeholderLabel: 'ภาพประกอบ: ${d.name}',
+                // Taller and contained so the numbers printed in the picture's corners stay visible.
+                height: 220,
+                width: double.infinity,
+                fit: BoxFit.contain,
+                background: C.surface,
+                radius: 16,
+                fontSize: 12,
+                band: 8,
+                border: Border.all(color: C.gold, width: 2),
+              ),
+              if (d.image?.attribution case final credit?) ...[
+                const SizedBox(height: 4),
+                Text(credit, style: sans(11, color: C.onBrandMuted)),
+              ],
+              const SizedBox(height: 14),
+              // The name as written in the source (no added "ฝันเห็น": many names are actions, e.g. กินข้าว).
+              Text(
+                d.name,
+                style: serif(26, weight: FontWeight.w800, color: C.goldLight),
+              ),
+              // Sourced content names its source; the bundled SAMPLE data keeps the original design text.
+              // Only a cited source is named; no source → no claim about where the text comes from.
+              Text(
+                [d.cat.startsWith('หมวด') ? d.cat : 'หมวด${d.cat}', ?d.source?.title].join(' · '),
+                style: sans(14, color: C.onBrandMuted),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: AppCard(
+            borderWidth: 1.5,
+            child: Column(
+              children: [
+                Text('เลขนำโชคจากความฝัน', style: serif(17, color: C.accent)),
+                const SizedBox(height: 14),
+                if (d.numbers.isNone)
+                  _LuckyNumberTile(label: 'เลขเสี่ยงโชค', value: LuckyNumbers.noLuckyNumbersText)
+                else if (d.numbers.threeDigit.isEmpty)
+                  _LuckyNumberTile(label: 'สองตัว', value: d.two)
+                else
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _LuckyNumberTile(label: 'สองตัว', value: d.two),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _LuckyNumberTile(label: 'สามตัว', value: d.three),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          child: Column(
+            children: [
+              AppCard(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('คำทำนาย', style: serif(17, color: C.accent)),
+                      const SizedBox(height: 6),
+                      Text(d.meaning, style: sans(15, color: C.textBody, height: 1.7)),
+                      if (d.source != null) ...[
+                        const SizedBox(height: 10),
+                        Text('ที่มา: ${d.source!.citation}', style: sans(12, color: C.caption)),
+                      ],
+                    ],
                   ),
                 ),
               ),
-            ]),
+              // Forecast scores and advice are optional: sourced content shows only what its source gives.
+              if (d.luckForecast case final f?) ...[
+                const SizedBox(height: 12),
+                AppCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('พยากรณ์โชคชะตา', style: serif(17, color: C.accent)),
+                      const SizedBox(height: 10),
+                      _LuckBar(label: 'การเงิน', value: f.money),
+                      _LuckBar(label: 'ความรัก', value: f.love),
+                      _LuckBar(label: 'สุขภาพ', value: f.health),
+                    ],
+                  ),
+                ),
+              ],
+              if (d.advice case final advice?) ...[
+                const SizedBox(height: 12),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(color: C.brand, borderRadius: BorderRadius.circular(16)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(switch (d.good) {
+                        true => 'เคล็ดลับขอโชค',
+                        false => 'เคล็ดลับแก้ฝันร้าย',
+                        null => 'คำแนะนำ',
+                      }, style: serif(16, color: C.goldLight)),
+                      const SizedBox(height: 6),
+                      Text(advice, style: sans(14, color: C.onBrand, height: 1.7)),
+                      const SizedBox(height: 12),
+                      Semantics(
+                        button: true,
+                        child: GestureDetector(
+                          onTap: () => app.goTab('ritual'),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(color: C.gold, borderRadius: BorderRadius.circular(20)),
+                            child: Text(
+                              'อ่านบทสวด ›',
+                              style: sans(14, weight: FontWeight.w600, color: C.onGold),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
           ),
-          ],
-        ]),
-      ),
-    ]);
+        ),
+      ],
+    );
   }
 }
 
@@ -189,23 +221,23 @@ class _LuckyNumberTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        decoration: BoxDecoration(
-          color: C.highlight,
-          borderRadius: BorderRadius.circular(10),
+    width: double.infinity,
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+    decoration: BoxDecoration(color: C.highlight, borderRadius: BorderRadius.circular(10)),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(label, style: sans(12, color: C.caption)),
+        Text(
+          value,
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: serif(18, color: C.accent),
         ),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text(label, style: sans(12, color: C.caption)),
-          Text(
-            value,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: serif(18, color: C.accent),
-          ),
-        ]),
-      );
+      ],
+    ),
+  );
 }
 
 class _LuckBar extends StatelessWidget {
@@ -215,30 +247,42 @@ class _LuckBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Row(children: [
-          SizedBox(width: 56, child: Text(label, style: sans(14, color: C.textSoft))),
-          const SizedBox(width: 10),
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: Container(
-                height: 8,
-                color: C.divider,
-                alignment: Alignment.centerLeft,
-                child: FractionallySizedBox(
-                  widthFactor: value / 100,
-                  child: Container(
-                    decoration: const BoxDecoration(gradient: LinearGradient(colors: [C.goldDeep, C.brandBright])),
-                  ),
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Row(
+      children: [
+        SizedBox(
+          width: 56,
+          child: Text(label, style: sans(14, color: C.textSoft)),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: Container(
+              height: 8,
+              color: C.divider,
+              alignment: Alignment.centerLeft,
+              child: FractionallySizedBox(
+                widthFactor: value / 100,
+                child: Container(
+                  decoration: const BoxDecoration(gradient: LinearGradient(colors: [C.goldDeep, C.brandBright])),
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 10),
-          SizedBox(width: 30, child: Text('$value', textAlign: TextAlign.right, style: sans(13, color: C.accent))),
-        ]),
-      );
+        ),
+        const SizedBox(width: 10),
+        SizedBox(
+          width: 30,
+          child: Text(
+            '$value',
+            textAlign: TextAlign.right,
+            style: sans(13, color: C.accent),
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 /// Red header with a back link above a not-found, loading or error body.
@@ -248,11 +292,17 @@ class _Placeholder extends StatelessWidget {
   const _Placeholder({required this.onBack, required this.child});
 
   @override
-  Widget build(BuildContext context) => ListView(padding: EdgeInsets.zero, children: [
-        PageHeader(
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
-          child: Align(alignment: Alignment.centerLeft, child: BackLink(label: 'กลับ', onTap: onBack)),
+  Widget build(BuildContext context) => ListView(
+    padding: EdgeInsets.zero,
+    children: [
+      PageHeader(
+        padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: BackLink(label: 'กลับ', onTap: onBack),
         ),
-        Padding(padding: const EdgeInsets.symmetric(vertical: 40), child: child),
-      ]);
+      ),
+      Padding(padding: const EdgeInsets.symmetric(vertical: 40), child: child),
+    ],
+  );
 }

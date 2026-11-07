@@ -67,7 +67,6 @@ Future<void> systemBack(WidgetTester tester) async {
   await tester.pump();
 }
 
-
 void main() {
   group('A. Search and category', () {
     testWidgets('category "สัตว์" shows 4 results', (tester) async {
@@ -333,7 +332,10 @@ void main() {
       expect(nextDrawDate(DateTime(2026, 10, 2)), DateTime(2026, 10, 16));
       expect(nextDrawDate(DateTime(2026, 10, 16)), DateTime(2026, 10, 16));
       expect(nextDrawDate(DateTime(2026, 10, 17)), DateTime(2026, 11, 1));
-      expect(nextDrawDate(DateTime(2026, 12, 20)), DateTime(2027, 1, 2)); // year rollover, New Year draw moved to the 2nd
+      expect(
+        nextDrawDate(DateTime(2026, 12, 20)),
+        DateTime(2027, 1, 2),
+      ); // year rollover, New Year draw moved to the 2nd
       // Draws the lottery office moved (drawShifts): 16 Dec 2569 → 17 Dec, 1 Jan 2570 → 2 Jan.
       expect(nextDrawDate(DateTime(2026, 12, 10)), DateTime(2026, 12, 17));
       expect(nextDrawDate(DateTime(2026, 12, 17)), DateTime(2026, 12, 17));

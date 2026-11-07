@@ -75,8 +75,11 @@ void main() {
         final d = dreamsChg[i];
         final n = j['numbers'] as Map;
         final id = j['id'] as String;
-        expect((d.id, d.name, d.meaning, d.short, d.cat), (j['id'], j['name'], j['meaning'], j['short'], 'หมวด ฉ'),
-            reason: id);
+        expect(
+          (d.id, d.name, d.meaning, d.short, d.cat),
+          (j['id'], j['name'], j['meaning'], j['short'], 'หมวด ฉ'),
+          reason: id,
+        );
         expect(d.numbers.twoDigit, n['twoDigit'], reason: id);
         expect(d.numbers.threeDigit, n['threeDigit'], reason: id);
         expect((d.advice, d.good, d.luckForecast, d.image, d.source), (null, null, null, null, null));

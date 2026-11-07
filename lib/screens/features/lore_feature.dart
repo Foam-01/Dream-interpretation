@@ -25,41 +25,43 @@ class _LoreFeatureState extends State<LoreFeature> {
         ? loreEntriesByNumber
         : loreEntriesByNumber.where((entry) => entry.badge == '$_loreDigit').toList();
     return [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-              key: const ValueKey('lore-digit-filter'),
-              children: [
-                SelectPill(
-                  key: const ValueKey('lore-filter-all'),
-                  text: 'ทั้งหมด',
-                  selected: _loreDigit == null,
-                  onTap: () => setState(() => _loreDigit = null),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  radius: 10,
-                  fontSize: 13,
-                  weight: FontWeight.w700,
-                ),
-                const SizedBox(width: 4),
-                for (final digit in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0])
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: SelectPill(
-                      key: ValueKey('lore-filter-$digit'),
-                      text: '$digit',
-                      selected: _loreDigit == digit,
-                      onTap: () => setState(() => _loreDigit = _loreDigit == digit ? null : digit),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      radius: 10,
-                      fontSize: 15,
-                      weight: FontWeight.w700,
-                    ),
+                key: const ValueKey('lore-digit-filter'),
+                children: [
+                  SelectPill(
+                    key: const ValueKey('lore-filter-all'),
+                    text: 'ทั้งหมด',
+                    selected: _loreDigit == null,
+                    onTap: () => setState(() => _loreDigit = null),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    radius: 10,
+                    fontSize: 13,
+                    weight: FontWeight.w700,
                   ),
-              ],
-            ),
+                  const SizedBox(width: 4),
+                  for (final digit in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0])
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: SelectPill(
+                        key: ValueKey('lore-filter-$digit'),
+                        text: '$digit',
+                        selected: _loreDigit == digit,
+                        onTap: () => setState(() => _loreDigit = _loreDigit == digit ? null : digit),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        radius: 10,
+                        fontSize: 15,
+                        weight: FontWeight.w700,
+                      ),
+                    ),
+                ],
+              ),
             ),
             const SizedBox(height: 12),
             Text(loreIntro, style: sans(14, color: C.textBody, height: 1.8)),
@@ -70,23 +72,31 @@ class _LoreFeatureState extends State<LoreFeature> {
                 child: AppCard(
                   radius: 14,
                   padding: const EdgeInsets.all(12),
-                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    DigitBox(e.badge, width: 48, height: 48, fontSize: e.badge.length > 1 ? 18 : 24),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text.rich(
-                        TextSpan(children: [
-                          if (e.seen case final seen?) ...[
-                            const TextSpan(text: 'ถ้าฝันเห็น '),
-                            TextSpan(text: seen, style: sans(14, weight: FontWeight.w700, color: C.accent, height: 1.7)),
-                            TextSpan(text: e.text.substring('ถ้าฝันเห็น '.length + seen.length)),
-                          ] else
-                            TextSpan(text: e.text),
-                        ]),
-                        style: sans(14, color: C.textBody, height: 1.7),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      DigitBox(e.badge, width: 48, height: 48, fontSize: e.badge.length > 1 ? 18 : 24),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              if (e.seen case final seen?) ...[
+                                const TextSpan(text: 'ถ้าฝันเห็น '),
+                                TextSpan(
+                                  text: seen,
+                                  style: sans(14, weight: FontWeight.w700, color: C.accent, height: 1.7),
+                                ),
+                                TextSpan(text: e.text.substring('ถ้าฝันเห็น '.length + seen.length)),
+                              ] else
+                                TextSpan(text: e.text),
+                            ],
+                          ),
+                          style: sans(14, color: C.textBody, height: 1.7),
+                        ),
                       ),
-                    ),
-                  ]),
+                    ],
+                  ),
                 ),
               ),
             const SizedBox(height: 6),
@@ -100,8 +110,9 @@ class _LoreFeatureState extends State<LoreFeature> {
               ),
               child: Text(loreClosing, style: sans(14, color: C.onBrand, height: 1.8)),
             ),
-          ]),
+          ],
         ),
-      ];
+      ),
+    ];
   }
 }

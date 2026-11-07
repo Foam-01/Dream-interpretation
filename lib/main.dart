@@ -13,10 +13,9 @@ import 'theme.dart';
 void main() {
   // Debug builds fail fast on malformed sample data (no-op in release).
   assert(debugValidateDreams());
-  runApp(MahaDreamApp(
-    repository: repositoryFromEnvironment(const String.fromEnvironment('API_BASE_URL')),
-    opening: true,
-  ));
+  runApp(
+    MahaDreamApp(repository: repositoryFromEnvironment(const String.fromEnvironment('API_BASE_URL')), opening: true),
+  );
 }
 
 /// `--dart-define=API_BASE_URL=<versioned API root>` (e.g. `http://10.0.2.2:3000/api/v1`)
@@ -67,7 +66,9 @@ class MahaDreamApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       home: opening
-          ? OpeningGate(child: AppShell(clock: clock, repository: repository))
+          ? OpeningGate(
+              child: AppShell(clock: clock, repository: repository),
+            )
           : AppShell(clock: clock, repository: repository),
     );
   }

@@ -84,12 +84,12 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   }
 
   Widget _screenFor(AppPage page) => switch (page) {
-        HomePage() => HomeScreen(now: widget.clock(), clock: widget.clock),
-        SearchPage() => const SearchScreen(),
-        ResultPage(:final dreamId) => ResultScreen(dreamId: dreamId),
-        MenuPage(:final tab) => MenuScreen(tab: tab),
-        FeaturePage(:final key) => FeatureScreen(featKey: key, now: widget.clock()),
-      };
+    HomePage() => HomeScreen(now: widget.clock(), clock: widget.clock),
+    SearchPage() => const SearchScreen(),
+    ResultPage(:final dreamId) => ResultScreen(dreamId: dreamId),
+    MenuPage(:final tab) => MenuScreen(tab: tab),
+    FeaturePage(:final key) => FeatureScreen(featKey: key, now: widget.clock()),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -113,30 +113,34 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
               ),
               child: Scaffold(
                 backgroundColor: C.bg,
-                body: Column(children: [
-                  Container(color: C.brand, height: MediaQuery.paddingOf(context).top),
-                  Expanded(
-                    child: MediaQuery.removePadding(
-                      context: context,
-                      removeTop: true,
-                      // Tablets and landscape: keep the phone-width layout, centred, instead of
-                      // stretching cards and grids across the whole screen.
-                      child: Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: maxContentWidth),
-                          child: KeyedSubtree(
-                            // New key per page so scroll position resets like the design.
-                            key: ValueKey('$_day/${_controller.tab}/${_controller.depth}/${page.runtimeType}/${_pageId(page)}'),
-                            child: _screenFor(page),
+                body: Column(
+                  children: [
+                    Container(color: C.brand, height: MediaQuery.paddingOf(context).top),
+                    Expanded(
+                      child: MediaQuery.removePadding(
+                        context: context,
+                        removeTop: true,
+                        // Tablets and landscape: keep the phone-width layout, centred, instead of
+                        // stretching cards and grids across the whole screen.
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: maxContentWidth),
+                            child: KeyedSubtree(
+                              // New key per page so scroll position resets like the design.
+                              key: ValueKey(
+                                '$_day/${_controller.tab}/${_controller.depth}/${page.runtimeType}/${_pageId(page)}',
+                              ),
+                              child: _screenFor(page),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  // Hidden while the keyboard is up, so search results keep the space on small phones.
-                  if (MediaQuery.viewInsetsOf(context).bottom == 0)
-                    _BottomTabs(current: _controller.tab, onTap: _controller.goTab),
-                ]),
+                    // Hidden while the keyboard is up, so search results keep the space on small phones.
+                    if (MediaQuery.viewInsetsOf(context).bottom == 0)
+                      _BottomTabs(current: _controller.tab, onTap: _controller.goTab),
+                  ],
+                ),
               ),
             ),
           );
@@ -146,11 +150,11 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   }
 
   String _pageId(AppPage p) => switch (p) {
-        ResultPage(:final dreamId) => dreamId,
-        FeaturePage(:final key) => key,
-        MenuPage(:final tab) => tab,
-        _ => '',
-      };
+    ResultPage(:final dreamId) => dreamId,
+    FeaturePage(:final key) => key,
+    MenuPage(:final tab) => tab,
+    _ => '',
+  };
 }
 
 class _BottomTabs extends StatelessWidget {
@@ -167,44 +171,56 @@ class _BottomTabs extends StatelessWidget {
         border: Border(top: BorderSide(color: C.goldBorder)),
       ),
       padding: EdgeInsets.fromLTRB(4, 6, 4, 6 + (bottom > 0 ? bottom : 8)),
-      child: Row(children: [
-        for (final (key, (label, icon)) in [for (final t in appTabs) (t, _tabLooks[t]!)])
-          Expanded(
-            child: Semantics(
-              button: true,
-              selected: key == current,
-              label: label,
-              excludeSemantics: true,
-              child: InkResponse(
-                onTap: () => onTap(key),
-                child: SizedBox(
-                  height: 48,
-                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Container(
-                      width: 52,
-                      height: 30,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: key == current ? C.gold : Colors.transparent,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Icon(icon, size: 20, color: key == current ? C.onGold : C.tabInactive),
+      child: Row(
+        children: [
+          for (final (key, (label, icon)) in [for (final t in appTabs) (t, _tabLooks[t]!)])
+            Expanded(
+              child: Semantics(
+                button: true,
+                selected: key == current,
+                label: label,
+                excludeSemantics: true,
+                child: InkResponse(
+                  onTap: () => onTap(key),
+                  child: SizedBox(
+                    height: 48,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 52,
+                          height: 30,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: key == current ? C.gold : Colors.transparent,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Icon(icon, size: 20, color: key == current ? C.onGold : C.tabInactive),
+                        ),
+                        const SizedBox(height: 3),
+                        Flexible(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              label,
+                              maxLines: 1,
+                              style: sans(
+                                12,
+                                weight: FontWeight.w600,
+                                color: key == current ? C.goldLight : C.tabInactive,
+                                height: 1.1,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 3),
-                    Flexible(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(label,
-                            maxLines: 1,
-                            style: sans(12, weight: FontWeight.w600, color: key == current ? C.goldLight : C.tabInactive, height: 1.1)),
-                      ),
-                    ),
-                  ]),
+                  ),
                 ),
               ),
             ),
-          ),
-      ]),
+        ],
+      ),
     );
   }
 }

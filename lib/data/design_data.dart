@@ -80,22 +80,24 @@ class LuckyNumbers {
   /// characters (incl. Thai digits) and wrong lengths. Never fixes data.
   /// [LuckyNumbers.none] ("ไม่ควรเสี่ยง") is valid. Otherwise two-digit numbers are
   /// required; the three-digit list may be empty (some sources give only two-digit numbers).
-  List<String> validate() => isNone ? const [] : [
-        if (_twoDigit.isEmpty) 'twoDigit is empty',
-        for (final n in _twoDigit)
-          if (!RegExp(r'^\d{2}$').hasMatch(n)) 'twoDigit "$n" is not 2 digits',
-        for (final n in _threeDigit)
-          if (!RegExp(r'^\d{3}$').hasMatch(n)) 'threeDigit "$n" is not 3 digits',
-      ];
+  List<String> validate() => isNone
+      ? const []
+      : [
+          if (_twoDigit.isEmpty) 'twoDigit is empty',
+          for (final n in _twoDigit)
+            if (!RegExp(r'^\d{2}$').hasMatch(n)) 'twoDigit "$n" is not 2 digits',
+          for (final n in _threeDigit)
+            if (!RegExp(r'^\d{3}$').hasMatch(n)) 'threeDigit "$n" is not 3 digits',
+        ];
 }
 
 /// Sample forecast scores (0-100) shown as bars on the dream detail page.
 /// These are design sample values, not verified predictions.
 class LuckForecast {
   const LuckForecast({required this.money, required this.love, required this.health})
-      : assert(money >= 0 && money <= 100, 'money must be 0-100'),
-        assert(love >= 0 && love <= 100, 'love must be 0-100'),
-        assert(health >= 0 && health <= 100, 'health must be 0-100');
+    : assert(money >= 0 && money <= 100, 'money must be 0-100'),
+      assert(love >= 0 && love <= 100, 'love must be 0-100'),
+      assert(health >= 0 && health <= 100, 'health must be 0-100');
 
   /// การเงิน
   final int money;
@@ -109,9 +111,9 @@ class LuckForecast {
   /// Range problems for the given scores (each must be 0-100 inclusive); empty
   /// when valid. Works with assertions disabled; never clamps or fixes values.
   static List<String> check({required int money, required int love, required int health}) => [
-        for (final (field, value) in [('money', money), ('love', love), ('health', health)])
-          if (value < 0 || value > 100) '$field $value is outside 0-100',
-      ];
+    for (final (field, value) in [('money', money), ('love', love), ('health', health)])
+      if (value < 0 || value > 100) '$field $value is outside 0-100',
+  ];
 
   /// Runtime check of this forecast (the constructor asserts only run when
   /// assertions are enabled, e.g. debug builds and tests).
@@ -187,9 +189,21 @@ class Dream {
 
   /// Extra search keywords from the API.
   final List<String> aliases;
-  const Dream(this.id, this.name, this.cat, this.numbers, this.digits, this.short, this.meaning, this.luckForecast,
-      this.good, this.advice,
-      {this.image, this.source, this.aliases = const []});
+  const Dream(
+    this.id,
+    this.name,
+    this.cat,
+    this.numbers,
+    this.digits,
+    this.short,
+    this.meaning,
+    this.luckForecast,
+    this.good,
+    this.advice, {
+    this.image,
+    this.source,
+    this.aliases = const [],
+  });
 
   // Compatibility getters kept for existing call sites (display strings unchanged).
   String get two => numbers.twoDisplay;
@@ -198,14 +212,47 @@ class Dream {
 
   /// Data problems of this dream, prefixed by the failing part; empty when valid.
   List<String> validate() => [
-        for (final p in numbers.validate()) 'numbers: $p',
-        for (final p in luckForecast?.validate() ?? const <String>[]) 'luckForecast: $p',
-      ];
+    for (final p in numbers.validate()) 'numbers: $p',
+    for (final p in luckForecast?.validate() ?? const <String>[]) 'luckForecast: $p',
+  ];
 }
 
 /// The app's bundled dreams: the real letter-category content (หมวด ก–อ), generated from the import
 /// files (see lib/data/dreams_*.dart). The former SAMPLE design data lives in test/fixtures only.
-const dreams = [...dreamsK, ...dreamsKh, ...dreamsKhw, ...dreamsKhr, ...dreamsNg, ...dreamsCh, ...dreamsChg, ...dreamsChc, ...dreamsS, ...dreamsY, ...dreamsD, ...dreamsT, ...dreamsThung, ...dreamsThahan, ...dreamsThong, ...dreamsN, ...dreamsB, ...dreamsP, ...dreamsPhueng, ...dreamsF, ...dreamsPhan, ...dreamsFan, ...dreamsSamphao, ...dreamsM, ...dreamsYak, ...dreamsR, ...dreamsL, ...dreamsW, ...dreamsSala, ...dreamsSuea, ...dreamsHip, ...dreamsAng];
+const dreams = [
+  ...dreamsK,
+  ...dreamsKh,
+  ...dreamsKhw,
+  ...dreamsKhr,
+  ...dreamsNg,
+  ...dreamsCh,
+  ...dreamsChg,
+  ...dreamsChc,
+  ...dreamsS,
+  ...dreamsY,
+  ...dreamsD,
+  ...dreamsT,
+  ...dreamsThung,
+  ...dreamsThahan,
+  ...dreamsThong,
+  ...dreamsN,
+  ...dreamsB,
+  ...dreamsP,
+  ...dreamsPhueng,
+  ...dreamsF,
+  ...dreamsPhan,
+  ...dreamsFan,
+  ...dreamsSamphao,
+  ...dreamsM,
+  ...dreamsYak,
+  ...dreamsR,
+  ...dreamsL,
+  ...dreamsW,
+  ...dreamsSala,
+  ...dreamsSuea,
+  ...dreamsHip,
+  ...dreamsAng,
+];
 
 /// Looks a dream up by its stable [id]; null when no dream has that id.
 Dream? dreamById(String id, [List<Dream> source = dreams]) {
@@ -228,7 +275,41 @@ bool debugValidateDreams([List<Dream> source = dreams]) {
   return true;
 }
 
-const dreamCats = ['ทั้งหมด', 'หมวด ก', 'หมวด ข', 'หมวด ค', 'หมวด ฆ', 'หมวด ง', 'หมวด จ', 'หมวด ฉ', 'หมวด ช', 'หมวด ซ', 'หมวด ญ', 'หมวด ด', 'หมวด ต', 'หมวด ถ', 'หมวด ท', 'หมวด ธ', 'หมวด น', 'หมวด บ', 'หมวด ป', 'หมวด ผ', 'หมวด ฝ', 'หมวด พ', 'หมวด ฟ', 'หมวด ภ', 'หมวด ม', 'หมวด ย', 'หมวด ร', 'หมวด ล', 'หมวด ว', 'หมวด ศ', 'หมวด ส', 'หมวด ห', 'หมวด อ'];
+const dreamCats = [
+  'ทั้งหมด',
+  'หมวด ก',
+  'หมวด ข',
+  'หมวด ค',
+  'หมวด ฆ',
+  'หมวด ง',
+  'หมวด จ',
+  'หมวด ฉ',
+  'หมวด ช',
+  'หมวด ซ',
+  'หมวด ญ',
+  'หมวด ด',
+  'หมวด ต',
+  'หมวด ถ',
+  'หมวด ท',
+  'หมวด ธ',
+  'หมวด น',
+  'หมวด บ',
+  'หมวด ป',
+  'หมวด ผ',
+  'หมวด ฝ',
+  'หมวด พ',
+  'หมวด ฟ',
+  'หมวด ภ',
+  'หมวด ม',
+  'หมวด ย',
+  'หมวด ร',
+  'หมวด ล',
+  'หมวด ว',
+  'หมวด ศ',
+  'หมวด ส',
+  'หมวด ห',
+  'หมวด อ',
+];
 
 class MenuItem {
   final String key, title, desc;
@@ -353,9 +434,45 @@ const feats = <String, FeatDef>{
 /// Which bottom tab a feature belongs to.
 String tabOf(String k) => const ['3', '4', '11'].contains(k)
     ? 'ritual'
-    : const ['5', '6', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44'].contains(k)
-        ? 'book'
-        : 'lucky';
+    : const [
+        '5',
+        '6',
+        '12',
+        '13',
+        '14',
+        '15',
+        '16',
+        '17',
+        '18',
+        '19',
+        '20',
+        '21',
+        '22',
+        '23',
+        '24',
+        '25',
+        '26',
+        '27',
+        '28',
+        '29',
+        '30',
+        '31',
+        '32',
+        '33',
+        '34',
+        '35',
+        '36',
+        '37',
+        '38',
+        '39',
+        '40',
+        '41',
+        '42',
+        '43',
+        '44',
+      ].contains(k)
+    ? 'book'
+    : 'lucky';
 
 const dayShort = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
 const dayFull = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
@@ -364,9 +481,15 @@ const steps = <String, List<List<String>>>{
   // Feature 4: the owner's book page "การขอโชคจากความฝัน" (backend/content/incoming/feature-04-luck-ritual/source.md),
   // split at its sentence breaks; each title is words from that step.
   '4': [
-    ['เตรียมเครื่องสักการะ', 'เตรียมเครื่องสักการะ ดอกไม้ ธูป (5 ดอก) เทียน พร้อมเครื่องเซ่นไหว้บูชา, ผลไม้ตามควร ที่ประตูบ้าน'],
+    [
+      'เตรียมเครื่องสักการะ',
+      'เตรียมเครื่องสักการะ ดอกไม้ ธูป (5 ดอก) เทียน พร้อมเครื่องเซ่นไหว้บูชา, ผลไม้ตามควร ที่ประตูบ้าน',
+    ],
     ['จุดธูปเทียนบูชา', 'หันหน้าไปทางทิศตะวันออกเฉียงเหนือ จุดธูปเทียนบูชา'],
-    ['ภาวนาขอโชค–ลาภ', 'สำรวมจิตให้เป็นสมาธิ อาราธนาพระคุณของท่านเป็นที่พึ่งจากแป๊ะกง เจ้าที่เจ้าทาง และสิ่งศักดิ์สิทธิ์ทั้งหลาย ภาวนาขอโชค–ลาภ'],
+    [
+      'ภาวนาขอโชค–ลาภ',
+      'สำรวมจิตให้เป็นสมาธิ อาราธนาพระคุณของท่านเป็นที่พึ่งจากแป๊ะกง เจ้าที่เจ้าทาง และสิ่งศักดิ์สิทธิ์ทั้งหลาย ภาวนาขอโชค–ลาภ',
+    ],
     ['กราบ 3 ครั้ง', 'ยกธูปขึ้นจบศีรษะแล้วกราบ 3 ครั้ง'],
     ['ถวายเครื่องเซ่นไหว้บูชา', 'หลังเสร็จพิธีไหว้แล้ว ถวายเครื่องเซ่นไหว้บูชา ยกขึ้นจบศีรษะ'],
     ['ทำทักษิณาวรรต 3 รอบ', 'ทำทักษิณาวรรต (เวียนเป็นวงกลม เลี้ยวทางขวาตามเข็มนาฬิกา) 3 รอบ แล้วกราบอีกครั้ง'],

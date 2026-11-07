@@ -61,7 +61,10 @@ const dreamImagesK = <String, DreamImage>{
   'k-eating-bird': DreamImage.asset('assets/dreams/k-eating-bird.jpg', alt: 'ภาพประกอบ: กินนก'),
   'k-eating-moon': DreamImage.asset('assets/dreams/k-eating-moon.jpg', alt: 'ภาพประกอบ: กินพระจันทร์'),
   'k-eating-food': DreamImage.asset('assets/dreams/k-eating-food.jpg', alt: 'ภาพประกอบ: กินอาหาร'),
-  'k-eating-food-with-relatives': DreamImage.asset('assets/dreams/k-eating-food-with-relatives.jpg', alt: 'ภาพประกอบ: กินอาหารกับญาติ'),
+  'k-eating-food-with-relatives': DreamImage.asset(
+    'assets/dreams/k-eating-food-with-relatives.jpg',
+    alt: 'ภาพประกอบ: กินอาหารกับญาติ',
+  ),
   'k-lost-key': DreamImage.asset('assets/dreams/k-lost-key.jpg', alt: 'ภาพประกอบ: กุญแจหาย'),
   'k-cart-passing': DreamImage.asset('assets/dreams/k-cart-passing.jpg', alt: 'ภาพประกอบ: เกวียนผ่าน'),
   'k-growing-old': DreamImage.asset('assets/dreams/k-growing-old.jpg', alt: 'ภาพประกอบ: แก่'),
@@ -76,4 +79,37 @@ const dreamImagesK = <String, DreamImage>{
 
 /// The image to show for a dream: the API's image when it has one, else the bundled one, else null
 /// (the placeholder). Works the same in offline and API mode.
-DreamImage? dreamImageFor(String id, [DreamImage? remote]) => remote ?? dreamImagesK[id] ?? dreamImagesKh[id] ?? dreamImagesKhw[id] ?? dreamImagesKhr[id] ?? dreamImagesNg[id] ?? dreamImagesCh[id] ?? dreamImagesChg[id] ?? dreamImagesChc[id] ?? dreamImagesS[id] ?? dreamImagesY[id] ?? dreamImagesD[id] ?? dreamImagesT[id] ?? dreamImagesThung[id] ?? dreamImagesThahan[id] ?? dreamImagesThong[id] ?? dreamImagesN[id] ?? dreamImagesB[id] ?? dreamImagesP[id] ?? dreamImagesPhueng[id] ?? dreamImagesF[id] ?? dreamImagesPhan[id] ?? dreamImagesFan[id] ?? dreamImagesSamphao[id] ?? dreamImagesM[id] ?? dreamImagesYak[id] ?? dreamImagesR[id] ?? dreamImagesL[id] ?? dreamImagesW[id] ?? dreamImagesSala[id] ?? dreamImagesSuea[id] ?? dreamImagesHip[id] ?? dreamImagesAng[id];
+DreamImage? dreamImageFor(String id, [DreamImage? remote]) =>
+    remote ??
+    dreamImagesK[id] ??
+    dreamImagesKh[id] ??
+    dreamImagesKhw[id] ??
+    dreamImagesKhr[id] ??
+    dreamImagesNg[id] ??
+    dreamImagesCh[id] ??
+    dreamImagesChg[id] ??
+    dreamImagesChc[id] ??
+    dreamImagesS[id] ??
+    dreamImagesY[id] ??
+    dreamImagesD[id] ??
+    dreamImagesT[id] ??
+    dreamImagesThung[id] ??
+    dreamImagesThahan[id] ??
+    dreamImagesThong[id] ??
+    dreamImagesN[id] ??
+    dreamImagesB[id] ??
+    dreamImagesP[id] ??
+    dreamImagesPhueng[id] ??
+    dreamImagesF[id] ??
+    dreamImagesPhan[id] ??
+    dreamImagesFan[id] ??
+    dreamImagesSamphao[id] ??
+    dreamImagesM[id] ??
+    dreamImagesYak[id] ??
+    dreamImagesR[id] ??
+    dreamImagesL[id] ??
+    dreamImagesW[id] ??
+    dreamImagesSala[id] ??
+    dreamImagesSuea[id] ??
+    dreamImagesHip[id] ??
+    dreamImagesAng[id];

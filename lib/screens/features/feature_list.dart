@@ -11,11 +11,11 @@ class FeatureList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListView(
-        padding: EdgeInsets.zero,
-        // Scrolling puts the keyboard away (menus 5 and 6 have a search box).
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        children: [header, ...children],
-      );
+    padding: EdgeInsets.zero,
+    // Scrolling puts the keyboard away (menus 5 and 6 have a search box).
+    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+    children: [header, ...children],
+  );
 }
 
 /// Seven weekday pills (อา … ส) for the menus read by the draw's weekday (7, 9 and 10).
@@ -26,21 +26,23 @@ class WeekdayPills extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(12, 14, 12, 4),
-        child: Row(children: [
-          for (var i = 0; i < 7; i++)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: SelectPill(
-                  text: dayShort[i],
-                  selected: selected == i,
-                  onTap: () => onSelect(i),
-                  radius: 10,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                ),
+    padding: const EdgeInsets.fromLTRB(12, 14, 12, 4),
+    child: Row(
+      children: [
+        for (var i = 0; i < 7; i++)
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: SelectPill(
+                text: dayShort[i],
+                selected: selected == i,
+                onTap: () => onSelect(i),
+                radius: 10,
+                padding: const EdgeInsets.symmetric(vertical: 8),
               ),
             ),
-        ]),
-      );
+          ),
+      ],
+    ),
+  );
 }

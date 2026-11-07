@@ -9,7 +9,10 @@ const dreamImagesPhueng = <String, DreamImage>{
   'phueng-fruit': DreamImage.asset('assets/dreams/phueng-fruit.jpg', alt: 'ภาพประกอบ: ผลไม้'),
   'phueng-cliff': DreamImage.asset('assets/dreams/phueng-cliff.jpg', alt: 'ภาพประกอบ: ผา'),
   'phueng-lightning': DreamImage.asset('assets/dreams/phueng-lightning.jpg', alt: 'ภาพประกอบ: ผ่า (ฟ้า)'),
-  'phueng-struck-by-lightning': DreamImage.asset('assets/dreams/phueng-struck-by-lightning.jpg', alt: 'ภาพประกอบ: ผ่า (ฟ้าผ่าตน)'),
+  'phueng-struck-by-lightning': DreamImage.asset(
+    'assets/dreams/phueng-struck-by-lightning.jpg',
+    alt: 'ภาพประกอบ: ผ่า (ฟ้าผ่าตน)',
+  ),
   'phueng-fine-clothes': DreamImage.asset('assets/dreams/phueng-fine-clothes.jpg', alt: 'ภาพประกอบ: ผ้า'),
   'phueng-ghost': DreamImage.asset('assets/dreams/phueng-ghost.jpg', alt: 'ภาพประกอบ: ผี'),
   'phueng-bees': DreamImage.asset('assets/dreams/phueng-bees.jpg', alt: 'ภาพประกอบ: ผึ้ง'),

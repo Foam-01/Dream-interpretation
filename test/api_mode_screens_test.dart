@@ -66,15 +66,15 @@ const body = DreamCategory('body', 'ร่างกาย');
 /// the screen shows remote data.
 DreamSummary remote(String id, String name, {String two = '08', DreamCategory category = body, DreamImage? image}) =>
     DreamSummary(
-  id: id,
-  image: image,
-  name: name,
-  category: category,
-  short: 'สรุป$name',
-  numbers: LuckyNumbers.copy(twoDigit: [two], threeDigit: ['0${two}0'.substring(0, 3)]),
-  good: true,
-  contentStatus: ContentStatus.verified,
-);
+      id: id,
+      image: image,
+      name: name,
+      category: category,
+      short: 'สรุป$name',
+      numbers: LuckyNumbers.copy(twoDigit: [two], threeDigit: ['0${two}0'.substring(0, 3)]),
+      good: true,
+      contentStatus: ContentStatus.verified,
+    );
 
 const pic = DreamImage(url: 'https://img.test/a.png', credit: 'test', license: 'test');
 
@@ -116,10 +116,9 @@ void main() {
       final call = repo.of('list').single;
       expect(call.args['limit'], DreamRepository.maxPageSize, reason: 'draws from every dream');
       // Home draws only from dreams with a picture.
-      call.complete(pageOf([
-        remote('a', 'แมวเซิร์ฟเวอร์', image: pic),
-        remote('b', 'นกเซิร์ฟเวอร์', two: '09', image: pic),
-      ]));
+      call.complete(
+        pageOf([remote('a', 'แมวเซิร์ฟเวอร์', image: pic), remote('b', 'นกเซิร์ฟเวอร์', two: '09', image: pic)]),
+      );
       await tester.pump();
       expect(spinner, findsNothing);
       expect(find.text('แมวเซิร์ฟเวอร์'), findsOneWidget);

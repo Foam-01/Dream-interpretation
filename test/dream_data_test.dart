@@ -163,10 +163,22 @@ void main() {
     });
 
     test('debugValidateDreams throws a clear error for invalid data', () {
-      const broken = Dream('broken', 'x', 'x', LuckyNumbers(twoDigit: ['8'], threeDigit: ['123']), ['8'], 'x', 'x',
-          LuckForecast(money: 1, love: 1, health: 1), true, 'x');
-      expect(() => debugValidateDreams([broken]),
-          throwsA(isA<StateError>().having((e) => e.message, 'message', contains('broken'))));
+      const broken = Dream(
+        'broken',
+        'x',
+        'x',
+        LuckyNumbers(twoDigit: ['8'], threeDigit: ['123']),
+        ['8'],
+        'x',
+        'x',
+        LuckForecast(money: 1, love: 1, health: 1),
+        true,
+        'x',
+      );
+      expect(
+        () => debugValidateDreams([broken]),
+        throwsA(isA<StateError>().having((e) => e.message, 'message', contains('broken'))),
+      );
     });
 
     test('LuckForecast rejects scores outside 0-100', () {
@@ -184,13 +196,22 @@ void main() {
     addTearDown(tester.view.reset);
     final c = AppController(repository: legacySampleRepository);
     addTearDown(c.dispose);
-    await tester.pumpWidget(MaterialApp(
-      theme: buildTheme(),
-      home: AppScope(controller: c, child: const Scaffold(body: ResultScreen(dreamId: 'snake'))),
-    ));
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: buildTheme(),
+        home: AppScope(
+          controller: c,
+          child: const Scaffold(body: ResultScreen(dreamId: 'snake')),
+        ),
+      ),
+    );
     Finder rowOf(String label) => find.ancestor(of: find.text(label), matching: find.byType(Row)).first;
     for (final (label, value) in const [('การเงิน', '84'), ('ความรัก', '90'), ('สุขภาพ', '62')]) {
-      expect(find.descendant(of: rowOf(label), matching: find.text(value)), findsOneWidget, reason: label);
+      expect(
+        find.descendant(of: rowOf(label), matching: find.text(value)),
+        findsOneWidget,
+        reason: label,
+      );
     }
     expect(find.text('56 · 65'), findsOneWidget);
     expect(find.text('567 · 556'), findsOneWidget);
@@ -239,13 +260,29 @@ void main() {
     });
 
     test('Dream.validate prefixes problems by part and debugValidateDreams names the dream id', () {
-      const broken = Dream('broken-sample', 'x', 'x', LuckyNumbers(twoDigit: ['8'], threeDigit: []), ['8'], 'x', 'x',
-          LuckForecast(money: 1, love: 1, health: 1), true, 'x');
+      const broken = Dream(
+        'broken-sample',
+        'x',
+        'x',
+        LuckyNumbers(twoDigit: ['8'], threeDigit: []),
+        ['8'],
+        'x',
+        'x',
+        LuckForecast(money: 1, love: 1, health: 1),
+        true,
+        'x',
+      );
       expect(broken.validate(), ['numbers: twoDigit "8" is not 2 digits']);
       expect(
-          () => debugValidateDreams([legacySampleDreams.first, broken]),
-          throwsA(isA<StateError>().having((e) => e.message, 'message',
-              allOf(contains('"broken-sample"'), contains('numbers: twoDigit "8"'), isNot(contains('snake'))))));
+        () => debugValidateDreams([legacySampleDreams.first, broken]),
+        throwsA(
+          isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            allOf(contains('"broken-sample"'), contains('numbers: twoDigit "8"'), isNot(contains('snake'))),
+          ),
+        ),
+      );
     });
 
     test('validation has no side effects on the data', () {

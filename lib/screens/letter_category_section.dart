@@ -115,7 +115,10 @@ class _DreamRow extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           if (two.isNotEmpty)
-            Text(two.first, style: serif(20, weight: FontWeight.w800, color: C.number, height: 1.3))
+            Text(
+              two.first,
+              style: serif(20, weight: FontWeight.w800, color: C.number, height: 1.3),
+            )
           else
             // Capped so it wraps instead of pushing the row past a small screen.
             ConstrainedBox(

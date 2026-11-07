@@ -82,10 +82,13 @@ class LetterFeature extends StatelessWidget {
   const LetterFeature({super.key, required this.header, required this.featKey});
 
   @override
-  Widget build(BuildContext context) => FeatureList(header: header, children: [
-        _LetterSwitcher(current: featKey, onPick: AppScope.of(context).openFeat),
-        LetterCategorySection(categoryId: _letterCategories[featKey]!),
-      ]);
+  Widget build(BuildContext context) => FeatureList(
+    header: header,
+    children: [
+      _LetterSwitcher(current: featKey, onPick: AppScope.of(context).openFeat),
+      LetterCategorySection(categoryId: _letterCategories[featKey]!),
+    ],
+  );
 }
 
 /// Row of letter pills on a letter-category page, so the next letter is one tap away
@@ -117,40 +120,45 @@ class _LetterSwitcherState extends State<_LetterSwitcher> {
     // Three rows in letter order (first third on top), scrolling together.
     const rowCount = 3;
     final perRow = (keys.length + rowCount - 1) ~/ rowCount;
-    final rows = [
-      for (var s = 0; s < keys.length; s += perRow) keys.sublist(s, (s + perRow).clamp(0, keys.length)),
-    ];
+    final rows = [for (var s = 0; s < keys.length; s += perRow) keys.sublist(s, (s + perRow).clamp(0, keys.length))];
     return Container(
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: C.caption.withValues(alpha: .12)))),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: C.caption.withValues(alpha: .12))),
+      ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          for (final (r, row) in rows.indexed) ...[
-            if (r > 0) const SizedBox(height: 6),
-            Row(children: [
-              for (final (i, k) in row.indexed) ...[
-                if (i > 0) const SizedBox(width: 6),
-                SizedBox(
-                  key: k == widget.current ? _currentKey : null,
-                  width: 44,
-                  height: 44,
-                  child: Semantics(
-                    label: feats[k]!.title,
-                    child: SelectPill(
-                      text: feats[k]!.title.split(' ').last,
-                      selected: k == widget.current,
-                      onTap: () => k == widget.current ? null : widget.onPick(k),
-                      padding: EdgeInsets.zero,
-                      radius: 10,
-                      fontSize: 17,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final (r, row) in rows.indexed) ...[
+              if (r > 0) const SizedBox(height: 6),
+              Row(
+                children: [
+                  for (final (i, k) in row.indexed) ...[
+                    if (i > 0) const SizedBox(width: 6),
+                    SizedBox(
+                      key: k == widget.current ? _currentKey : null,
+                      width: 44,
+                      height: 44,
+                      child: Semantics(
+                        label: feats[k]!.title,
+                        child: SelectPill(
+                          text: feats[k]!.title.split(' ').last,
+                          selected: k == widget.current,
+                          onTap: () => k == widget.current ? null : widget.onPick(k),
+                          padding: EdgeInsets.zero,
+                          radius: 10,
+                          fontSize: 17,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ],
-            ]),
+                  ],
+                ],
+              ),
+            ],
           ],
-        ]),
+        ),
       ),
     );
   }

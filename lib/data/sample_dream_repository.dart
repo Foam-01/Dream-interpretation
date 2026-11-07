@@ -131,8 +131,7 @@ class SampleDreamRepository implements DreamRepository {
     final byName = {for (final c in categoryList) c.name: c};
     final matches = [
       for (final d in source)
-        if ((catName == null || d.cat == catName) &&
-            (query.isEmpty || _matches(d, query)))
+        if ((catName == null || d.cat == catName) && (query.isEmpty || _matches(d, query)))
           DreamSummary.fromDream(d, category: byName[d.cat]!),
     ];
     final start = (page - 1) * limit;

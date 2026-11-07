@@ -76,7 +76,11 @@ void main() {
     expect(find.text('มังกร'), findsNothing);
     await expectPagerLabel(tester, 'หน้า 1 / 5');
     final all = find.widgetWithText(SelectPill, 'ทั้งหมด');
-    await tester.scrollUntilVisible(all, -400, scrollable: find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first);
+    await tester.scrollUntilVisible(
+      all,
+      -400,
+      scrollable: find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first,
+    );
     await tester.tap(all);
     await tester.pumpAndSettle();
     expect(find.text('1000 ภาพ'), findsOneWidget);
@@ -84,7 +88,10 @@ void main() {
 
   testWidgets('search by dream word, by lucky number or picture number; clear goes back', (tester) async {
     await openPae(tester);
-    final horses = [for (final p in paeNumbers) if (p.name.contains('ม้า')) p];
+    final horses = [
+      for (final p in paeNumbers)
+        if (p.name.contains('ม้า')) p,
+    ];
     expect(horses, isNotEmpty);
     await tester.enterText(box, 'ม้า');
     await tester.pumpAndSettle();

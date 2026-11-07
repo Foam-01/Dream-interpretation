@@ -29,7 +29,10 @@ void main() {
       await openPaeKong(tester, scale);
       expect(find.text(paeNumbers.first.name), findsOneWidget);
       // Range chips: every label gets its full height (the original M0.3.3 clipping bug).
-      for (final label in ['ทั้งหมด', for (var i = 0; i < 10; i++) '${paeNumbers[i * 100].number}–${paeNumbers[i * 100 + 99].number}']) {
+      for (final label in [
+        'ทั้งหมด',
+        for (var i = 0; i < 10; i++) '${paeNumbers[i * 100].number}–${paeNumbers[i * 100 + 99].number}',
+      ]) {
         final p = tester.renderObject<RenderParagraph>(find.text(label));
         expect(p.size.height, greaterThanOrEqualTo(p.getMaxIntrinsicHeight(double.infinity) - 0.5), reason: label);
       }

@@ -20,8 +20,10 @@ void main() {
       expect(src, contains(from));
       src = src.replaceFirst(from, to);
     }
-    expect(src,
-        'หลักทำนายฝันตัวเลข (ตามตำราโบราณ)\n\n$loreIntro\n\n${loreEntries.map((e) => e.text).join('\n\n')}\n\n$loreClosing\n');
+    expect(
+      src,
+      'หลักทำนายฝันตัวเลข (ตามตำราโบราณ)\n\n$loreIntro\n\n${loreEntries.map((e) => e.text).join('\n\n')}\n\n$loreClosing\n',
+    );
     expect(loreEntries, hasLength(28));
   });
 

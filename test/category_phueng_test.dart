@@ -34,7 +34,18 @@ void main() {
   group('import file (10 predictions)', () {
     test('has exactly 10 DRAFT records of หมวด ผ with unique ids and names', () {
       final dreams = importDreams();
-      expect(dreams.map((d) => d['name']), ['ผด', 'ผม', 'ผลไม้', 'ผา', 'ผ่า (ฟ้า)', 'ผ่า (ฟ้าผ่าตน)', 'ผ้า', 'ผี', 'ผึ้ง', 'เผาศพ']);
+      expect(dreams.map((d) => d['name']), [
+        'ผด',
+        'ผม',
+        'ผลไม้',
+        'ผา',
+        'ผ่า (ฟ้า)',
+        'ผ่า (ฟ้าผ่าตน)',
+        'ผ้า',
+        'ผี',
+        'ผึ้ง',
+        'เผาศพ',
+      ]);
       expect(dreams.map((d) => d['id']).toSet(), hasLength(10));
       expect(dreams.every((d) => d['categoryId'] == letterPhuengCategoryId), isTrue);
       expect(dreams.every((d) => d['contentStatus'] == 'DRAFT'), isTrue, reason: 'never VERIFIED without review');
@@ -79,8 +90,11 @@ void main() {
         final d = dreamsPhueng[i];
         final n = j['numbers'] as Map;
         final id = j['id'] as String;
-        expect((d.id, d.name, d.meaning, d.short, d.cat), (j['id'], j['name'], j['meaning'], j['short'], 'หมวด ผ'),
-            reason: id);
+        expect(
+          (d.id, d.name, d.meaning, d.short, d.cat),
+          (j['id'], j['name'], j['meaning'], j['short'], 'หมวด ผ'),
+          reason: id,
+        );
         expect(d.numbers.isNone, j['noLuckyNumbers'] == true, reason: id);
         expect(d.numbers.twoDigit, n['twoDigit'], reason: id);
         expect(d.numbers.threeDigit, n['threeDigit'], reason: id);
@@ -111,7 +125,9 @@ void main() {
     test('10 checked pictures — every dream has one, bundled and registered', () {
       expect(dreamImagesPhueng.keys, dreamsPhueng.map((d) => d.id));
       final onDisk = Directory('assets/dreams').listSync().whereType<File>().map((f) => f.uri.pathSegments.last);
-      expect(onDisk.where((f) => f.startsWith('phueng-')).toSet(), {for (final id in dreamImagesPhueng.keys) '$id.jpg'});
+      expect(onDisk.where((f) => f.startsWith('phueng-')).toSet(), {
+        for (final id in dreamImagesPhueng.keys) '$id.jpg',
+      });
       for (final MapEntry(:key, :value) in dreamImagesPhueng.entries) {
         expect(value.url, 'assets/dreams/$key.jpg');
         expect(value.isAsset, isTrue);
