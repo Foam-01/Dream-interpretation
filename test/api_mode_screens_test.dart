@@ -153,7 +153,8 @@ void main() {
       final repo = await pumpApp(tester);
       repo.of('list').single.complete(pageOf([remote('a', 'แมวเซิร์ฟเวอร์')]));
       await tester.pump();
-      controller(tester).toggleSave('x'); // notifies AppScope → rebuild
+      final app = controller(tester);
+      app.setCat(app.cat); // same value, still notifies AppScope → rebuild
       await tester.pump();
       expect(repo.of('list'), hasLength(1));
     });

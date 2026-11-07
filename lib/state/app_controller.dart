@@ -45,7 +45,6 @@ class AppController extends ChangeNotifier {
   final Map<String, List<AppPage>> _stacks = {for (final t in appTabs) t: [_root(t)]};
   String query = '';
   String cat = 'ทั้งหมด';
-  final Set<String> saved = {};
 
   AppPage get page => _stacks[tab]!.last;
   int get depth => _stacks[tab]!.length;
@@ -116,11 +115,6 @@ class AppController extends ChangeNotifier {
 
   void setCat(String c) {
     cat = c;
-    notifyListeners();
-  }
-
-  void toggleSave(String id) {
-    saved.contains(id) ? saved.remove(id) : saved.add(id);
     notifyListeners();
   }
 }

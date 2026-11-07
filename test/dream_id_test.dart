@@ -58,16 +58,6 @@ void main() {
       c.back();
       expect(c.page, isA<HomePage>());
     });
-
-    test('toggleSave saves and unsaves by id without touching other legacySampleDreams', () {
-      final c = AppController();
-      c.toggleSave('snake');
-      expect(c.saved, {'snake'});
-      c.toggleSave('elephant');
-      expect(c.saved, {'snake', 'elephant'});
-      c.toggleSave('snake');
-      expect(c.saved, {'elephant'});
-    });
   });
 
   group('ResultScreen by id', () {

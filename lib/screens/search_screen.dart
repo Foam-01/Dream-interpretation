@@ -70,7 +70,7 @@ class _SearchScreenState extends State<SearchScreen> {
     _focusIfAsked();
     final app = _app!;
     final key = (app.query.trim(), app.cat);
-    if (key == _searched) return; // other state (tab, saved, ...) changed
+    if (key == _searched) return; // other state (tab, page, ...) changed
     _debounce?.cancel();
     if (!app.repository.isRemote) return _search();
     final categoryChanged = key.$2 != _searched?.$2;
