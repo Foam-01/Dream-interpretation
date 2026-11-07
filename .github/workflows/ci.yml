@@ -33,6 +33,8 @@ jobs:
           cache: true
       - name: Dependencies (locked)
         run: flutter pub get --enforce-lockfile
+      - name: Format (dart format, page width from analysis_options.yaml)
+        run: dart format --output=none --set-exit-if-changed lib test
       - name: Analyze
         run: flutter analyze
       - name: Tests (includes the golden tests; live API test is skipped)
