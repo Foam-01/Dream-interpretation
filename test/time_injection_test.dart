@@ -117,7 +117,7 @@ void main() {
   group('Feature 8: the next two draws, in date order, with the lead numbers from the book', () {
     Future<void> openDraws(WidgetTester tester, DateTime now) async {
       await pumpAt(tester, now);
-      await openFeature(tester, 'เลขเด็ด', 'สูตรเลขเด่น');
+      await openFeature(tester, 'เลขเด็ด', 'สูตรเลขเด่นประจำวัน');
     }
 
     void expectDraws(WidgetTester tester, List<(String, String)> draws) {

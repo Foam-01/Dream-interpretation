@@ -89,9 +89,9 @@ class LoadRequest<T> extends ChangeNotifier {
 
 /// Short Thai message for a failed request; never includes server details.
 String loadErrorMessage(DreamRepositoryException? e) => switch (e?.kind) {
-  DreamRepositoryErrorKind.network => 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาตรวจสอบอินเทอร์เน็ต',
-  DreamRepositoryErrorKind.timeout => 'เซิร์ฟเวอร์ตอบช้าเกินไป',
-  DreamRepositoryErrorKind.server => 'เซิร์ฟเวอร์ขัดข้องชั่วคราว',
-  DreamRepositoryErrorKind.invalidRequest => 'คำค้นหาไม่ถูกต้อง',
-  _ => 'โหลดข้อมูลไม่สำเร็จ',
+  DreamRepositoryErrorKind.network => 'ไม่มีอินเทอร์เน็ต ตรวจการเชื่อมต่อแล้วลองใหม่',
+  DreamRepositoryErrorKind.timeout => 'โหลดนานเกินไป กรุณาลองใหม่อีกครั้ง',
+  DreamRepositoryErrorKind.server => 'ระบบขัดข้องชั่วคราว ลองใหม่ภายหลัง',
+  DreamRepositoryErrorKind.invalidRequest => 'ค้นหาไม่ได้ ลองพิมพ์คำอื่น',
+  _ => 'โหลดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
 };
