@@ -443,6 +443,20 @@ class DreamImageView extends StatelessWidget {
     this.background,
   });
 
+  /// The dream pictures' width : height (1200 x 670).
+  static const pictureAspect = 1200 / 670;
+
+  /// Pixel width to decode a dream picture at so it still covers [box] sharply on a screen with
+  /// [dpr]; null (full size) when the box has no finite size or would need the whole picture anyway.
+  static int? decodeWidth(BoxConstraints box, double dpr) {
+    final w = box.maxWidth, h = box.maxHeight;
+    if (!w.isFinite && !h.isFinite) return null;
+    // BoxFit.cover: wide enough for the box width, and for the box height at the picture's ratio.
+    final needed = [if (w.isFinite) w, if (h.isFinite) h * pictureAspect].reduce((a, b) => a > b ? a : b);
+    final px = (needed * dpr).ceil();
+    return px >= 1200 ? null : px;
+  }
+
   @override
   Widget build(BuildContext context) {
     final placeholder = ImagePlaceholder(placeholderLabel,
@@ -457,12 +471,17 @@ class DreamImageView extends StatelessWidget {
         decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(radius), border: border),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(radius),
-          child: Image.asset(
-            img.url,
-            fit: fit,
-            semanticLabel: img.alt,
-            errorBuilder: (context, error, stack) =>
-                ImagePlaceholder(placeholderLabel, radius: radius, fontSize: fontSize, band: band),
+          // Decode only as many pixels as the box shows: the pictures are 1200 x 670, and a 64 x 64
+          // thumbnail decoded at full size costs ~3 MB of memory each.
+          child: LayoutBuilder(
+            builder: (context, box) => Image.asset(
+              img.url,
+              fit: fit,
+              cacheWidth: decodeWidth(box, MediaQuery.devicePixelRatioOf(context)),
+              semanticLabel: img.alt,
+              errorBuilder: (context, error, stack) =>
+                  ImagePlaceholder(placeholderLabel, radius: radius, fontSize: fontSize, band: band),
+            ),
           ),
         ),
       );
