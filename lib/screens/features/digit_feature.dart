@@ -23,16 +23,22 @@ class _DigitFeatureState extends State<DigitFeature> {
   @override
   Widget build(BuildContext context) => FeatureList(header: widget.header, children: _digitBody());
 
+  /// Bumped on every digit tap; a jump stops as soon as a newer tap has started its own,
+  /// so two quick taps never fight over the scroll position.
+  int _jump = 0;
+
   Future<void> _jumpToDigit(ScrollPosition pos, int digit) async {
+    final jump = ++_jump;
+    bool current() => mounted && jump == _jump;
     final key = _digitKeys[digit];
     if (key.currentContext == null) pos.jumpTo(0);
-    // Each frame awaited here is a chance for the user to leave: stop once this screen is gone,
-    // so the loop never moves a scroll position that has been disposed.
-    while (mounted && key.currentContext == null && pos.pixels < pos.maxScrollExtent) {
+    // Each frame awaited here is a chance for the user to leave or tap another digit: stop then,
+    // so the loop never moves a scroll position that has been disposed or that a newer tap owns.
+    while (current() && key.currentContext == null && pos.pixels < pos.maxScrollExtent) {
       pos.jumpTo(math.min(pos.pixels + pos.viewportDimension, pos.maxScrollExtent));
       await WidgetsBinding.instance.endOfFrame;
     }
-    if (!mounted) return;
+    if (!current()) return;
     final target = key.currentContext;
     if (target != null && target.mounted) {
       await Scrollable.ensureVisible(target, duration: const Duration(milliseconds: 300));
