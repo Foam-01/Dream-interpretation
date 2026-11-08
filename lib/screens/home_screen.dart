@@ -13,6 +13,7 @@ import '../data/sound_numbers.dart';
 import '../state/daily_pick.dart';
 import '../state/load_request.dart';
 import '../theme.dart';
+import '../widgets/error_log_sheet.dart';
 import '../widgets/ui.dart';
 
 const _quick = [
@@ -60,9 +61,13 @@ class HomeScreen extends StatelessWidget {
                       children: [
                         Text(thaiDateLong(now), style: sans(13, color: C.gold)),
                         const SizedBox(height: 2),
-                        Text(
-                          'ทำนายฝัน',
-                          style: serif(26, weight: FontWeight.w800, color: C.goldLight),
+                        // Long-press: hidden error log for testers (F12).
+                        GestureDetector(
+                          onLongPress: () => showErrorLog(context),
+                          child: Text(
+                            'ทำนายฝัน',
+                            style: serif(26, weight: FontWeight.w800, color: C.goldLight),
+                          ),
                         ),
                       ],
                     ),

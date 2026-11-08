@@ -476,6 +476,27 @@ class GoldLoading extends StatelessWidget {
   );
 }
 
+/// Release-build stand-in for a widget that threw while building (ErrorWidget.builder), instead of
+/// Flutter's grey box. Self-contained (own Directionality, no theme lookups) because it can appear
+/// anywhere in the tree; the rest of the screen and the tab bar keep working.
+class BrokenSectionNotice extends StatelessWidget {
+  const BrokenSectionNotice({super.key});
+
+  @override
+  Widget build(BuildContext context) => Directionality(
+    textDirection: TextDirection.ltr,
+    child: Container(
+      padding: const EdgeInsets.all(16),
+      alignment: Alignment.center,
+      child: Text(
+        'แสดงส่วนนี้ไม่ได้ ลองกลับไปแล้วเปิดใหม่อีกครั้ง',
+        textAlign: TextAlign.center,
+        style: sans(14, color: C.caption),
+      ),
+    ),
+  );
+}
+
 /// Short Thai error message with a gold "ลองใหม่" (retry) pill.
 class LoadErrorView extends StatelessWidget {
   final String message;

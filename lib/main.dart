@@ -8,14 +8,34 @@ import 'data/design_data.dart';
 import 'data/dream_repository.dart';
 import 'data/sample_dream_repository.dart';
 import 'screens/opening_screen.dart';
+import 'state/error_log.dart';
 import 'theme.dart';
+import 'widgets/ui.dart';
 
 void main() {
+  installErrorHandlers();
   // Debug builds fail fast on malformed sample data (no-op in release).
   assert(debugValidateDreams());
   runApp(
     MahaDreamApp(repository: repositoryFromEnvironment(const String.fromEnvironment('API_BASE_URL')), opening: true),
   );
+}
+
+/// App-wide error handling (F11):
+/// - framework errors (build, layout, paint) are still shown in the console, and logged;
+/// - errors no one caught (async callbacks, platform) are logged instead of only reaching logcat;
+/// - in release, a widget that fails to build shows a short Thai message instead of a grey box
+///   (debug keeps Flutter's red error screen for developers).
+void installErrorHandlers({bool release = kReleaseMode}) {
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    logError(details.exception, details.stack, context: 'flutter');
+  };
+  PlatformDispatcher.instance.onError = (error, stack) {
+    logError(error, stack, context: 'uncaught');
+    return true;
+  };
+  if (release) ErrorWidget.builder = (_) => const BrokenSectionNotice();
 }
 
 /// `--dart-define=API_BASE_URL=<versioned API root>` (e.g. `http://10.0.2.2:3000/api/v1`)

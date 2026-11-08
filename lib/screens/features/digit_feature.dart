@@ -26,10 +26,13 @@ class _DigitFeatureState extends State<DigitFeature> {
   Future<void> _jumpToDigit(ScrollPosition pos, int digit) async {
     final key = _digitKeys[digit];
     if (key.currentContext == null) pos.jumpTo(0);
-    while (key.currentContext == null && pos.pixels < pos.maxScrollExtent) {
+    // Each frame awaited here is a chance for the user to leave: stop once this screen is gone,
+    // so the loop never moves a scroll position that has been disposed.
+    while (mounted && key.currentContext == null && pos.pixels < pos.maxScrollExtent) {
       pos.jumpTo(math.min(pos.pixels + pos.viewportDimension, pos.maxScrollExtent));
       await WidgetsBinding.instance.endOfFrame;
     }
+    if (!mounted) return;
     final target = key.currentContext;
     if (target != null && target.mounted) {
       await Scrollable.ensureVisible(target, duration: const Duration(milliseconds: 300));

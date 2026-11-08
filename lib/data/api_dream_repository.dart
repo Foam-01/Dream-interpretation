@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'design_data.dart';
 import 'dream_json_parser.dart';
 import 'dream_repository.dart';
+import '../state/error_log.dart';
 import 'http_transport.dart';
 
 /// [DreamRepository] backed by the NestJS API.
@@ -102,7 +103,8 @@ class ApiDreamRepository implements DreamRepository {
       );
     } on FormatException {
       throw const DreamRepositoryException(DreamRepositoryErrorKind.badResponse, 'response is not valid UTF-8');
-    } catch (e) {
+    } catch (e, s) {
+      logError(e, s, context: 'api_transport');
       throw DreamRepositoryException(DreamRepositoryErrorKind.unexpected, e.runtimeType.toString());
     }
 
