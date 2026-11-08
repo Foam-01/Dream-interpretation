@@ -13,7 +13,7 @@ param(
   [Parameter(Mandatory = $true, Position = 0)][ValidateSet('apk', 'appbundle')][string]$Target,
   [Parameter(ValueFromRemainingArguments = $true)][string[]]$Rest
 )
-$ErrorActionPreference = 'Stop'
+# No ErrorActionPreference=Stop: Flutter writes warnings to stderr, which PowerShell 5.1 would treat as fatal.
 Set-Location (Join-Path $PSScriptRoot '..')
 $registrant = 'android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java'
 if (Test-Path $registrant) { Remove-Item $registrant }

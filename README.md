@@ -31,14 +31,20 @@ error when the key is missing.
 3. Bump `version:` in `pubspec.yaml` (the number after `+` must be higher than the last upload).
 4. Build the bundle for Play, with Dart code obfuscated; keep `build/symbols` to read crash reports:
 
-   ```bash
-   flutter build appbundle --release --obfuscate --split-debug-info=build/symbols
+   ```powershell
+   .\scripts\build_release.ps1 appbundle --obfuscate --split-debug-info=build/symbols
    ```
+
+   The script deletes the generated plugin registrant first: after a debug build or test run it lists the
+   dev-only `integration_test` plugin, and a plain `flutter build … --release` reuses it and fails with
+   `package dev.flutter.plugins.integration_test does not exist`. (Without the script: delete
+   `android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java`, then build.)
 
 5. In Play Console, turn on **Play App Signing** on the first upload, so Google keeps the app signing key
    and a lost upload key can be replaced.
 
-For a local test build without the key (never for upload), set `ALLOW_DEBUG_SIGNING=true` first.
+For a local test build without the key (never for upload), set `ALLOW_DEBUG_SIGNING=true` first
+(`$env:ALLOW_DEBUG_SIGNING = 'true'; .\scripts\build_release.ps1 apk`).
 
 ## Branches
 

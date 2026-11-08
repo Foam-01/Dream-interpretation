@@ -32,7 +32,7 @@ and the app builds and runs with crash reporting off.
 ## Checking that it works
 
 1. Build a release APK. Without the upload key, for a test build only:
-   `ALLOW_DEBUG_SIGNING=true flutter build apk --release`
+   `$env:ALLOW_DEBUG_SIGNING = 'true'; .\scripts\build_release.ps1 apk` (see the README)
 2. Install it, open the app, long-press the **ทำนายฝัน** title on Home: the error log sheet opens.
 3. Tap **ทดสอบ**: one non-fatal report marked `manual test` is recorded.
 4. Close and reopen the app (non-fatal reports are uploaded on the next launch). The report shows in the
