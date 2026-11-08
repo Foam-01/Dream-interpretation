@@ -18,7 +18,7 @@ class ApiDreamRepository implements DreamRepository {
 
   final Uri baseUrl;
   final HttpTransport _transport;
-  List<DreamCategory>? _categories;
+  Future<List<DreamCategory>>? _categories;
 
   /// Validates an API base URL: absolute http(s) with a host, no query or
   /// fragment, no credentials, and a path ending in `/api/v1` with `/api/v1`
@@ -51,9 +51,21 @@ class ApiDreamRepository implements DreamRepository {
   );
 
   /// Categories rarely change; a successful answer is kept for the app's lifetime.
+  /// The request itself is shared, so callers that ask at the same time (the search screen asks
+  /// twice when it opens with a category chosen) wait for one request instead of sending two.
+  /// A failed request is forgotten, so a retry asks the server again.
   @override
-  Future<List<DreamCategory>> categories() async =>
-      _categories ??= List.unmodifiable(await _get(_uri(['dream-categories']), parseCategoryList));
+  Future<List<DreamCategory>> categories() {
+    final pending = _categories ??= _get(
+      _uri(['dream-categories']),
+      parseCategoryList,
+    ).then<List<DreamCategory>>(List.unmodifiable);
+    pending.catchError((Object _) {
+      if (identical(_categories, pending)) _categories = null;
+      return const <DreamCategory>[];
+    });
+    return pending;
+  }
 
   @override
   Future<DreamPage> list({

@@ -148,6 +148,24 @@ void main() {
       expect(t.requests, hasLength(1));
     });
 
+    test('callers asking for categories at the same time share one request (F15 I2)', () async {
+      final answer = Completer<HttpResult>();
+      final t = FakeTransport((_) => answer.future);
+      final repo = repoWith(t);
+      final first = repo.categories();
+      final second = repo.categories();
+      answer.complete(
+        json(200, {
+          'data': [
+            {'id': 'animal', 'name': 'สัตว์'},
+          ],
+        }),
+      );
+      expect(await first, const [DreamCategory('animal', 'สัตว์')]);
+      expect(await second, const [DreamCategory('animal', 'สัตว์')]);
+      expect(t.requests, hasLength(1));
+    });
+
     test('a failed category request is not cached', () async {
       var fail = true;
       final t = FakeTransport(
