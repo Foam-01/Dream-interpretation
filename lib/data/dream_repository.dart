@@ -94,7 +94,7 @@ enum DreamRepositoryErrorKind {
   /// [DreamRepository.byId] reports as null). Usually a wrong base URL.
   notFound,
 
-  /// No connection, DNS or TLS failure.
+  /// No connection or DNS failure (a TLS or HTTP protocol failure is [server]).
   network,
 
   /// No response within the time limit.

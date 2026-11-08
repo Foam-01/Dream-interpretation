@@ -367,6 +367,11 @@ void main() {
         repoWith(FakeTransport((_) => throw const TransportException(TransportFailure.network, 'n'))).list(),
         fails(DreamRepositoryErrorKind.network),
       );
+      // TLS / malformed HTTP: the server was reached, so not "no internet" (F11 I3).
+      expect(
+        repoWith(FakeTransport((_) => throw const TransportException(TransportFailure.server, 's'))).list(),
+        fails(DreamRepositoryErrorKind.server),
+      );
       expect(
         repoWith(FakeTransport((_) => throw const FormatException('utf8'))).list(),
         fails(DreamRepositoryErrorKind.badResponse),

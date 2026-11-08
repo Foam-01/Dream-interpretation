@@ -138,6 +138,7 @@ class _SearchScreenState extends State<SearchScreen> {
     final app = AppScope.of(context);
     final cats = [_allCats, for (final c in _categories.value ?? const <DreamCategory>[]) c.name];
     final page = _results.value;
+    final catsFailed = _categories.status == LoadStatus.failure;
 
     return Column(
       children: [
@@ -199,12 +200,14 @@ class _SearchScreenState extends State<SearchScreen> {
                 height: 40 * MediaQuery.textScalerOf(context).scale(14) / 14,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
-                  itemCount: cats.length,
+                  // Categories load apart from the results: if only they fail, say so here with a retry
+                  // instead of silently showing "ทั้งหมด" alone.
+                  itemCount: cats.length + (catsFailed ? 1 : 0),
                   separatorBuilder: (_, _) => const SizedBox(width: 8),
                   itemBuilder: (_, i) => SelectPill(
-                    text: cats[i],
-                    selected: app.cat == cats[i],
-                    onTap: () => app.setCat(cats[i]),
+                    text: i < cats.length ? cats[i] : 'โหลดหมวดไม่สำเร็จ · ลองใหม่',
+                    selected: i < cats.length && app.cat == cats[i],
+                    onTap: () => i < cats.length ? app.setCat(cats[i]) : _categories.retry(),
                     selectedBg: C.gold,
                     selectedFg: C.onGold,
                     bg: Colors.transparent,

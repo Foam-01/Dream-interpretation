@@ -183,6 +183,22 @@ void main() {
       expect(find.text('แมวเซิร์ฟเวอร์'), findsOneWidget);
     });
 
+    testWidgets('categories fail but results load: a retry chip shows and reloads them (F11 I4)', (tester) async {
+      final repo = await openSearch(tester);
+      repo.of('categories').single.fail(DreamRepositoryErrorKind.network);
+      repo.of('list').last.complete(pageOf([remote('a', 'แมวเซิร์ฟเวอร์')]));
+      await tester.pump();
+      expect(find.text('แมวเซิร์ฟเวอร์'), findsOneWidget);
+      expect(find.text('โหลดหมวดไม่สำเร็จ · ลองใหม่'), findsOneWidget);
+      await tester.tap(find.text('โหลดหมวดไม่สำเร็จ · ลองใหม่'));
+      await tester.pump();
+      repo.of('categories').last.complete([animal, body]);
+      await tester.pump();
+      // The result row also shows its category, so look for the chip of the other one.
+      expect(find.text(animal.name), findsOneWidget);
+      expect(find.text('โหลดหมวดไม่สำเร็จ · ลองใหม่'), findsNothing);
+    });
+
     testWidgets('typing is debounced; only the last query is sent', (tester) async {
       final repo = await openSearch(tester);
       repo.of('categories').single.complete([animal, body]);
@@ -245,6 +261,32 @@ void main() {
       await tester.pump();
       expect(find.text('ไม่พบความฝันนี้ ลองคำอื่น'), findsOneWidget);
       expect(find.text('พบ 0 รายการ'), findsOneWidget);
+    });
+
+    testWidgets('a query longer than the API allows shows 0 results without a request', (tester) async {
+      final repo = await openSearch(tester);
+      repo.of('categories').single.complete([animal, body]);
+      repo.of('list').last.complete(pageOf([]));
+      await tester.pump();
+      final before = repo.of('list').length;
+      await tester.enterText(find.byType(TextField), 'ง' * (DreamRepository.maxQueryLength + 1));
+      await tester.pump(searchDebounce);
+      expect(repo.of('list'), hasLength(before), reason: 'the API would answer 400; nothing is sent');
+      expect(find.text('พบ 0 รายการ'), findsOneWidget);
+      expect(find.text('ไม่พบความฝันนี้ ลองคำอื่น'), findsOneWidget);
+      expect(spinner, findsNothing);
+    });
+
+    testWidgets('a rejected search (400) asks for other words; retry searches again', (tester) async {
+      final repo = await openSearch(tester);
+      repo.of('categories').single.complete([animal, body]);
+      repo.of('list').last.fail(DreamRepositoryErrorKind.invalidRequest);
+      await tester.pump();
+      expect(find.text('ค้นหาไม่ได้ ลองพิมพ์คำอื่น'), findsOneWidget);
+      final before = repo.of('list').length;
+      await tester.tap(retry);
+      await tester.pump();
+      expect(repo.of('list'), hasLength(before + 1));
     });
 
     testWidgets('leaving the screen cancels the debounce and ignores late responses', (tester) async {

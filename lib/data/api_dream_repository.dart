@@ -97,10 +97,11 @@ class ApiDreamRepository implements DreamRepository {
     try {
       res = await _transport.get(uri);
     } on TransportException catch (e) {
-      throw DreamRepositoryException(
-        e.failure == TransportFailure.timeout ? DreamRepositoryErrorKind.timeout : DreamRepositoryErrorKind.network,
-        e.message,
-      );
+      throw DreamRepositoryException(switch (e.failure) {
+        TransportFailure.timeout => DreamRepositoryErrorKind.timeout,
+        TransportFailure.network => DreamRepositoryErrorKind.network,
+        TransportFailure.server => DreamRepositoryErrorKind.server,
+      }, e.message);
     } on FormatException {
       throw const DreamRepositoryException(DreamRepositoryErrorKind.badResponse, 'response is not valid UTF-8');
     } catch (e, s) {
