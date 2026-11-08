@@ -235,7 +235,7 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Expanded(
-                child: Text('ฝันยอดฮิตวันนี้', style: serif(17, color: C.accent)),
+                child: Text('ฝันแนะนำวันนี้', style: serif(17, color: C.accent)),
               ),
               Semantics(
                 button: true,
@@ -312,7 +312,7 @@ class _LockTile extends StatelessWidget {
 }
 
 /// Card with image placeholder + dream name + number (home hot list, digit screen).
-/// "ฝันยอดฮิตวันนี้": ten dreams drawn at random from those with a picture, a new draw every day at 04:00,
+/// "ฝันแนะนำวันนี้": ten dreams drawn at random from those with a picture, a new draw every day at 04:00,
 /// in one scrolling row (as in the design).
 const _count = 10;
 
@@ -325,30 +325,35 @@ class _HotDreams extends StatefulWidget {
 
 // Kept alive inside Home's ListView so scrolling it off screen does not refetch.
 class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMixin {
-  final _request = LoadRequest<DreamPage>();
+  final _request = LoadRequest<List<DreamSummary>>();
   bool _started = false;
   Timer? _rollover;
+  late DreamRepository _repo;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_started) return;
     _started = true;
-    final repo = AppScope.of(context).repository;
-    _request.run(() => repo.listAll());
+    _repo = AppScope.of(context).repository;
+    _load();
     _request.addListener(_changed);
     _scheduleRollover();
   }
 
+  /// The day's draw (one request in API mode); the clock is read when the request runs, so Retry
+  /// after a rollover asks for the new day.
+  void _load() => _request.run(() => _repo.daily(widget.clock(), limit: _count));
+
   void _changed() => setState(() {});
 
-  // Redraw at the next 04:00 if Home is still alive then.
+  // Fetch the new day's draw at the next 04:00 if Home is still alive then.
   void _scheduleRollover() {
     final now = widget.clock();
     _rollover?.cancel();
     _rollover = Timer(nextDailyRollover(now).difference(now), () {
       if (!mounted) return;
-      setState(() {});
+      _load();
       _scheduleRollover();
     });
   }
@@ -366,20 +371,14 @@ class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMix
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final all = _request.value?.items ?? const <DreamSummary>[];
-    final pictured = [
-      for (final d in all)
-        if (dreamImageFor(d.id, d.image) != null) d,
-    ];
-    // A catalogue without any pictures still gets a daily list.
-    final items = dailyPick(pictured.isEmpty ? all : pictured, widget.clock(), _count, (d) => d.id);
+    final items = _request.value ?? const <DreamSummary>[];
     return switch (_request.status) {
       LoadStatus.idle || LoadStatus.loading => const GoldLoading(height: 136),
       LoadStatus.failure => LoadErrorView(message: loadErrorMessage(_request.error), onRetry: _request.retry),
       LoadStatus.success when items.isEmpty => Padding(
         padding: const EdgeInsets.symmetric(vertical: 24),
         child: Text(
-          'ยังไม่มีความฝันยอดฮิต',
+          'ยังไม่มีความฝันแนะนำ',
           textAlign: TextAlign.center,
           style: sans(14, color: C.caption),
         ),

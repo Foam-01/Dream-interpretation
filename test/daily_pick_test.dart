@@ -1,4 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:maha_dream/data/dream_images_k.dart';
+import 'package:maha_dream/data/dream_repository.dart';
+import 'package:maha_dream/data/sample_dream_repository.dart';
 import 'package:maha_dream/state/daily_pick.dart';
 
 // Thai wall-clock time (UTC+7) as a UTC moment, so tests do not depend on the machine's time zone.
@@ -41,8 +45,20 @@ void main() {
     expect(dailyPick(items.reversed.toList(), day, 10, id), dailyPick(items, day, 10, id));
   });
 
+  // The backend pins the same draw (backend/src/dreams/daily-pick.spec.ts): API and offline mode agree.
   test('the draw is pinned, so any platform or SDK change that alters it fails here', () {
     expect(dailyPick(items, th(2026, 10, 30, 9), 3, id), _pinned);
+  });
+
+  test('offline repository: ten distinct pictured dreams, the same all day, answered at once', () async {
+    const repo = SampleDreamRepository();
+    final morning = await repo.daily(th(2026, 11, 8, 9));
+    final night = await repo.daily(th(2026, 11, 9, 3, 59));
+    expect(morning, hasLength(10));
+    expect(morning.map((d) => d.id).toSet(), hasLength(10));
+    expect(morning.every((d) => dreamImageFor(d.id, d.image) != null), isTrue);
+    expect(night.map((d) => d.id), morning.map((d) => d.id));
+    expect(repo.daily(th(2026, 11, 8, 9)), isA<SynchronousFuture<List<DreamSummary>>>());
   });
 
   test('fewer items than requested returns them all', () {

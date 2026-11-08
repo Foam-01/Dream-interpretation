@@ -71,6 +71,26 @@ export class DreamsRepository {
     return { items, total: keys.length };
   }
 
+  /** Ids of every public dream (one short column), for the daily draw. */
+  async findPublicIds(): Promise<string[]> {
+    const rows = await this.prisma.dream.findMany({
+      where: { contentStatus: { in: PUBLIC_STATUSES } },
+      select: { id: true },
+    });
+    return rows.map((r) => r.id);
+  }
+
+  /** These dreams in the given order; ids that are gone (or no longer public) are left out. */
+  async findSummariesByIds(ids: string[]): Promise<DreamWithCategory[]> {
+    if (ids.length === 0) return [];
+    const rows = await this.prisma.dream.findMany({
+      where: { id: { in: ids }, contentStatus: { in: PUBLIC_STATUSES } },
+      include: { category: true },
+    });
+    const byId = new Map(rows.map((r) => [r.id, r]));
+    return ids.map((id) => byId.get(id)).filter((r): r is DreamWithCategory => r !== undefined);
+  }
+
   findById(id: string): Promise<DreamWithRelations | null> {
     return this.prisma.dream.findFirst({
       where: { id, contentStatus: { in: PUBLIC_STATUSES } },

@@ -159,6 +159,13 @@ abstract interface class DreamRepository {
   /// The dream with this stable id, or null when none exists.
   Future<Dream?> byId(String id);
 
+  /// "ฝันยอดฮิตวันนี้": [limit] dreams drawn for the pick day of [now] (turns over at 04:00 Thai time,
+  /// see `dailyPickDay`), the same draw for every caller of that day. One request in API mode
+  /// (`GET /dreams/daily`) instead of reading the whole catalogue.
+  Future<List<DreamSummary>> daily(DateTime now, {int limit = dailyCount});
+
+  static const dailyCount = 10;
+
   /// Releases resources (e.g. open connections). The repository must not be
   /// used afterwards.
   void close();

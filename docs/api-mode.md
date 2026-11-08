@@ -92,7 +92,7 @@ needs no client secret.
 
 | Screen | Request | Notes |
 |---|---|---|
-| Home "ฝันยอดฮิตวันนี้" | `GET /dreams?limit=5` | first five in catalogue order |
+| Home "ฝันยอดฮิตวันนี้" | `GET /dreams/daily?date=YYYY-MM-DD&limit=10` | the day's draw (date = pick day, turns over at 04:00 Thai time); one request |
 | Search list | `GET /dreams?q=&category=&limit=100` | `q` trimmed; case-sensitive substring of name or short summary; one page |
 | Search category chips | `GET /dream-categories` | Thai labels from the API; filter sends the slug id; cached after the first success |
 | Dream detail | `GET /dreams/<id>` | stable slug id; `DREAM_NOT_FOUND` shows "ไม่พบความฝันนี้" |

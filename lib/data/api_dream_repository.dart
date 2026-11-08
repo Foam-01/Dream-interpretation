@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'design_data.dart';
 import 'dream_json_parser.dart';
 import 'dream_repository.dart';
+import '../state/daily_pick.dart';
 import '../state/error_log.dart';
 import 'http_transport.dart';
 
@@ -99,6 +100,16 @@ class ApiDreamRepository implements DreamRepository {
       if (e.code == 'DREAM_NOT_FOUND') return null;
       rethrow;
     }
+  }
+
+  /// The server draws (backend/src/dreams/daily-pick.ts, same algorithm as `dailyPick`); the app only
+  /// names the day, so its 04:00 Thai-time rollover stays the single rule.
+  @override
+  Future<List<DreamSummary>> daily(DateTime now, {int limit = DreamRepository.dailyCount}) {
+    final day = dailyPickDay(now);
+    String two(int n) => n.toString().padLeft(2, '0');
+    final date = '${day.year.toString().padLeft(4, '0')}-${two(day.month)}-${two(day.day)}';
+    return _get(_uri(['dreams', 'daily'], {'date': date, 'limit': '$limit'}), parseDailyDreams);
   }
 
   @override

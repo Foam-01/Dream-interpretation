@@ -56,6 +56,10 @@ class ControlledRepository implements DreamRepository {
   Future<Dream?> byId(String id) => _call('byId', {'id': id});
 
   @override
+  Future<List<DreamSummary>> daily(DateTime now, {int limit = DreamRepository.dailyCount}) =>
+      _call('daily', {'now': now, 'limit': limit});
+
+  @override
   void close() {}
 }
 
@@ -113,12 +117,11 @@ void main() {
     testWidgets('loading, then remote hot legacySampleDreams', (tester) async {
       final repo = await pumpApp(tester);
       expect(spinner, findsOneWidget);
-      final call = repo.of('list').single;
-      expect(call.args['limit'], DreamRepository.maxPageSize, reason: 'draws from every dream');
-      // Home draws only from dreams with a picture.
-      call.complete(
-        pageOf([remote('a', 'แมวเซิร์ฟเวอร์', image: pic), remote('b', 'นกเซิร์ฟเวอร์', two: '09', image: pic)]),
-      );
+      // One request for the day's draw (F15 I1), not the whole catalogue.
+      expect(repo.of('list'), isEmpty);
+      final call = repo.of('daily').single;
+      expect(call.args['limit'], 10);
+      call.complete([remote('a', 'แมวเซิร์ฟเวอร์', image: pic), remote('b', 'นกเซิร์ฟเวอร์', two: '09', image: pic)]);
       await tester.pump();
       expect(spinner, findsNothing);
       expect(find.text('แมวเซิร์ฟเวอร์'), findsOneWidget);
@@ -128,41 +131,41 @@ void main() {
 
     testWidgets('error shows retry (no sample fallback); retry succeeds', (tester) async {
       final repo = await pumpApp(tester);
-      repo.of('list').single.fail(DreamRepositoryErrorKind.network);
+      repo.of('daily').single.fail(DreamRepositoryErrorKind.network);
       await tester.pump();
       expect(find.text('ไม่มีอินเทอร์เน็ต ตรวจการเชื่อมต่อแล้วลองใหม่'), findsOneWidget);
       expect(find.text('งู'), findsNothing);
       await tester.tap(retry);
       await tester.pump();
       expect(spinner, findsOneWidget);
-      expect(repo.of('list'), hasLength(2));
-      repo.of('list').last.complete(pageOf([remote('a', 'แมวเซิร์ฟเวอร์', image: pic)]));
+      expect(repo.of('daily'), hasLength(2));
+      repo.of('daily').last.complete([remote('a', 'แมวเซิร์ฟเวอร์', image: pic)]);
       await tester.pump();
       expect(find.text('แมวเซิร์ฟเวอร์'), findsOneWidget);
     });
 
     testWidgets('empty result', (tester) async {
       final repo = await pumpApp(tester);
-      repo.of('list').single.complete(pageOf([]));
+      repo.of('daily').single.complete(<DreamSummary>[]);
       await tester.pump();
-      expect(find.text('ยังไม่มีความฝันยอดฮิต'), findsOneWidget);
+      expect(find.text('ยังไม่มีความฝันแนะนำ'), findsOneWidget);
     });
 
     testWidgets('rebuilds do not refetch', (tester) async {
       final repo = await pumpApp(tester);
-      repo.of('list').single.complete(pageOf([remote('a', 'แมวเซิร์ฟเวอร์')]));
+      repo.of('daily').single.complete([remote('a', 'แมวเซิร์ฟเวอร์')]);
       await tester.pump();
       final app = controller(tester);
       app.setCat(app.cat); // same value, still notifies AppScope → rebuild
       await tester.pump();
-      expect(repo.of('list'), hasLength(1));
+      expect(repo.of('daily'), hasLength(1));
     });
   });
 
   group('Search (API mode)', () {
     Future<ControlledRepository> openSearch(WidgetTester tester) async {
       final repo = await pumpApp(tester);
-      repo.of('list').single.complete(pageOf([])); // home
+      repo.of('daily').single.complete(<DreamSummary>[]); // home
       await tester.pump();
       controller(tester).goSearch();
       await tester.pump();
@@ -308,7 +311,7 @@ void main() {
   group('Result (API mode)', () {
     Future<ControlledRepository> openDream(WidgetTester tester, String id) async {
       final repo = await pumpApp(tester);
-      repo.of('list').single.complete(pageOf([]));
+      repo.of('daily').single.complete(<DreamSummary>[]);
       await tester.pump();
       controller(tester).openDream(id);
       await tester.pump();

@@ -132,6 +132,28 @@ describe('Dreams API (e2e, real PostgreSQL)', () => {
       expect(res.body).toEqual({ error: { code: 'DREAM_NOT_FOUND', message: 'Dream "unicorn" not found' } });
     });
 
+    it('GET /dreams/daily returns the same draw for the same date, as summaries', async () => {
+      const first = await http().get('/api/v1/dreams/daily?date=2026-11-08&limit=3').expect(200);
+      const again = await http().get('/api/v1/dreams/daily?date=2026-11-08&limit=3').expect(200);
+      expect(first.body.meta).toEqual({ date: '2026-11-08' });
+      expect(first.body.data).toHaveLength(3);
+      expect(again.body.data).toEqual(first.body.data);
+      expect(first.body.data[0]).toHaveProperty('numbers');
+      expect(first.body.data[0]).not.toHaveProperty('meaning');
+      const all = await http().get('/api/v1/dreams/daily?date=2026-11-08&limit=20').expect(200);
+      expect(all.body.data).toHaveLength(10); // only 10 dreams are seeded
+      expect(new Set(all.body.data.map((d: { id: string }) => d.id)).size).toBe(10);
+    });
+
+    it('GET /dreams/daily validates date and limit', async () => {
+      await http().get('/api/v1/dreams/daily').expect(400);
+      await http().get('/api/v1/dreams/daily?date=2026-02-30').expect(400);
+      await http().get('/api/v1/dreams/daily?date=08-11-2026').expect(400);
+      await http().get('/api/v1/dreams/daily?date=2026-11-08&limit=21').expect(400);
+      const res = await http().get('/api/v1/dreams/daily?date=2026-11-08&extra=1').expect(400);
+      expect(res.body.error.code).toBe('VALIDATION_ERROR');
+    });
+
     it('GET /dream-categories lists categories in app order', async () => {
       const res = await http().get('/api/v1/dream-categories').expect(200);
       expect(res.body.data).toEqual([

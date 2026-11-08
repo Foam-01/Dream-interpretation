@@ -32,7 +32,9 @@ import 'category_thung.dart';
 import 'category_w.dart';
 import 'category_y.dart';
 import 'category_yak.dart';
+import '../state/daily_pick.dart';
 import 'design_data.dart';
+import 'dream_images_k.dart';
 import 'dream_repository.dart';
 
 /// Categories of the bundled data, in app order. Must match `dreamCats` (minus "ทั้งหมด") and the
@@ -140,6 +142,19 @@ class SampleDreamRepository implements DreamRepository {
         : matches.sublist(start, (start + limit).clamp(0, matches.length));
     return DreamPage(items: items, page: page, limit: limit, total: matches.length);
   }
+
+  /// Drawn on the device from the dreams that have a picture (bundled data can tell; the API cannot,
+  /// since most pictures ship with the app). A catalogue without any pictures still gets a daily list.
+  @override
+  Future<List<DreamSummary>> daily(DateTime now, {int limit = DreamRepository.dailyCount}) => _guard(() {
+    final byName = {for (final c in categoryList) c.name: c};
+    final all = [for (final d in source) DreamSummary.fromDream(d, category: byName[d.cat]!)];
+    final pictured = [
+      for (final d in all)
+        if (dreamImageFor(d.id, d.image) != null) d,
+    ];
+    return dailyPick(pictured.isEmpty ? all : pictured, now, limit, (d) => d.id);
+  });
 
   @override
   Future<Dream?> byId(String id) => _guard(() {

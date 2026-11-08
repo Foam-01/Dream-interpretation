@@ -1,4 +1,5 @@
 import { ApiException } from '../common/errors/api-error';
+import { DailyDreamsQueryDto } from './dto/daily-dreams-query.dto';
 import { ListDreamsQueryDto } from './dto/list-dreams-query.dto';
 import { DreamsRepository } from './dreams.repository';
 import { DreamsService, totalPages } from './dreams.service';
@@ -41,7 +42,12 @@ function query(over: Partial<ListDreamsQueryDto> = {}): ListDreamsQueryDto {
 }
 
 describe('DreamsService', () => {
-  let repo: jest.Mocked<Pick<DreamsRepository, 'findPage' | 'findById' | 'findCategories' | 'categoryExists'>>;
+  let repo: jest.Mocked<
+    Pick<
+      DreamsRepository,
+      'findPage' | 'findById' | 'findCategories' | 'categoryExists' | 'findPublicIds' | 'findSummariesByIds'
+    >
+  >;
   let service: DreamsService;
 
   beforeEach(() => {
@@ -50,6 +56,8 @@ describe('DreamsService', () => {
       findById: jest.fn(),
       findCategories: jest.fn().mockResolvedValue([category]),
       categoryExists: jest.fn().mockResolvedValue(true),
+      findPublicIds: jest.fn().mockResolvedValue(['tooth-falling-out']),
+      findSummariesByIds: jest.fn().mockResolvedValue([tooth]),
     };
     service = new DreamsService(repo as unknown as DreamsRepository);
   });
@@ -115,6 +123,23 @@ describe('DreamsService', () => {
     const err = await service.getById('missing').catch((e: unknown) => e);
     expect(err).toBeInstanceOf(ApiException);
     expect(err).toMatchObject({ status: 404, code: 'DREAM_NOT_FOUND' });
+  });
+
+  it('daily: draws ids for the date and returns their summaries with the date', async () => {
+    const ids = Array.from({ length: 114 }, (_, i) => `d${String(i).padStart(3, '0')}`);
+    repo.findPublicIds.mockResolvedValue(ids);
+    const res = await service.daily(Object.assign(new DailyDreamsQueryDto(), { date: '2026-10-30', limit: 3 }));
+    // Same draw as the app pins in test/daily_pick_test.dart.
+    expect(repo.findSummariesByIds).toHaveBeenCalledWith(['d001', 'd016', 'd062']);
+    expect(res.meta).toEqual({ date: '2026-10-30' });
+    expect(res.data[0]).toMatchObject({ id: 'tooth-falling-out', numbers: { twoDigit: ['08', '80'] } });
+  });
+
+  it('daily: rejects a date that does not exist with VALIDATION_ERROR (400)', async () => {
+    await expect(
+      service.daily(Object.assign(new DailyDreamsQueryDto(), { date: '2026-02-30', limit: 10 })),
+    ).rejects.toMatchObject({ status: 400, code: 'VALIDATION_ERROR' });
+    expect(repo.findPublicIds).not.toHaveBeenCalled();
   });
 
   it('lists categories in repository order', async () => {

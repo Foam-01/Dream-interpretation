@@ -393,7 +393,7 @@ void main() {
         await pumpApp(tester, textScale: scale);
         // Home is a lazy list: scroll the page until the hot row is built.
         // The hot list is a daily random draw, so check whichever card comes first.
-        await scrollTo(tester, find.text('ฝันยอดฮิตวันนี้'));
+        await scrollTo(tester, find.text('ฝันแนะนำวันนี้'));
         // The row now sits mid-page and may still be loading when its title appears.
         await tester.pumpAndSettle();
         await scrollTo(tester, find.byType(DreamCard).first);

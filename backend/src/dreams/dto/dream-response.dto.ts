@@ -95,6 +95,15 @@ export class DreamDetailResponseDto {
   @ApiProperty({ type: DreamDetailDto }) data: DreamDetailDto;
 }
 
+export class DailyMetaDto {
+  @ApiProperty({ example: '2026-11-08' }) date: string;
+}
+
+export class DailyDreamsResponseDto {
+  @ApiProperty({ type: [DreamSummaryDto], description: "The day's draw, in draw order" }) data: DreamSummaryDto[];
+  @ApiProperty({ type: DailyMetaDto }) meta: DailyMetaDto;
+}
+
 export class CategoryListResponseDto {
   @ApiProperty({ type: [CategoryDto] }) data: CategoryDto[];
 }
