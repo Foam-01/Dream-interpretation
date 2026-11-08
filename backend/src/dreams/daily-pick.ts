@@ -1,5 +1,5 @@
 /**
- * "ฝันยอดฮิตวันนี้": a fixed random draw per day, the same for every caller.
+ * "ฝันเด่นวันนี้": a fixed random draw per day, the same for every caller.
  *
  * Must stay identical to the app's `lib/state/daily_pick.dart` (`dailyPick`): ids in plain code-unit order,
  * Mulberry32 seeded with yyyymmdd, partial Fisher–Yates over the first `count` slots. Both sides pin the

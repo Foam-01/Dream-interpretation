@@ -235,7 +235,7 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Expanded(
-                child: Text('ฝันแนะนำวันนี้', style: serif(17, color: C.accent)),
+                child: Text('ฝันเด่นวันนี้', style: serif(17, color: C.accent)),
               ),
               Semantics(
                 button: true,
@@ -312,7 +312,7 @@ class _LockTile extends StatelessWidget {
 }
 
 /// Card with image placeholder + dream name + number (home hot list, digit screen).
-/// "ฝันแนะนำวันนี้": ten dreams drawn at random from those with a picture, a new draw every day at 04:00,
+/// "ฝันเด่นวันนี้": ten dreams drawn at random from those with a picture, a new draw every day at 04:00,
 /// in one scrolling row (as in the design).
 const _count = 10;
 
@@ -378,7 +378,7 @@ class _HotDreamsState extends State<_HotDreams> with AutomaticKeepAliveClientMix
       LoadStatus.success when items.isEmpty => Padding(
         padding: const EdgeInsets.symmetric(vertical: 24),
         child: Text(
-          'ยังไม่มีความฝันแนะนำ',
+          'ยังไม่มีความฝันเด่น',
           textAlign: TextAlign.center,
           style: sans(14, color: C.caption),
         ),

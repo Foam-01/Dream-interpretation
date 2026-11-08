@@ -80,7 +80,7 @@ needs no client secret.
 
 **Release smoke checklist** (device or emulator):
 
-1. Home shows "ฝันยอดฮิตวันนี้" cards from the API.
+1. Home shows "ฝันเด่นวันนี้" cards from the API.
 2. Search lists 10 dreams, the "สัตว์" chip shows 4, and nonsense text shows "ไม่พบความฝันนี้ ลองคำอื่น".
 3. ฟันหลุด shows `08 · 80` / `098 · 809`, and คนตาย shows `09 · 90` / `090 · 900`.
 4. With flight mode on, the screens show "เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ …" and "ลองใหม่", never sample cards.
@@ -92,7 +92,7 @@ needs no client secret.
 
 | Screen | Request | Notes |
 |---|---|---|
-| Home "ฝันยอดฮิตวันนี้" | `GET /dreams/daily?date=YYYY-MM-DD&limit=10` | the day's draw (date = pick day, turns over at 04:00 Thai time); one request |
+| Home "ฝันเด่นวันนี้" | `GET /dreams/daily?date=YYYY-MM-DD&limit=10` | the day's draw (date = pick day, turns over at 04:00 Thai time); one request |
 | Search list | `GET /dreams?q=&category=&limit=100` | `q` trimmed; case-sensitive substring of name or short summary; one page |
 | Search category chips | `GET /dream-categories` | Thai labels from the API; filter sends the slug id; cached after the first success |
 | Dream detail | `GET /dreams/<id>` | stable slug id; `DREAM_NOT_FOUND` shows "ไม่พบความฝันนี้" |

@@ -37,7 +37,7 @@ export class DreamsService {
     return { data: items.map(toDreamSummary), meta: { page, limit, total, totalPages: totalPages(total, limit) } };
   }
 
-  /** "ฝันยอดฮิตวันนี้": the day's fixed random draw of public dreams (see daily-pick.ts). */
+  /** "ฝันเด่นวันนี้": the day's fixed random draw of public dreams (see daily-pick.ts). */
   async daily(query: DailyDreamsQueryDto): Promise<DailyDreamsResponseDto> {
     const seed = dailySeed(query.date);
     if (seed === null) {

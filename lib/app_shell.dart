@@ -46,7 +46,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   bool? _portraitOnly;
 
   /// The day the pages were built for: the calendar date (next draw, lock numbers) and the daily-pick
-  /// day that turns over at 04:00 Thai time (ฝันแนะนำวันนี้).
+  /// day that turns over at 04:00 Thai time (ฝันเด่นวันนี้).
   late String _day = _dayOf(widget.clock());
   static String _dayOf(DateTime t) => '${DateTime(t.year, t.month, t.day)}|${dailyPickDay(t)}';
 

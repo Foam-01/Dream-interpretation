@@ -148,7 +148,7 @@ void main() {
       final repo = await pumpApp(tester);
       repo.of('daily').single.complete(<DreamSummary>[]);
       await tester.pump();
-      expect(find.text('ยังไม่มีความฝันแนะนำ'), findsOneWidget);
+      expect(find.text('ยังไม่มีความฝันเด่น'), findsOneWidget);
     });
 
     testWidgets('rebuilds do not refetch', (tester) async {
