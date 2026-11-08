@@ -3,6 +3,8 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/foundation.dart';
 
+import 'crash_reporter.dart';
+
 /// One recorded error: what failed, where, and when. No user input is stored here.
 class ErrorRecord {
   final DateTime time;
@@ -38,10 +40,21 @@ class ErrorLog {
   static String report() => _records.map((r) => '$r${r.stack == null ? '' : '\n${r.stack}'}').join('\n\n');
 }
 
-/// The one place errors are recorded, so a crash reporter can be plugged in here later
-/// without touching the call sites. Logs only: it never rethrows or changes what the user sees.
-void logError(Object error, StackTrace? stack, {required String context, DateTime Function() now = DateTime.now}) {
+/// The one place errors are recorded: kept on the device ([ErrorLog]) and, on release builds with
+/// Firebase, sent to Crashlytics through [crashReporter] (network and timeout failures stay local).
+/// [fatal] marks errors no one caught. It never rethrows or changes what the user sees.
+void logError(
+  Object error,
+  StackTrace? stack, {
+  required String context,
+  bool fatal = false,
+  DateTime Function() now = DateTime.now,
+}) {
   ErrorLog.add(ErrorRecord(now(), context, '$error', stack));
   developer.log('$context: $error', name: 'maha_dream', error: error, stackTrace: stack, level: 1000);
   if (kDebugMode) debugPrint('[$context] $error');
+  if (worthReporting(error)) {
+    // Fire and forget: a failing reporter must not raise a new error from inside error handling.
+    crashReporter.recordError(error, stack, fatal: fatal, reason: context).catchError((_) {});
+  }
 }

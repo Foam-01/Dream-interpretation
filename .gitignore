@@ -62,3 +62,6 @@ AGENTS.md
 .claude/skills/
 .agents/skills/
 skills-lock.json
+
+# Firebase config for this app (Crashlytics); download from the Firebase console, see README
+android/app/google-services.json

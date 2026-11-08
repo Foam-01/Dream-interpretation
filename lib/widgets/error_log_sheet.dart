@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../state/crash_reporter.dart';
 import '../state/error_log.dart';
 import '../theme.dart';
 
@@ -49,6 +50,23 @@ class _ErrorLogSheetState extends State<ErrorLogSheet> {
                             }
                           },
                     child: Text('คัดลอก', style: sans(14, color: C.goldLight)),
+                  ),
+                  // Sends one marked non-fatal report, to check Crashlytics end to end on a release build.
+                  TextButton(
+                    onPressed: () {
+                      crashReporter
+                          .recordError(
+                            StateError('รายงานทดสอบจากหน้าบันทึกข้อผิดพลาด'),
+                            StackTrace.current,
+                            fatal: false,
+                            reason: 'manual test',
+                          )
+                          .catchError((_) {});
+                      ScaffoldMessenger.maybeOf(
+                        context,
+                      )?.showSnackBar(const SnackBar(content: Text('ส่งรายงานทดสอบแล้ว (ถ้าเปิด Crashlytics อยู่)')));
+                    },
+                    child: Text('ทดสอบ', style: sans(14, color: C.goldLight)),
                   ),
                   TextButton(
                     onPressed: records.isEmpty ? null : () => setState(ErrorLog.clear),
