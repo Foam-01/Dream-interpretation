@@ -45,6 +45,38 @@ For a local test build without the key (never for upload), set `ALLOW_DEBUG_SIGN
 `serve_dev` (development) → merge into `uat` (tests pass) → merge into `prod` (released), then tag the
 version on `prod` (e.g. `v1.0.0`).
 
+## Running tests
+
+CI (`.github/workflows/ci.yml`) runs on pull requests and on pushes to `main`, `serve_dev`, `uat` and `prod`:
+`dart format` check, `flutter analyze`, `flutter test`, and the backend steps below.
+
+App (from the repository root):
+
+```bash
+dart format --output=none --set-exit-if-changed lib test   # same check as CI
+flutter analyze
+flutter test                                               # unit, widget and golden tests
+```
+
+- Golden images live in `test/golden/goldens/`. After an intended visual change, update only the goldens of the
+  screens you changed (`flutter test <file> --update-goldens --plain-name "<test>"`) and review them before
+  committing. Failed comparisons are written to `test/golden/failures/` (git-ignored).
+- The full layout check (10 screen sizes × 5 text sizes) is not part of CI; run it before a release:
+  `flutter test test/golden/release_layout_test.dart --dart-define=FULL_LAYOUT=true`
+- `test/live_api_contract_test.dart` is skipped unless `LIVE_API_BASE_URL` points at a running backend.
+- On-device smoke test (needs a running emulator or phone; not run in CI):
+  `flutter test integration_test -d <device id>` (`flutter devices` lists the ids).
+
+Backend (from `backend/`; the e2e tests start their own throwaway PostgreSQL):
+
+```bash
+npm ci
+npm run format:check
+npm run lint
+npm test
+npm run test:e2e
+```
+
 ## Getting Started
 
 This project is built with Flutter.
