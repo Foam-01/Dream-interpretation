@@ -63,6 +63,8 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(height: 2),
                         // Long-press: hidden error log for testers (F12).
                         GestureDetector(
+                          // Testers only: not announced to screen readers (F23).
+                          excludeFromSemantics: true,
                           onLongPress: () => showErrorLog(context),
                           child: Text(
                             'ทำนายฝัน',
@@ -76,6 +78,8 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 18),
               Semantics(
+                // Its own node, so TalkBack reads "ค้นหาความฝัน" apart from the date and title (F23).
+                container: true,
                 button: true,
                 label: 'ค้นหาความฝัน',
                 child: GestureDetector(
