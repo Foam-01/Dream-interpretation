@@ -36,6 +36,7 @@ import '../state/daily_pick.dart';
 import 'design_data.dart';
 import 'dream_images_k.dart';
 import 'dream_repository.dart';
+import 'number_search.dart';
 
 /// Categories of the bundled data, in app order. Must match `dreamCats` (minus "ทั้งหมด") and the
 /// backend's content categories (backend/prisma/seed-data.ts); both are checked by tests.
@@ -105,12 +106,12 @@ class SampleDreamRepository implements DreamRepository {
   }) => _guard(() => _list(q, categoryId, page, limit, sort));
 
   /// Same rule as the API: name or short contains the query, an alias equals it, or it is one of the
-  /// dream's lucky numbers (people often remember the number, e.g. 46).
+  /// dream's lucky numbers (people often remember the number, e.g. 46; "8" also finds 08).
   static bool _matches(Dream d, String q) =>
       d.name.contains(q) ||
       d.short.contains(q) ||
       d.aliases.contains(q) ||
-      d.numbers.twoDigit.contains(q) ||
+      d.numbers.twoDigit.contains(padNumberQuery(q, 2)) ||
       d.numbers.threeDigit.contains(q);
 
   DreamPage _list(String? q, String? categoryId, int page, int limit, DreamSort sort) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/pae_numbers.dart';
 import '../../theme.dart';
+import '../../data/number_search.dart';
 import 'picture_grid.dart';
 
 /// Menu 6: the book's 1,000 pae kong pictures 21 a page with range chips; the search box looks
@@ -16,7 +17,8 @@ class PaeFeature extends StatelessWidget {
     items: paeNumbers,
     rangeSize: 100,
     rangeLabel: (p) => p.number,
-    matches: (p, q) => p.name.contains(q) || p.number == q || p.lucky == q,
+    // "10" finds picture 010; the three-digit lucky number is compared as typed (see padNumberQuery).
+    matches: (p, q) => p.name.contains(q) || p.number == padNumberQuery(q, 3) || p.lucky == q,
     searchKey: const ValueKey('pae-search'),
     hint: 'ค้นหาสิ่งที่ฝัน เช่น ม้า หรือเลข',
     unit: 'ภาพ',

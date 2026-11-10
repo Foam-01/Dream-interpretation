@@ -94,4 +94,19 @@ void main() {
     await expectPagerLabel(tester, 'หน้า 1 / 5');
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('a number without its 0 in front still finds it: "5" finds 05 and its pair 89', (tester) async {
+    await openAnimals(tester);
+    final five = [
+      for (final a in animalNumbers)
+        if (a.number == '05' || a.pair == '05') a,
+    ];
+    expect(five, hasLength(2));
+    await tester.enterText(box, '5');
+    await tester.pumpAndSettle();
+    expect(find.text('พบ 2 ตัว'), findsOneWidget);
+    for (final a in five) {
+      expect(find.text(a.name), findsWidgets);
+    }
+  });
 }

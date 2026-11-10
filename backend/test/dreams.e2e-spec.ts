@@ -96,6 +96,11 @@ describe('Dreams API (e2e, real PostgreSQL)', () => {
       expect(two.body.data.map((d: { id: string }) => d.id)).toContain('tooth-falling-out');
       const three = await http().get('/api/v1/dreams').query({ q: '098' }).expect(200);
       expect(three.body.data.map((d: { id: string }) => d.id)).toEqual(['tooth-falling-out']);
+      // One digit finds the two-digit number with a 0 in front; three-digit numbers stay exact.
+      const short = await http().get('/api/v1/dreams').query({ q: '8' }).expect(200);
+      expect(short.body.data.map((d: { id: string }) => d.id)).toContain('tooth-falling-out');
+      const noPad = await http().get('/api/v1/dreams').query({ q: '98' }).expect(200);
+      expect(noPad.body.data.map((d: { id: string }) => d.id)).not.toContain('tooth-falling-out');
       await http()
         .get('/api/v1/dreams')
         .query({ q: 'ตำราโบราณ' })

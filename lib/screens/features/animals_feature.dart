@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/animal_numbers.dart';
 import '../../theme.dart';
 import '../../widgets/ui.dart';
+import '../../data/number_search.dart';
 import 'picture_grid.dart';
 
 /// Menu 5: each animal with its number pair and picture, 21 a page; range chips filter by number,
@@ -17,7 +18,8 @@ class AnimalsFeature extends StatelessWidget {
     items: animalNumbers,
     rangeSize: 20,
     rangeLabel: (a) => a.number,
-    matches: (a, q) => a.name.contains(q) || a.number == q || a.pair == q,
+    // "5" finds animal 05 and the pair 05 (see padNumberQuery).
+    matches: (a, q) => a.name.contains(q) || a.number == padNumberQuery(q, 2) || a.pair == padNumberQuery(q, 2),
     searchKey: const ValueKey('animal-search'),
     hint: 'ค้นหาชื่อสัตว์ เช่น ช้าง หรือเลข',
     unit: 'ตัว',

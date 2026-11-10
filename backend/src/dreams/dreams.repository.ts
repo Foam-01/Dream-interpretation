@@ -31,7 +31,8 @@ export class DreamsRepository {
               { name: { contains: filter.q } },
               { short: { contains: filter.q } },
               { aliases: { has: filter.q } },
-              { twoDigit: { has: filter.q } },
+              // "8" also finds 08, as in the app (lib/data/number_search.dart); 3-digit numbers as typed.
+              { twoDigit: { has: /^[0-9]$/.test(filter.q) ? `0${filter.q}` : filter.q } },
               { threeDigit: { has: filter.q } },
             ],
           }

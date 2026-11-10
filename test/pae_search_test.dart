@@ -112,4 +112,17 @@ void main() {
     expect(find.text('มังกร'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('a picture number without its 0s in front still finds it; lucky numbers stay exact', (tester) async {
+    await openPae(tester);
+    final ten = [
+      for (final p in paeNumbers)
+        if (p.number == '010' || p.lucky == '10') p,
+    ];
+    expect(ten.map((p) => p.number), ['010'], reason: 'lucky numbers are three digits, so "10" is never one');
+    await tester.enterText(box, '10');
+    await tester.pumpAndSettle();
+    expect(find.text('พบ 1 ภาพ'), findsOneWidget);
+    expect(find.text(ten.single.name), findsWidgets);
+  });
 }
