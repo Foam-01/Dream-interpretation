@@ -40,7 +40,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final app = AppScope.of(context);
     // The book's lock and running numbers follow the weekday the next draw falls on.
-    final draw = nextDrawDate(now);
+    final draw = nextDrawDate(thaiToday(now));
     final drawDay = weekdayIndex(draw);
     final running = runningByDrawDay[drawDay];
 

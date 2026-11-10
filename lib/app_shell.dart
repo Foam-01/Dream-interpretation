@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'data/dream_repository.dart';
+import 'data/formulas.dart';
 import 'data/sample_dream_repository.dart';
 import 'screens/feature_screen.dart';
 import 'screens/home_screen.dart';
@@ -48,7 +49,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   /// The day the pages were built for: the calendar date (next draw, lock numbers) and the daily-pick
   /// day that turns over at 04:00 Thai time (ฝันเด่นวันนี้).
   late String _day = _dayOf(widget.clock());
-  static String _dayOf(DateTime t) => '${DateTime(t.year, t.month, t.day)}|${dailyPickDay(t)}';
+  static String _dayOf(DateTime t) => '${DateTime(t.year, t.month, t.day)}|${thaiToday(t)}|${dailyPickDay(t)}';
 
   @override
   void initState() {

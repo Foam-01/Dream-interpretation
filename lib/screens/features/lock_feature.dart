@@ -19,7 +19,7 @@ class LockFeature extends StatefulWidget {
 }
 
 class _LockFeatureState extends State<LockFeature> {
-  late final DateTime _draw = nextDrawDate(widget.now);
+  late final DateTime _draw = nextDrawDate(thaiToday(widget.now));
   late int _lockDay = weekdayIndex(_draw);
 
   @override

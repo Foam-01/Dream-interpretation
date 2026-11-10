@@ -19,7 +19,7 @@ class SoundFeature extends StatefulWidget {
 }
 
 class _SoundFeatureState extends State<SoundFeature> {
-  late final DateTime _draw = nextDrawDate(widget.now);
+  late final DateTime _draw = nextDrawDate(thaiToday(widget.now));
   late int _soundDay = weekdayIndex(_draw);
 
   @override

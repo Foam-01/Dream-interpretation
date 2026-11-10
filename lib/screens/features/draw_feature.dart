@@ -20,7 +20,7 @@ class DrawFeature extends StatefulWidget {
 }
 
 class _DrawFeatureState extends State<DrawFeature> {
-  late final DateTime _draw = nextDrawDate(widget.now);
+  late final DateTime _draw = nextDrawDate(thaiToday(widget.now));
 
   @override
   Widget build(BuildContext context) => FeatureList(header: widget.header, children: _drawBody());

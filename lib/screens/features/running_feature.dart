@@ -20,7 +20,7 @@ class RunningFeature extends StatefulWidget {
 }
 
 class _RunningFeatureState extends State<RunningFeature> {
-  late final DateTime _draw = nextDrawDate(widget.now);
+  late final DateTime _draw = nextDrawDate(thaiToday(widget.now));
   late int _runDay = weekdayIndex(_draw);
 
   @override
