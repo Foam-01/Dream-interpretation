@@ -83,6 +83,19 @@ npm test
 npm run test:e2e
 ```
 
+## Moved lottery draws (check before each period runs out)
+
+Draws are on the 1st and 16th, except the ones the Government Lottery Office (สำนักงานสลากกินแบ่งรัฐบาล) moves,
+for example for New Year, Teachers' Day (16 Jan) or Labour Day (1 May). The app only knows the moves listed in
+`lib/data/draw_schedule.dart`, and only announced dates belong there, never guessed ones.
+
+`drawShiftsCheckedUntil` in that file is the last draw date that has been checked. 14 days before it,
+`test/draw_schedule_reminder_test.dart` starts failing (also in CI) as a reminder. Then:
+
+1. Look up the GLO's announcements for the coming draws (www.glo.or.th or news of its notice).
+2. Add every moved draw to `drawShifts` (usual date → real date) with its reason and source.
+3. Raise `drawShiftsCheckedUntil` to the last draw the announcements cover, then run `flutter test`.
+
 ## Getting Started
 
 This project is built with Flutter.
