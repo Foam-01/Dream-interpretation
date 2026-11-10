@@ -124,7 +124,8 @@ class BackLink extends StatelessWidget {
     child: InkWell(
       onTap: onTap,
       child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 44),
+        // 48 px: the minimum touch target (F23).
+        constraints: const BoxConstraints(minHeight: 48),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -771,7 +772,8 @@ class SearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+    // The field itself is 48 px tall (touch target, F23); the box keeps its height.
+    padding: const EdgeInsets.symmetric(horizontal: 14),
     decoration: BoxDecoration(
       color: C.input,
       borderRadius: BorderRadius.circular(12),
@@ -793,7 +795,7 @@ class SearchField extends StatelessWidget {
               hintStyle: sans(16, color: C.placeholder),
               border: InputBorder.none,
               isDense: true,
-              contentPadding: const EdgeInsets.symmetric(vertical: 10),
+              contentPadding: const EdgeInsets.symmetric(vertical: 12),
             ),
           ),
         ),

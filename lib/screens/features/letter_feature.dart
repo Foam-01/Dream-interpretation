@@ -139,8 +139,9 @@ class _LetterSwitcherState extends State<_LetterSwitcher> {
                     if (i > 0) const SizedBox(width: 6),
                     SizedBox(
                       key: k == widget.current ? _currentKey : null,
-                      width: 44,
-                      height: 44,
+                      // 48 px: the minimum touch target (F23).
+                      width: 48,
+                      height: 48,
                       child: Semantics(
                         label: feats[k]!.title,
                         child: SelectPill(

@@ -177,7 +177,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           hintStyle: sans(16, color: C.placeholder),
                           border: InputBorder.none,
                           isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 12), // field 48 px tall (F23)
                         ),
                       ),
                     ),

@@ -128,18 +128,22 @@ class _FeatureTile extends StatelessWidget {
       onTap: onTap,
       child: wide
           // The wide row has no icon (owner's call).
-          ? Row(
-              children: [
-                Expanded(child: title),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: Text(
-                    item.desc,
-                    textAlign: TextAlign.right,
-                    style: sans(12, color: C.textMuted),
+          // At least 48 px tall with the padding: the minimum touch target (F23).
+          ? ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 24),
+              child: Row(
+                children: [
+                  Expanded(child: title),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      item.desc,
+                      textAlign: TextAlign.right,
+                      style: sans(12, color: C.textMuted),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             )
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
