@@ -54,26 +54,37 @@ class _DigitFeatureState extends State<DigitFeature> {
         ),
         padding: const EdgeInsets.fromLTRB(10, 14, 10, 14),
         child: Builder(
-          builder: (context) => Row(
+          // Two rows of five, so each button is wider than 48 px (one row of ten was 33 px; F23).
+          builder: (context) => Column(
             children: [
-              for (var d = 0; d <= 9; d++)
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: SelectPill(
-                      text: '$d',
-                      selected: _digit == d,
-                      onTap: () {
-                        setState(() => _digit = d);
-                        _jumpToDigit(Scrollable.of(context).position, d);
-                      },
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      radius: 10,
-                      fontSize: 16,
-                      weight: FontWeight.w700,
-                    ),
-                  ),
+              for (final row in const [
+                [0, 1, 2, 3, 4],
+                [5, 6, 7, 8, 9],
+              ]) ...[
+                if (row.first > 0) const SizedBox(height: 8),
+                Row(
+                  children: [
+                    for (final d in row)
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: SelectPill(
+                            text: '$d',
+                            selected: _digit == d,
+                            onTap: () {
+                              setState(() => _digit = d);
+                              _jumpToDigit(Scrollable.of(context).position, d);
+                            },
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            radius: 10,
+                            fontSize: 16,
+                            weight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
+              ],
             ],
           ),
         ),
