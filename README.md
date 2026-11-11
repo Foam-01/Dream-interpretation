@@ -96,16 +96,71 @@ for example for New Year, Teachers' Day (16 Jan) or Labour Day (1 May). The app 
 2. Add every moved draw to `drawShifts` (usual date → real date) with its reason and source.
 3. Raise `drawShiftsCheckedUntil` to the last draw the announcements cover, then run `flutter test`.
 
-## Getting Started
+## Getting started
 
-This project is built with Flutter.
+1. Install **Flutter 3.47.5** (stable), the version CI uses (`.github/workflows/ci.yml`), with the Android SDK.
+2. From this folder:
 
-A few resources to get you started if this is your first Flutter project:
+   ```bash
+   flutter pub get
+   ```
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+   ```bash
+   flutter run
+   ```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+   The app runs on its bundled content; no backend, account or network is needed.
+
+Two files are not in git. The app builds and runs without them; you only need them for a release:
+
+- `android/app/google-services.json`: Firebase Crashlytics config. Without it crash reporting is off
+  ([docs/crash-reporting.md](docs/crash-reporting.md)).
+- `android/key.properties` and the upload keystore: release signing (see "Release build" above).
+
+The backend in `backend/` is optional (API mode only); its setup is in [backend/README.md](backend/README.md).
+
+## Project structure
+
+```
+lib/
+  main.dart            start-up: crash reporting, error handlers, data source (bundled or API)
+  app_shell.dart       the frame: bottom tabs, Back handling, which screen is shown
+  theme.dart           colours and text styles (blue-gold theme)
+  data/                the book's content and the rules that read it
+    dreams_*.dart        GENERATED dream text per letter (see "Updating the book content")
+    dream_images_*.dart  picture of each dream; category_*.dart: category ids
+    design_data.dart     models (Dream, LuckyNumbers) and the menu list (menus, feats)
+    formulas.dart        draw dates, Thai dates; draw_schedule.dart: draws the lottery office moved
+    *_numbers.dart, digit_*.dart, ...   content of menus 2-12
+    dream_repository.dart               the data interface; sample_ = bundled, api_ = backend
+  state/               app_controller.dart (tabs, page stacks, search words), load_request.dart,
+                       daily_pick.dart, error_log.dart, crash_reporter.dart
+  screens/             home, search, result (one dream), menu (a tab's menu list)
+    feature_screen.dart  picks the screen of a menu
+    features/            one file per menu (menus 2-12 and the letter pages)
+  widgets/ui.dart      shared widgets (cards, pills, pager, search field, pictures)
+test/                  unit, widget and golden tests (test/golden/); integration_test/ runs on a device
+backend/               optional NestJS API + the content sources (backend/content/incoming/)
+```
+
+To add a menu: add it to `feats` and `menus` in `lib/data/design_data.dart`, write its screen in
+`lib/screens/features/`, and add its case to the `switch` in `lib/screens/feature_screen.dart` (the compiler
+points at the missing case).
+
+## Updating the book content
+
+The sources live in `backend/content/incoming/`, one folder per letter category or menu, each with the text
+as received and a `REVIEW.md` listing every correction. Text is kept as in the book; nothing is invented.
+
+- **Dream text (letter categories)**: edit `dreams.json` in the category's folder, then regenerate the Dart
+  files. Never edit `lib/data/dreams_*.dart` by hand.
+
+  ```bash
+  cd backend && node scripts/generate-flutter-content.mjs
+  ```
+
+- **Menus 2-12** (animals, pae kong, lock numbers, ...): edit the matching `lib/data/*.dart` file to follow
+  the menu's `source.md` / `source.txt`; most of these files have a test that compares them with the source.
+- **Pictures**: `assets/dreams/`, `assets/pae/`, `assets/animals/`; no words or extra numbers in a picture.
+
+Then run `flutter test`: the category and feature tests fail when the app and the sources disagree.
