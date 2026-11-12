@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../data/dream_repository.dart';
+import 'error_log.dart';
 
 enum LoadStatus { idle, loading, success, failure }
 
@@ -30,8 +31,8 @@ class LoadRequest<T> extends ChangeNotifier {
     Future<T> future;
     try {
       future = fetch();
-    } catch (e) {
-      future = Future.error(e);
+    } catch (e, s) {
+      future = Future.error(e, s);
     }
     future.then(
       (v) {
@@ -39,8 +40,17 @@ class LoadRequest<T> extends ChangeNotifier {
         if (gen != _generation || _disposed) return;
         _set(LoadStatus.success, v, null);
       },
-      onError: (Object e) {
+      onError: (Object e, StackTrace s) {
         settled = true;
+        // Repository failures (timeout, HTTP errors, bad JSON) are recorded too: on a real API they are
+        // the most likely problem. Their text carries kind, status, code and a developer detail, never the
+        // user's search words. Anything else keeps its original error and stack, which the generic
+        // 'unexpected' kind below would otherwise drop.
+        logError(
+          e,
+          e is DreamRepositoryException ? null : s,
+          context: e is DreamRepositoryException ? 'repository' : 'load_request',
+        );
         if (gen != _generation || _disposed) return;
         _set(
           LoadStatus.failure,

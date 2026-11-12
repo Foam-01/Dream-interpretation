@@ -1,150 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'data/design_data.dart';
 import 'data/dream_repository.dart';
+import 'data/formulas.dart';
 import 'data/sample_dream_repository.dart';
 import 'screens/feature_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/menu_screen.dart';
 import 'screens/result_screen.dart';
 import 'screens/search_screen.dart';
+import 'state/app_controller.dart';
 import 'state/daily_pick.dart';
 import 'theme.dart';
 
-sealed class AppPage {
-  const AppPage();
-}
+export 'state/app_controller.dart';
 
-class HomePage extends AppPage {
-  const HomePage();
-}
-
-class SearchPage extends AppPage {
-  const SearchPage();
-}
-
-class ResultPage extends AppPage {
-  final String dreamId;
-  const ResultPage(this.dreamId);
-}
-
-class MenuPage extends AppPage {
-  final String tab;
-  const MenuPage(this.tab);
-}
-
-class FeaturePage extends AppPage {
-  final String key;
-  const FeaturePage(this.key);
-}
-
-/// Navigation + shared UI state, exposed to screens via [AppScope].
-class AppController extends ChangeNotifier {
-  AppController({this.repository = const SampleDreamRepository()});
-
-  /// Source of dream data for Home, Search and Result (sample data or the API).
-  final DreamRepository repository;
-
-  String tab = 'home';
-  final Map<String, List<AppPage>> _stacks = {for (final t in _tabs) t.$1: [_root(t.$1)]};
-  String query = '';
-  String cat = 'ทั้งหมด';
-  final Set<String> saved = {};
-
-  AppPage get page => _stacks[tab]!.last;
-  int get depth => _stacks[tab]!.length;
-
-  static AppPage _root(String t) => switch (t) {
-        'home' => const HomePage(),
-        'dream' => const SearchPage(),
-        _ => MenuPage(t),
-      };
-
-  void goTab(String t) {
-    tab = t;
-    _stacks[t] = [_root(t)];
-    notifyListeners();
-  }
-
-  /// [focus]: the person tapped a search box (Home) and wants to type now, so the search screen
-  /// puts the cursor in its box and opens the keyboard.
-  void goSearch({bool resetCat = false, bool focus = false}) {
-    if (resetCat) cat = 'ทั้งหมด';
-    if (focus) _focusSearch = true;
-    goTab('dream');
-  }
-
-  bool _focusSearch = false;
-
-  /// True once after goSearch(focus: true); the search screen calls it and focuses its box.
-  bool takeSearchFocus() {
-    final f = _focusSearch;
-    _focusSearch = false;
-    return f;
-  }
-
-  /// Opens a dream on top of the page the person is on (Home, a letter list or the search), so Back
-  /// returns there. Opening another dream from a dream page replaces it instead of stacking up.
-  void openDream(String id) {
-    final stack = _stacks[tab]!;
-    if (stack.last is ResultPage) stack.removeLast();
-    stack.add(ResultPage(id));
-    notifyListeners();
-  }
-
-  void openFeat(String k) {
-    // Menu 1 (พยากรณ์โชคชะตาชีวิต จากความฝัน + ตัวเลข + รูป) is the dream book itself: open the search.
-    if (k == '1') return goSearch(resetCat: true);
-    tab = tabOf(k);
-    _stacks[tab] = [MenuPage(tab), FeaturePage(k)];
-    notifyListeners();
-  }
-
-  /// Returns false when nothing left to pop (let the system exit).
-  bool back() {
-    if (depth > 1) {
-      _stacks[tab]!.removeLast();
-    } else if (tab != 'home') {
-      tab = 'home';
-    } else {
-      return false;
-    }
-    notifyListeners();
-    return true;
-  }
-
-  void setQuery(String q) {
-    query = q;
-    notifyListeners();
-  }
-
-  void setCat(String c) {
-    cat = c;
-    notifyListeners();
-  }
-
-  void toggleSave(String id) {
-    saved.contains(id) ? saved.remove(id) : saved.add(id);
-    notifyListeners();
-  }
-}
-
-class AppScope extends InheritedNotifier<AppController> {
-  const AppScope({super.key, required AppController controller, required super.child})
-      : super(notifier: controller);
-
-  static AppController of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<AppScope>()!.notifier!;
-}
-
-const _tabs = [
-  ('home', 'หน้าแรก', Icons.home_rounded),
-  ('dream', 'ทำนายฝัน', Icons.nightlight_round),
-  ('lucky', 'เลขเด็ด', Icons.stars_rounded),
-  ('ritual', 'แก้ฝัน', Icons.spa_rounded),
-  ('book', 'ตำรา', Icons.menu_book_rounded),
-];
+const _tabLooks = {
+  'home': ('หน้าแรก', Icons.home_rounded),
+  'dream': ('ทำนายฝัน', Icons.nightlight_round),
+  'lucky': ('เลขเด็ด', Icons.stars_rounded),
+  'ritual': ('แก้ฝัน', Icons.spa_rounded),
+  'book': ('ตำรา', Icons.menu_book_rounded),
+};
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key, this.clock = DateTime.now, this.repository = const SampleDreamRepository()});
@@ -170,9 +47,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   bool? _portraitOnly;
 
   /// The day the pages were built for: the calendar date (next draw, lock numbers) and the daily-pick
-  /// day that turns over at 04:00 Thai time (ฝันยอดฮิตวันนี้).
+  /// day that turns over at 04:00 Thai time (ฝันเด่นวันนี้).
   late String _day = _dayOf(widget.clock());
-  static String _dayOf(DateTime t) => '${DateTime(t.year, t.month, t.day)}|${dailyPickDay(t)}';
+  static String _dayOf(DateTime t) => '${DateTime(t.year, t.month, t.day)}|${thaiToday(t)}|${dailyPickDay(t)}';
 
   @override
   void initState() {
@@ -208,12 +85,12 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   }
 
   Widget _screenFor(AppPage page) => switch (page) {
-        HomePage() => HomeScreen(now: widget.clock(), clock: widget.clock),
-        SearchPage() => const SearchScreen(),
-        ResultPage(:final dreamId) => ResultScreen(dreamId: dreamId),
-        MenuPage(:final tab) => MenuScreen(tab: tab),
-        FeaturePage(:final key) => FeatureScreen(featKey: key, now: widget.clock()),
-      };
+    HomePage() => HomeScreen(now: widget.clock(), clock: widget.clock),
+    SearchPage() => const SearchScreen(),
+    ResultPage(:final dreamId) => ResultScreen(dreamId: dreamId),
+    MenuPage(:final tab) => MenuScreen(tab: tab),
+    FeaturePage(:final key) => FeatureScreen(featKey: key, now: widget.clock()),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -237,30 +114,34 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
               ),
               child: Scaffold(
                 backgroundColor: C.bg,
-                body: Column(children: [
-                  Container(color: C.brand, height: MediaQuery.paddingOf(context).top),
-                  Expanded(
-                    child: MediaQuery.removePadding(
-                      context: context,
-                      removeTop: true,
-                      // Tablets and landscape: keep the phone-width layout, centred, instead of
-                      // stretching cards and grids across the whole screen.
-                      child: Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: maxContentWidth),
-                          child: KeyedSubtree(
-                            // New key per page so scroll position resets like the design.
-                            key: ValueKey('$_day/${_controller.tab}/${_controller.depth}/${page.runtimeType}/${_pageId(page)}'),
-                            child: _screenFor(page),
+                body: Column(
+                  children: [
+                    Container(color: C.brand, height: MediaQuery.paddingOf(context).top),
+                    Expanded(
+                      child: MediaQuery.removePadding(
+                        context: context,
+                        removeTop: true,
+                        // Tablets and landscape: keep the phone-width layout, centred, instead of
+                        // stretching cards and grids across the whole screen.
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: maxContentWidth),
+                            child: KeyedSubtree(
+                              // New key per page so scroll position resets like the design.
+                              key: ValueKey(
+                                '$_day/${_controller.tab}/${_controller.depth}/${page.runtimeType}/${_pageId(page)}',
+                              ),
+                              child: _screenFor(page),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  // Hidden while the keyboard is up, so search results keep the space on small phones.
-                  if (MediaQuery.viewInsetsOf(context).bottom == 0)
-                    _BottomTabs(current: _controller.tab, onTap: _controller.goTab),
-                ]),
+                    // Hidden while the keyboard is up, so search results keep the space on small phones.
+                    if (MediaQuery.viewInsetsOf(context).bottom == 0)
+                      _BottomTabs(current: _controller.tab, onTap: _controller.goTab),
+                  ],
+                ),
               ),
             ),
           );
@@ -270,11 +151,11 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   }
 
   String _pageId(AppPage p) => switch (p) {
-        ResultPage(:final dreamId) => dreamId,
-        FeaturePage(:final key) => key,
-        MenuPage(:final tab) => tab,
-        _ => '',
-      };
+    ResultPage(:final dreamId) => dreamId,
+    FeaturePage(:final key) => key,
+    MenuPage(:final tab) => tab,
+    _ => '',
+  };
 }
 
 class _BottomTabs extends StatelessWidget {
@@ -291,44 +172,56 @@ class _BottomTabs extends StatelessWidget {
         border: Border(top: BorderSide(color: C.goldBorder)),
       ),
       padding: EdgeInsets.fromLTRB(4, 6, 4, 6 + (bottom > 0 ? bottom : 8)),
-      child: Row(children: [
-        for (final (key, label, icon) in _tabs)
-          Expanded(
-            child: Semantics(
-              button: true,
-              selected: key == current,
-              label: label,
-              excludeSemantics: true,
-              child: InkResponse(
-                onTap: () => onTap(key),
-                child: SizedBox(
-                  height: 48,
-                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Container(
-                      width: 52,
-                      height: 30,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: key == current ? C.gold : Colors.transparent,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Icon(icon, size: 20, color: key == current ? C.onGold : C.tabInactive),
+      child: Row(
+        children: [
+          for (final (key, (label, icon)) in [for (final t in appTabs) (t, _tabLooks[t]!)])
+            Expanded(
+              child: Semantics(
+                button: true,
+                selected: key == current,
+                label: label,
+                excludeSemantics: true,
+                child: InkResponse(
+                  onTap: () => onTap(key),
+                  child: SizedBox(
+                    height: 48,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 52,
+                          height: 30,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: key == current ? C.gold : Colors.transparent,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Icon(icon, size: 20, color: key == current ? C.onGold : C.tabInactive),
+                        ),
+                        const SizedBox(height: 3),
+                        Flexible(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              label,
+                              maxLines: 1,
+                              style: sans(
+                                12,
+                                weight: FontWeight.w600,
+                                color: key == current ? C.goldLight : C.tabInactive,
+                                height: 1.1,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 3),
-                    Flexible(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(label,
-                            maxLines: 1,
-                            style: sans(12, weight: FontWeight.w600, color: key == current ? C.goldLight : C.tabInactive, height: 1.1)),
-                      ),
-                    ),
-                  ]),
+                  ),
                 ),
               ),
             ),
-          ),
-      ]),
+        ],
+      ),
     );
   }
 }

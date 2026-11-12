@@ -45,6 +45,27 @@ Order is stable: the app's current list order.
 }
 ```
 
+### `GET /dreams/daily`
+
+"ฝันยอดฮิตวันนี้" on Home: a fixed random draw of public dreams per day, the same for every caller.
+
+Query: `date` (required, a real calendar date `YYYY-MM-DD`), `limit` (1–20, default 10). Unknown parameters → 400.
+The app sends its pick day (the day turns over at **04:00 Thai time**), so the server never decides the time zone.
+
+The draw (`src/dreams/daily-pick.ts`) is the same algorithm as the app's offline draw (`lib/state/daily_pick.dart`):
+ids in code-unit order, Mulberry32 seeded with `yyyymmdd`, partial Fisher–Yates. Both test suites pin the same
+expected draw, so the two cannot drift apart unnoticed. The server draws from every public dream; the offline
+app draws only from dreams with a bundled picture (the API does not know which pictures ship with the app).
+
+```json
+{
+  "data": [ { "id": "tooth-falling-out", "name": "ฟันหลุด", "...": "summary fields as in GET /dreams" } ],
+  "meta": { "date": "2026-11-08" }
+}
+```
+
+Items are summaries (no `meaning`), in draw order. Fewer than `limit` when the catalogue is smaller.
+
 ### `GET /dreams/:id`
 
 ```json

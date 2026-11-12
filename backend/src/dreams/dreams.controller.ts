@@ -1,6 +1,12 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
-import { CategoryListResponseDto, DreamDetailResponseDto, DreamListResponseDto } from './dto/dream-response.dto';
+import { DailyDreamsQueryDto } from './dto/daily-dreams-query.dto';
+import {
+  CategoryListResponseDto,
+  DailyDreamsResponseDto,
+  DreamDetailResponseDto,
+  DreamListResponseDto,
+} from './dto/dream-response.dto';
 import { ListDreamsQueryDto } from './dto/list-dreams-query.dto';
 import { DreamIdPipe } from './dream-id.pipe';
 import { DreamsService } from './dreams.service';
@@ -15,6 +21,14 @@ export class DreamsController {
   @ApiBadRequestResponse({ description: 'VALIDATION_ERROR' })
   list(@Query() query: ListDreamsQueryDto) {
     return this.dreams.list(query);
+  }
+
+  // Declared before dreams/:id, which would otherwise take "daily" as a dream id.
+  @Get('dreams/daily')
+  @ApiOkResponse({ type: DailyDreamsResponseDto })
+  @ApiBadRequestResponse({ description: 'VALIDATION_ERROR' })
+  daily(@Query() query: DailyDreamsQueryDto) {
+    return this.dreams.daily(query);
   }
 
   @Get('dreams/:id')

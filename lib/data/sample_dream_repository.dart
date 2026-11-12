@@ -32,8 +32,11 @@ import 'category_thung.dart';
 import 'category_w.dart';
 import 'category_y.dart';
 import 'category_yak.dart';
+import '../state/daily_pick.dart';
 import 'design_data.dart';
+import 'dream_images_k.dart';
 import 'dream_repository.dart';
+import 'number_search.dart';
 
 /// Categories of the bundled data, in app order. Must match `dreamCats` (minus "ทั้งหมด") and the
 /// backend's content categories (backend/prisma/seed-data.ts); both are checked by tests.
@@ -103,12 +106,12 @@ class SampleDreamRepository implements DreamRepository {
   }) => _guard(() => _list(q, categoryId, page, limit, sort));
 
   /// Same rule as the API: name or short contains the query, an alias equals it, or it is one of the
-  /// dream's lucky numbers (people often remember the number, e.g. 46).
+  /// dream's lucky numbers (people often remember the number, e.g. 46; "8" also finds 08).
   static bool _matches(Dream d, String q) =>
       d.name.contains(q) ||
       d.short.contains(q) ||
       d.aliases.contains(q) ||
-      d.numbers.twoDigit.contains(q) ||
+      d.numbers.twoDigit.contains(padNumberQuery(q, 2)) ||
       d.numbers.threeDigit.contains(q);
 
   DreamPage _list(String? q, String? categoryId, int page, int limit, DreamSort sort) {
@@ -131,8 +134,7 @@ class SampleDreamRepository implements DreamRepository {
     final byName = {for (final c in categoryList) c.name: c};
     final matches = [
       for (final d in source)
-        if ((catName == null || d.cat == catName) &&
-            (query.isEmpty || _matches(d, query)))
+        if ((catName == null || d.cat == catName) && (query.isEmpty || _matches(d, query)))
           DreamSummary.fromDream(d, category: byName[d.cat]!),
     ];
     final start = (page - 1) * limit;
@@ -141,6 +143,19 @@ class SampleDreamRepository implements DreamRepository {
         : matches.sublist(start, (start + limit).clamp(0, matches.length));
     return DreamPage(items: items, page: page, limit: limit, total: matches.length);
   }
+
+  /// Drawn on the device from the dreams that have a picture (bundled data can tell; the API cannot,
+  /// since most pictures ship with the app). A catalogue without any pictures still gets a daily list.
+  @override
+  Future<List<DreamSummary>> daily(DateTime now, {int limit = DreamRepository.dailyCount}) => _guard(() {
+    final byName = {for (final c in categoryList) c.name: c};
+    final all = [for (final d in source) DreamSummary.fromDream(d, category: byName[d.cat]!)];
+    final pictured = [
+      for (final d in all)
+        if (dreamImageFor(d.id, d.image) != null) d,
+    ];
+    return dailyPick(pictured.isEmpty ? all : pictured, now, limit, (d) => d.id);
+  });
 
   @override
   Future<Dream?> byId(String id) => _guard(() {

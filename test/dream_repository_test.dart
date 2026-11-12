@@ -80,10 +80,11 @@ void main() {
       expect(ids(await repo.list(q: '   ')), hasLength(10));
     });
 
-    test('finds a dream by one of its lucky numbers; not by meaning or single digits', () async {
+    test('finds a dream by one of its lucky numbers, not by meaning; "8" also finds 08', () async {
       expect(ids(await repo.list(q: '08')), contains('tooth-falling-out'));
       expect(ids(await repo.list(q: '098')), ['tooth-falling-out']);
-      expect((await repo.list(q: '8')).items, isEmpty, reason: 'single digits are not lucky numbers');
+      expect(ids(await repo.list(q: '8')), contains('tooth-falling-out'), reason: 'people type 8 for 08');
+      expect(ids(await repo.list(q: '98')), isNot(contains('tooth-falling-out')), reason: '98 is not 098');
       expect((await repo.list(q: 'ตำราโบราณ')).items, isEmpty);
     });
 

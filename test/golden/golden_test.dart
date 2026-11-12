@@ -42,6 +42,17 @@ Future<void> precacheAssets(WidgetTester tester, Iterable<String> paths) async {
 
 Future<void> precacheDreamImages(WidgetTester tester) => precacheAssets(tester, dreamImagesK.values.map((i) => i.url));
 
+/// Decodes the pictures on screen exactly as they are shown (including their decode size).
+Future<void> precacheShownImages(WidgetTester tester) async {
+  final context = tester.element(find.byType(Scaffold).first);
+  await tester.runAsync(() async {
+    for (final e in find.byType(Image).evaluate()) {
+      await precacheImage((e.widget as Image).image, context);
+    }
+  });
+  await tester.pumpAndSettle();
+}
+
 Future<void> tap(WidgetTester tester, Finder f) async {
   await tester.tap(f);
   await tester.pumpAndSettle();
@@ -122,7 +133,7 @@ void main() {
       await pumpApp(tester);
       await openSearch(tester);
       await tap(tester, _text('กบ'));
-      await precacheDreamImages(tester);
+      await precacheShownImages(tester);
       await expectGolden(tester, 'detail_frog');
     });
 
@@ -130,6 +141,7 @@ void main() {
       await pumpApp(tester);
       await openSearch(tester);
       await tap(tester, _text('กราม'));
+      await precacheShownImages(tester);
       await expectGolden(tester, 'detail_jaw');
     });
   });
@@ -188,7 +200,6 @@ void main() {
       await precacheDreamImages(tester);
       await expectGolden(tester, 'feat13_letter_k');
     });
-
 
     testWidgets('feature 3: เคล็ดลับแก้ฝันร้าย (steps / remedies)', (tester) async {
       await pumpApp(tester);

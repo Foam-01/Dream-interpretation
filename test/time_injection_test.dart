@@ -21,9 +21,8 @@ Future<void> openFeature(WidgetTester tester, String tab, String menuTitle) asyn
 }
 
 /// Text inside the home lock card's badge row (link to ตัวเด่น · ตัวกัน, then เลขวิ่ง).
-Finder inBadgeRow(String text) => find.descendant(
-    of: find.byKey(const ValueKey('lock-badges')),
-    matching: find.text(text));
+Finder inBadgeRow(String text) =>
+    find.descendant(of: find.byKey(const ValueKey('lock-badges')), matching: find.text(text));
 
 void expectHome(
   WidgetTester tester, {
@@ -50,35 +49,41 @@ void main() {
   group('HomeScreen', () {
     testWidgets('H1 Friday 2026-10-23', (tester) async {
       await pumpAt(tester, DateTime(2026, 10, 23));
-      expectHome(tester,
-          header: 'วันศุกร์ที่ 23 ต.ค. 2569',
-          cardTitle: 'เลขล็อควันอาทิตย์', // draw 1 Nov 2026 is a Sunday
-          draw: 'งวด 1 พ.ย. 69',
-          top: '06  14  16\n36  59  80',
-          bottom: '12  33  38\n66  77  89',
-          running: '1 · 8 · 4'); // draw 1 Nov 2026 is a Sunday
+      expectHome(
+        tester,
+        header: 'วันศุกร์ที่ 23 ต.ค. 2569',
+        cardTitle: 'เลขล็อควันอาทิตย์', // draw 1 Nov 2026 is a Sunday
+        draw: 'งวด 1 พ.ย. 69',
+        top: '06  14  16\n36  59  80',
+        bottom: '12  33  38\n66  77  89',
+        running: '1 · 8 · 4',
+      ); // draw 1 Nov 2026 is a Sunday
     });
 
     testWidgets('H2 Monday 2026-10-05 (different values, next draw on the 16th)', (tester) async {
       await pumpAt(tester, DateTime(2026, 10, 5));
-      expectHome(tester,
-          header: 'วันจันทร์ที่ 5 ต.ค. 2569',
-          cardTitle: 'เลขล็อควันศุกร์', // draw 16 Oct 2026 is a Friday
-          draw: 'งวด 16 ต.ค. 69',
-          top: '21  31  41\n67  77  88',
-          bottom: '22  36  44\n56  86  96',
-          running: '6 · 3 · 5'); // draw 16 Oct 2026 is a Friday
+      expectHome(
+        tester,
+        header: 'วันจันทร์ที่ 5 ต.ค. 2569',
+        cardTitle: 'เลขล็อควันศุกร์', // draw 16 Oct 2026 is a Friday
+        draw: 'งวด 16 ต.ค. 69',
+        top: '21  31  41\n67  77  88',
+        bottom: '22  36  44\n56  86  96',
+        running: '6 · 3 · 5',
+      ); // draw 16 Oct 2026 is a Friday
     });
 
     testWidgets('H3 time of day does not change the date (Sunday 23:59)', (tester) async {
       await pumpAt(tester, DateTime(2026, 10, 25, 23, 59));
-      expectHome(tester,
-          header: 'วันอาทิตย์ที่ 25 ต.ค. 2569',
-          cardTitle: 'เลขล็อควันอาทิตย์',
-          draw: 'งวด 1 พ.ย. 69',
-          top: '06  14  16\n36  59  80',
-          bottom: '12  33  38\n66  77  89',
-          running: '1 · 8 · 4'); // draw 1 Nov 2026 is a Sunday
+      expectHome(
+        tester,
+        header: 'วันอาทิตย์ที่ 25 ต.ค. 2569',
+        cardTitle: 'เลขล็อควันอาทิตย์',
+        draw: 'งวด 1 พ.ย. 69',
+        top: '06  14  16\n36  59  80',
+        bottom: '12  33  38\n66  77  89',
+        running: '1 · 8 · 4',
+      ); // draw 1 Nov 2026 is a Sunday
     });
   });
 
@@ -130,7 +135,11 @@ void main() {
         lastY = y;
         final card = find.ancestor(of: t, matching: find.byType(Column)).first;
         expect(
-          find.descendant(of: card, matching: find.byType(DigitBox)).evaluate().map((e) => (e.widget as DigitBox).digit).join(),
+          find
+              .descendant(of: card, matching: find.byType(DigitBox))
+              .evaluate()
+              .map((e) => (e.widget as DigitBox).digit)
+              .join(),
           digits,
           reason: title,
         );

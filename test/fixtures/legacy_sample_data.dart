@@ -1,7 +1,8 @@
 // The former bundled SAMPLE design data (10 dreams, 5 thematic categories), kept only as a test fixture:
 // repository/search mechanics tests and the backend sample-fixture check (backend/prisma/seed-data.spec.ts)
 // use it. The app itself now bundles the real หมวด ก content (lib/data/dreams_k.dart).
-// dart format off — backend/prisma/seed-data.spec.ts parses the Dream(...) lines below.
+// Not formatted: backend/prisma/seed-data.spec.ts parses the one-line Dream(...) entries below.
+// dart format off
 import 'package:maha_dream/data/design_data.dart';
 import 'package:maha_dream/data/dream_repository.dart';
 import 'package:maha_dream/data/sample_dream_repository.dart';

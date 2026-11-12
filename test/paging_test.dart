@@ -35,6 +35,9 @@ class _PagedRepo implements DreamRepository {
   @override
   Future<Dream?> byId(String id) async => _local.byId(id);
   @override
+  Future<List<DreamSummary>> daily(DateTime now, {int limit = DreamRepository.dailyCount}) async =>
+      _local.daily(now, limit: limit);
+  @override
   void close() {}
 }
 

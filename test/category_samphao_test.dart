@@ -79,8 +79,11 @@ void main() {
         final d = dreamsSamphao[i];
         final n = j['numbers'] as Map;
         final id = j['id'] as String;
-        expect((d.id, d.name, d.meaning, d.short, d.cat), (j['id'], j['name'], j['meaning'], j['short'], 'หมวด ภ'),
-            reason: id);
+        expect(
+          (d.id, d.name, d.meaning, d.short, d.cat),
+          (j['id'], j['name'], j['meaning'], j['short'], 'หมวด ภ'),
+          reason: id,
+        );
         expect(d.numbers.isNone, j['noLuckyNumbers'] == true, reason: id);
         expect(d.numbers.twoDigit, n['twoDigit'], reason: id);
         expect(d.numbers.threeDigit, n['threeDigit'], reason: id);
@@ -111,7 +114,9 @@ void main() {
     test('2 checked pictures — every dream has one, bundled and registered', () {
       expect(dreamImagesSamphao.keys, dreamsSamphao.map((d) => d.id));
       final onDisk = Directory('assets/dreams').listSync().whereType<File>().map((f) => f.uri.pathSegments.last);
-      expect(onDisk.where((f) => f.startsWith('samphao-')).toSet(), {for (final id in dreamImagesSamphao.keys) '$id.jpg'});
+      expect(onDisk.where((f) => f.startsWith('samphao-')).toSet(), {
+        for (final id in dreamImagesSamphao.keys) '$id.jpg',
+      });
       for (final MapEntry(:key, :value) in dreamImagesSamphao.entries) {
         expect(value.url, 'assets/dreams/$key.jpg');
         expect(value.isAsset, isTrue);

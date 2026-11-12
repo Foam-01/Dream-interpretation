@@ -86,6 +86,8 @@ class _OneDreamRepo implements DreamRepository {
   @override
   Future<Dream?> byId(String id) async => dream;
   @override
+  Future<List<DreamSummary>> daily(DateTime now, {int limit = DreamRepository.dailyCount}) async => const [];
+  @override
   void close() {}
 }
 

@@ -61,14 +61,17 @@ class PageHeader extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [C.brandBright, C.brand, C.headerEnd],
-                stops: [0, .55, 1])
+                stops: [0, .55, 1],
+              )
             : null,
         border: border ? const Border(bottom: BorderSide(color: C.goldBorder)) : null,
       ),
-      child: Stack(children: [
-        if (pattern) Positioned.fill(child: CustomPaint(painter: _LatticePainter(patternOpacity))),
-        Padding(padding: padding, child: child),
-      ]),
+      child: Stack(
+        children: [
+          if (pattern) Positioned.fill(child: CustomPaint(painter: _LatticePainter(patternOpacity))),
+          Padding(padding: padding, child: child),
+        ],
+      ),
     );
   }
 }
@@ -79,17 +82,34 @@ class FeatureHeader extends StatelessWidget {
   final VoidCallback onBack;
   final String title;
   final String? sub;
-  const FeatureHeader({super.key, required this.backLabel, required this.onBack, required this.title, this.sub});
+
+  /// Optional control under the subtitle, inside the header (e.g. menu 3's search box).
+  final Widget? bottom;
+  const FeatureHeader({
+    super.key,
+    required this.backLabel,
+    required this.onBack,
+    required this.title,
+    this.sub,
+    this.bottom,
+  });
 
   @override
   Widget build(BuildContext context) => PageHeader(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 18),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          BackLink(label: backLabel, onTap: onBack),
-          Text(title, style: serif(26, weight: FontWeight.w800, color: C.goldLight)),
-          if (sub != null) Text(sub!, style: sans(14, color: C.onBrandMuted)),
-        ]),
-      );
+    padding: const EdgeInsets.fromLTRB(16, 4, 16, 18),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BackLink(label: backLabel, onTap: onBack),
+        Text(
+          title,
+          style: serif(26, weight: FontWeight.w800, color: C.goldLight),
+        ),
+        if (sub != null) Text(sub!, style: sans(14, color: C.onBrandMuted)),
+        if (bottom != null) ...[const SizedBox(height: 14), bottom!],
+      ],
+    ),
+  );
 }
 
 class BackLink extends StatelessWidget {
@@ -99,21 +119,30 @@ class BackLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
-        button: true,
-        label: 'กลับ',
-        child: InkWell(
-          onTap: onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 44),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              const Icon(Icons.chevron_left_rounded, size: 22, color: C.goldLight),
-              Flexible(
-                child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: sans(15, color: C.goldLight)),
+    button: true,
+    label: 'กลับ',
+    child: InkWell(
+      onTap: onTap,
+      child: ConstrainedBox(
+        // 48 px: the minimum touch target (F23).
+        constraints: const BoxConstraints(minHeight: 48),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.chevron_left_rounded, size: 22, color: C.goldLight),
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: sans(15, color: C.goldLight),
               ),
-            ]),
-          ),
+            ),
+          ],
         ),
-      );
+      ),
+    ),
+  );
 }
 
 /// Surface card with a soft gold border.
@@ -149,7 +178,10 @@ class AppCard extends StatelessWidget {
         child: InkWell(
           borderRadius: r,
           onTap: onTap,
-          child: ClipRRect(borderRadius: r, child: Padding(padding: padding, child: child)),
+          child: ClipRRect(
+            borderRadius: r,
+            child: Padding(padding: padding, child: child),
+          ),
         ),
       ),
     );
@@ -186,27 +218,37 @@ class ImagePlaceholder extends StatelessWidget {
   final double fontSize;
   final double band;
   final BoxBorder? border;
-  const ImagePlaceholder(this.label,
-      {super.key, this.height, this.width, this.radius = 0, this.fontSize = 10, this.band = 6, this.border});
+  const ImagePlaceholder(
+    this.label, {
+    super.key,
+    this.height,
+    this.width,
+    this.radius = 0,
+    this.fontSize = 10,
+    this.band = 6,
+    this.border,
+  });
 
   @override
   Widget build(BuildContext context) => Container(
-        height: height,
-        width: width,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius), border: border),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(radius),
-          child: CustomPaint(
-            painter: _StripePainter(band),
-            child: Center(
-              child: Text(label,
-                  textAlign: TextAlign.center,
-                  // Bundled Thai font (not the system 'monospace') so tests and devices match.
-                  style: sans(fontSize, color: C.imgText)),
-            ),
+    height: height,
+    width: width,
+    decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius), border: border),
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      child: CustomPaint(
+        painter: _StripePainter(band),
+        child: Center(
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            // Bundled Thai font (not the system 'monospace') so tests and devices match.
+            style: sans(fontSize, color: C.imgText),
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 /// Big gold tile showing one digit.
@@ -217,36 +259,70 @@ class DigitBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: width,
-        height: height,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(gradient: goldGradient, borderRadius: BorderRadius.circular(14)),
-        // Fixed-size tile: very large text shrinks to fit inside it.
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(digit, style: serif(fontSize, weight: FontWeight.w800, color: C.onGold, height: 1.2)),
-        ),
-      );
+    width: width,
+    height: height,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(gradient: goldGradient, borderRadius: BorderRadius.circular(14)),
+    // Fixed-size tile: very large text shrinks to fit inside it.
+    child: FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Text(
+        digit,
+        style: serif(fontSize, weight: FontWeight.w800, color: C.onGold, height: 1.2),
+      ),
+    ),
+  );
 }
 
 /// Icon for a feature key ('dream' or a FeatDef key) on menu / quick-link tiles.
 IconData featureIcon(String key) => switch (key) {
-      'dream' => Icons.nightlight_round,
-      '1' => Icons.auto_awesome_rounded,
-      '2' => Icons.grid_view_rounded,
-      '3' => Icons.shield_moon_rounded,
-      '4' => Icons.volunteer_activism_rounded,
-      '5' => Icons.pets_rounded,
-      '6' => Icons.auto_stories_rounded,
-      '7' => Icons.lock_rounded,
-      '8' => Icons.event_available_rounded,
-      '9' => Icons.stars_rounded,
-      '10' => Icons.directions_run_rounded,
-      '11' => Icons.self_improvement_rounded,
-      '12' => Icons.pin_rounded,
-      '13' || '14' || '15' || '16' || '17' || '18' || '19' || '20' || '21' || '22' || '23' || '24' || '25' || '26' || '27' || '28' || '29' || '30' || '31' || '32' || '33' || '34' || '35' || '36' || '37' || '38' || '39' || '40' || '41' || '42' || '43' || '44' => Icons.sort_by_alpha_rounded,
-      _ => Icons.star_rounded,
-    };
+  'dream' => Icons.nightlight_round,
+  '1' => Icons.auto_awesome_rounded,
+  '2' => Icons.grid_view_rounded,
+  '3' => Icons.shield_moon_rounded,
+  '4' => Icons.volunteer_activism_rounded,
+  '5' => Icons.pets_rounded,
+  '6' => Icons.auto_stories_rounded,
+  '7' => Icons.lock_rounded,
+  '8' => Icons.event_available_rounded,
+  '9' => Icons.stars_rounded,
+  '10' => Icons.directions_run_rounded,
+  '11' => Icons.self_improvement_rounded,
+  '12' => Icons.pin_rounded,
+  '13' ||
+  '14' ||
+  '15' ||
+  '16' ||
+  '17' ||
+  '18' ||
+  '19' ||
+  '20' ||
+  '21' ||
+  '22' ||
+  '23' ||
+  '24' ||
+  '25' ||
+  '26' ||
+  '27' ||
+  '28' ||
+  '29' ||
+  '30' ||
+  '31' ||
+  '32' ||
+  '33' ||
+  '34' ||
+  '35' ||
+  '36' ||
+  '37' ||
+  '38' ||
+  '39' ||
+  '40' ||
+  '41' ||
+  '42' ||
+  '43' ||
+  '44' => Icons.sort_by_alpha_rounded,
+  _ => Icons.star_rounded,
+};
 
 /// Blue gradient square holding a gold icon (menu / quick links).
 class GlyphTile extends StatelessWidget {
@@ -256,18 +332,21 @@ class GlyphTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: size,
-        height: size,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(radius),
-          gradient: const LinearGradient(
-              begin: Alignment(-0.35, -1), end: Alignment(0.35, 1), colors: [C.brandTile, C.brand]),
-          border: Border.all(color: C.gold.withValues(alpha: .7), width: borderWidth),
-          boxShadow: const [BoxShadow(color: C.shadow, blurRadius: 8, offset: Offset(0, 3))],
-        ),
-        child: Icon(icon, size: size * .5, color: C.goldLight),
-      );
+    width: size,
+    height: size,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(radius),
+      gradient: const LinearGradient(
+        begin: Alignment(-0.35, -1),
+        end: Alignment(0.35, 1),
+        colors: [C.brandTile, C.brand],
+      ),
+      border: Border.all(color: C.gold.withValues(alpha: .7), width: borderWidth),
+      boxShadow: const [BoxShadow(color: C.shadow, blurRadius: 8, offset: Offset(0, 3))],
+    ),
+    child: Icon(icon, size: size * .5, color: C.goldLight),
+  );
 }
 
 /// Selectable pill/chip used for categories, weekdays, hundreds, digits.
@@ -297,29 +376,32 @@ class SelectPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
-        selected: selected,
-        button: true,
-        child: GestureDetector(
-          onTap: onTap,
-          behavior: HitTestBehavior.opaque,
-          child: MinTapTarget(
-            child: Container(
-            padding: padding,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: selected ? selectedBg : bg,
-              borderRadius: BorderRadius.circular(radius),
-              border: Border.all(color: border),
-            ),
-            // In a fixed-size grid cell very large text shrinks to fit; elsewhere nothing changes.
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(text, style: sans(fontSize, weight: weight, color: selected ? selectedFg : fg)),
-            ),
+    selected: selected,
+    button: true,
+    child: GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: MinTapTarget(
+        child: Container(
+          padding: padding,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: selected ? selectedBg : bg,
+            borderRadius: BorderRadius.circular(radius),
+            border: Border.all(color: border),
           ),
+          // In a fixed-size grid cell very large text shrinks to fit; elsewhere nothing changes.
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              text,
+              style: sans(fontSize, weight: weight, color: selected ? selectedFg : fg),
+            ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 class SectionLabel extends StatelessWidget {
@@ -329,7 +411,10 @@ class SectionLabel extends StatelessWidget {
   const SectionLabel(this.text, {super.key, this.padding = const EdgeInsets.fromLTRB(16, 22, 16, 8), this.size = 17});
 
   @override
-  Widget build(BuildContext context) => Padding(padding: padding, child: Text(text, style: serif(size, color: C.accent)));
+  Widget build(BuildContext context) => Padding(
+    padding: padding,
+    child: Text(text, style: serif(size, color: C.accent)),
+  );
 }
 
 /// Fixed-column grid whose rows size to their content, so cells grow with the
@@ -353,17 +438,22 @@ class ContentGrid extends StatelessWidget {
     final rows = <Widget>[];
     for (var start = 0; start < children.length; start += columns) {
       if (rows.isNotEmpty) rows.add(SizedBox(height: runSpacing));
-      rows.add(ConstrainedBox(
-        constraints: BoxConstraints(minHeight: minRowHeight),
-        child: IntrinsicHeight(
-          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            for (var c = 0; c < columns; c++) ...[
-              if (c > 0) SizedBox(width: spacing),
-              Expanded(child: start + c < children.length ? children[start + c] : const SizedBox()),
-            ],
-          ]),
+      rows.add(
+        ConstrainedBox(
+          constraints: BoxConstraints(minHeight: minRowHeight),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var c = 0; c < columns; c++) ...[
+                  if (c > 0) SizedBox(width: spacing),
+                  Expanded(child: start + c < children.length ? children[start + c] : const SizedBox()),
+                ],
+              ],
+            ),
+          ),
         ),
-      ));
+      );
     }
     return Column(children: rows);
   }
@@ -376,15 +466,36 @@ class GoldLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-        height: height,
-        child: const Center(
-          child: SizedBox(
-            width: 28,
-            height: 28,
-            child: CircularProgressIndicator(strokeWidth: 3, color: C.gold, semanticsLabel: 'กำลังโหลด'),
-          ),
-        ),
-      );
+    height: height,
+    child: const Center(
+      child: SizedBox(
+        width: 28,
+        height: 28,
+        child: CircularProgressIndicator(strokeWidth: 3, color: C.gold, semanticsLabel: 'กำลังโหลด'),
+      ),
+    ),
+  );
+}
+
+/// Release-build stand-in for a widget that threw while building (ErrorWidget.builder), instead of
+/// Flutter's grey box. Self-contained (own Directionality, no theme lookups) because it can appear
+/// anywhere in the tree; the rest of the screen and the tab bar keep working.
+class BrokenSectionNotice extends StatelessWidget {
+  const BrokenSectionNotice({super.key});
+
+  @override
+  Widget build(BuildContext context) => Directionality(
+    textDirection: TextDirection.ltr,
+    child: Container(
+      padding: const EdgeInsets.all(16),
+      alignment: Alignment.center,
+      child: Text(
+        'แสดงส่วนนี้ไม่ได้ ลองกลับไปแล้วเปิดใหม่อีกครั้ง',
+        textAlign: TextAlign.center,
+        style: sans(14, color: C.caption),
+      ),
+    ),
+  );
 }
 
 /// Short Thai error message with a gold "ลองใหม่" (retry) pill.
@@ -395,23 +506,33 @@ class LoadErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Text(message, textAlign: TextAlign.center, style: sans(14, color: C.caption)),
-          const SizedBox(height: 12),
-          Semantics(
-            button: true,
-            child: GestureDetector(
-              onTap: onRetry,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                decoration: BoxDecoration(color: C.gold, borderRadius: BorderRadius.circular(20)),
-                child: Text('ลองใหม่', style: sans(14, weight: FontWeight.w600, color: C.onGold)),
+    padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          message,
+          textAlign: TextAlign.center,
+          style: sans(14, color: C.caption),
+        ),
+        const SizedBox(height: 12),
+        Semantics(
+          button: true,
+          child: GestureDetector(
+            onTap: onRetry,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              decoration: BoxDecoration(color: C.gold, borderRadius: BorderRadius.circular(20)),
+              child: Text(
+                'ลองใหม่',
+                style: sans(14, weight: FontWeight.w600, color: C.onGold),
               ),
             ),
           ),
-        ]),
-      );
+        ),
+      ],
+    ),
+  );
 }
 
 /// A dream illustration from the API, or the striped placeholder when there is none.
@@ -459,8 +580,15 @@ class DreamImageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final placeholder = ImagePlaceholder(placeholderLabel,
-        height: height, width: width, radius: radius, fontSize: fontSize, band: band, border: border);
+    final placeholder = ImagePlaceholder(
+      placeholderLabel,
+      height: height,
+      width: width,
+      radius: radius,
+      fontSize: fontSize,
+      band: band,
+      border: border,
+    );
     final img = image;
     final uri = img == null ? null : Uri.tryParse(img.url);
     if (img == null) return placeholder;
@@ -499,16 +627,19 @@ class DreamImageView extends StatelessWidget {
           semanticLabel: img.alt,
           loadingBuilder: (context, child, progress) => progress == null
               ? child
-              : Stack(fit: StackFit.expand, children: [
-                  ImagePlaceholder(placeholderLabel, radius: radius, fontSize: fontSize, band: band),
-                  const Center(
-                    child: SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: C.gold),
+              : Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    ImagePlaceholder(placeholderLabel, radius: radius, fontSize: fontSize, band: band),
+                    const Center(
+                      child: SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: C.gold),
+                      ),
                     ),
-                  ),
-                ]),
+                  ],
+                ),
           errorBuilder: (context, error, stack) =>
               ImagePlaceholder(placeholderLabel, radius: radius, fontSize: fontSize, band: band),
         ),
@@ -527,22 +658,28 @@ class Pager extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 16),
-      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        _PagerButton(Icons.first_page_rounded, 'ไปหน้าแรก', page > 1 ? () => onPage(1) : null),
-        _PagerButton(Icons.chevron_left_rounded, 'ไปหน้าก่อนหน้า', page > 1 ? () => onPage(page - 1) : null),
-        // Shrinks instead of overflowing when space is tight (narrow screens, large text, many pages).
-        Flexible(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text('หน้า $page / $pages', style: sans(14, weight: FontWeight.w600, color: C.accent)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _PagerButton(Icons.first_page_rounded, 'ไปหน้าแรก', page > 1 ? () => onPage(1) : null),
+          _PagerButton(Icons.chevron_left_rounded, 'ไปหน้าก่อนหน้า', page > 1 ? () => onPage(page - 1) : null),
+          // Shrinks instead of overflowing when space is tight (narrow screens, large text, many pages).
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  'หน้า $page / $pages',
+                  style: sans(14, weight: FontWeight.w600, color: C.accent),
+                ),
+              ),
             ),
           ),
-        ),
-        _PagerButton(Icons.chevron_right_rounded, 'ไปหน้าถัดไป', page < pages ? () => onPage(page + 1) : null),
-        _PagerButton(Icons.last_page_rounded, 'ไปหน้าสุดท้าย', page < pages ? () => onPage(pages) : null),
-      ]),
+          _PagerButton(Icons.chevron_right_rounded, 'ไปหน้าถัดไป', page < pages ? () => onPage(page + 1) : null),
+          _PagerButton(Icons.last_page_rounded, 'ไปหน้าสุดท้าย', page < pages ? () => onPage(pages) : null),
+        ],
+      ),
     );
   }
 }
@@ -570,10 +707,7 @@ class _PagerButton extends StatelessWidget {
             child: Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(
-                color: enabled ? C.gold : C.muted,
-                shape: BoxShape.circle,
-              ),
+              decoration: BoxDecoration(color: enabled ? C.gold : C.muted, shape: BoxShape.circle),
               child: Icon(icon, size: 22, color: enabled ? C.onGold : C.caption),
             ),
           ),
@@ -601,22 +735,30 @@ class _RenderMinTapTarget extends RenderShiftedBox {
     final c = child!;
     // Same width rules as before (a pill stretched in a row keeps its width); height is free.
     c.layout(constraints.copyWith(minHeight: 0), parentUsesSize: true);
-    size = constraints.constrain(Size(
-      c.size.width < MinTapTarget.size ? MinTapTarget.size : c.size.width,
-      c.size.height < MinTapTarget.size ? MinTapTarget.size : c.size.height,
-    ));
-    (c.parentData! as BoxParentData).offset =
-        Offset((size.width - c.size.width) / 2, (size.height - c.size.height) / 2);
+    size = constraints.constrain(
+      Size(
+        c.size.width < MinTapTarget.size ? MinTapTarget.size : c.size.width,
+        c.size.height < MinTapTarget.size ? MinTapTarget.size : c.size.height,
+      ),
+    );
+    (c.parentData! as BoxParentData).offset = Offset(
+      (size.width - c.size.width) / 2,
+      (size.height - c.size.height) / 2,
+    );
   }
 
   @override
-  double computeMinIntrinsicWidth(double height) => (child?.getMinIntrinsicWidth(height) ?? 0).clamp(MinTapTarget.size, double.infinity);
+  double computeMinIntrinsicWidth(double height) =>
+      (child?.getMinIntrinsicWidth(height) ?? 0).clamp(MinTapTarget.size, double.infinity);
   @override
-  double computeMaxIntrinsicWidth(double height) => (child?.getMaxIntrinsicWidth(height) ?? 0).clamp(MinTapTarget.size, double.infinity);
+  double computeMaxIntrinsicWidth(double height) =>
+      (child?.getMaxIntrinsicWidth(height) ?? 0).clamp(MinTapTarget.size, double.infinity);
   @override
-  double computeMinIntrinsicHeight(double width) => (child?.getMinIntrinsicHeight(width) ?? 0).clamp(MinTapTarget.size, double.infinity);
+  double computeMinIntrinsicHeight(double width) =>
+      (child?.getMinIntrinsicHeight(width) ?? 0).clamp(MinTapTarget.size, double.infinity);
   @override
-  double computeMaxIntrinsicHeight(double width) => (child?.getMaxIntrinsicHeight(width) ?? 0).clamp(MinTapTarget.size, double.infinity);
+  double computeMaxIntrinsicHeight(double width) =>
+      (child?.getMaxIntrinsicHeight(width) ?? 0).clamp(MinTapTarget.size, double.infinity);
 }
 
 /// Search box on a list page (menus 5 and 6): gold-bordered field with a clear button.
@@ -630,41 +772,44 @@ class SearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-        decoration: BoxDecoration(
-          color: C.input,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: C.goldBorder, width: 1.5),
-        ),
-        child: Row(children: [
-          const Icon(Icons.search, size: 18, color: C.gold),
-          const SizedBox(width: 8),
-          Expanded(
-            child: TextField(
-              key: fieldKey,
-              controller: controller,
-              onChanged: (_) => onChanged(),
-              textInputAction: TextInputAction.search,
-              style: sans(16),
-              decoration: InputDecoration(
-                hintText: hint,
-                hintStyle: sans(16, color: C.placeholder),
-                border: InputBorder.none,
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 10),
-              ),
+    // The field itself is 48 px tall (touch target, F23); the box keeps its height.
+    padding: const EdgeInsets.symmetric(horizontal: 14),
+    decoration: BoxDecoration(
+      color: C.input,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: C.goldBorder, width: 1.5),
+    ),
+    child: Row(
+      children: [
+        const Icon(Icons.search, size: 18, color: C.gold),
+        const SizedBox(width: 8),
+        Expanded(
+          child: TextField(
+            key: fieldKey,
+            controller: controller,
+            onChanged: (_) => onChanged(),
+            textInputAction: TextInputAction.search,
+            style: sans(16),
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: sans(16, color: C.placeholder),
+              border: InputBorder.none,
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(vertical: 12),
             ),
           ),
-          if (controller.text.trim().isNotEmpty)
-            IconButton(
-              tooltip: 'ล้างคำค้นหา',
-              visualDensity: VisualDensity.compact,
-              icon: const Icon(Icons.close, size: 18, color: C.placeholder),
-              onPressed: () {
-                controller.clear();
-                onChanged();
-              },
-            ),
-        ]),
-      );
+        ),
+        if (controller.text.trim().isNotEmpty)
+          IconButton(
+            tooltip: 'ล้างคำค้นหา',
+            visualDensity: VisualDensity.compact,
+            icon: const Icon(Icons.close, size: 18, color: C.placeholder),
+            onPressed: () {
+              controller.clear();
+              onChanged();
+            },
+          ),
+      ],
+    ),
+  );
 }

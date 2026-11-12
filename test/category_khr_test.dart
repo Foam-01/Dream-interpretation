@@ -95,8 +95,11 @@ void main() {
         final d = dreamsKhr[i];
         final n = j['numbers'] as Map;
         final id = j['id'] as String;
-        expect((d.id, d.name, d.meaning, d.short, d.cat), (j['id'], j['name'], j['meaning'], j['short'], 'หมวด ฆ'),
-            reason: id);
+        expect(
+          (d.id, d.name, d.meaning, d.short, d.cat),
+          (j['id'], j['name'], j['meaning'], j['short'], 'หมวด ฆ'),
+          reason: id,
+        );
         expect(d.numbers.isNone, j['noLuckyNumbers'] == true, reason: id);
         expect(d.numbers.twoDigit, n['twoDigit'], reason: id);
         expect(d.numbers.threeDigit, n['threeDigit'], reason: id);
@@ -105,8 +108,10 @@ void main() {
     });
 
     test('is part of the app data, after หมวด ค', () {
-      expect(dreams.skip(dreamsK.length + dreamsKh.length + dreamsKhw.length).take(dreamsKhr.length).map((d) => d.id),
-          dreamsKhr.map((d) => d.id));
+      expect(
+        dreams.skip(dreamsK.length + dreamsKh.length + dreamsKhw.length).take(dreamsKhr.length).map((d) => d.id),
+        dreamsKhr.map((d) => d.id),
+      );
       expect(dreams.map((d) => d.id).toSet(), hasLength(dreams.length), reason: 'ids unique across categories');
       expect(debugValidateDreams(), isTrue);
     });
@@ -157,7 +162,9 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsNothing);
     });
 
-    testWidgets('search: the 5th category chip is reachable by scrolling the chip row and filters to ฆ', (tester) async {
+    testWidgets('search: the 5th category chip is reachable by scrolling the chip row and filters to ฆ', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(390, 844);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
@@ -166,9 +173,9 @@ void main() {
       await tester.pumpAndSettle();
       // The horizontal Scrollable that holds the "ทั้งหมด" chip.
       // Pinned to the widget instance: "ทั้งหมด" scrolls out of view while dragging.
-      final chipRow = find.byWidget(tester.widget(find
-          .ancestor(of: find.text('ทั้งหมด').first, matching: find.byType(Scrollable))
-          .first));
+      final chipRow = find.byWidget(
+        tester.widget(find.ancestor(of: find.text('ทั้งหมด').first, matching: find.byType(Scrollable)).first),
+      );
       // Not built until scrolled into view (the row is a lazy ListView).
       // Result rows also show "หมวด ฆ" as their category label; target the chip only.
       final chip = find.descendant(of: chipRow, matching: find.text('หมวด ฆ'));

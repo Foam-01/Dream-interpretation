@@ -16,7 +16,11 @@ class HttpResult {
 }
 
 /// Why a request produced no response.
-enum TransportFailure { network, timeout }
+/// - [network]: no connection could be made (offline, DNS, refused).
+/// - [timeout]: no answer in time.
+/// - [server]: the server was reached but the exchange failed (TLS handshake, malformed HTTP);
+///   the user's internet is fine, so this must not be reported as "no internet".
+enum TransportFailure { network, timeout, server }
 
 class TransportException implements Exception {
   final TransportFailure failure;
@@ -79,9 +83,9 @@ class IoHttpTransport implements HttpTransport {
       final timedOut = e.message.toLowerCase().contains('timed out');
       throw TransportException(timedOut ? TransportFailure.timeout : TransportFailure.network, 'SocketException');
     } on HandshakeException {
-      throw const TransportException(TransportFailure.network, 'HandshakeException');
+      throw const TransportException(TransportFailure.server, 'HandshakeException');
     } on HttpException {
-      throw const TransportException(TransportFailure.network, 'HttpException');
+      throw const TransportException(TransportFailure.server, 'HttpException');
     }
   }
 

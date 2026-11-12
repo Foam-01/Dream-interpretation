@@ -12,8 +12,11 @@ void main() {
         .replaceAll('\r\n', '\n');
     expect(src, contains(drawIntro));
     for (var i = 0; i < 7; i++) {
-      expect(src, contains('| วัน${dayFull[i]} | ${drawLead[i][0].join(' ')} | ${drawLead[i][1].join(' ')} |'),
-          reason: dayFull[i]);
+      expect(
+        src,
+        contains('| วัน${dayFull[i]} | ${drawLead[i][0].join(' ')} | ${drawLead[i][1].join(' ')} |'),
+        reason: dayFull[i],
+      );
     }
   });
 

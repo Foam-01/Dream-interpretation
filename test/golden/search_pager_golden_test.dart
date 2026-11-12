@@ -5,18 +5,7 @@ import 'package:maha_dream/app_shell.dart';
 import 'package:maha_dream/data/design_data.dart';
 import 'package:maha_dream/data/dream_images_k.dart';
 
-import 'golden_test.dart' show expectGolden, pumpApp, tap;
-
-/// Decodes the pictures on screen exactly as they are shown (including their decode size).
-Future<void> precacheShownImages(WidgetTester tester) async {
-  final context = tester.element(find.byType(Scaffold).first);
-  await tester.runAsync(() async {
-    for (final e in find.byType(Image).evaluate()) {
-      await precacheImage((e.widget as Image).image, context);
-    }
-  });
-  await tester.pumpAndSettle();
-}
+import 'golden_test.dart' show expectGolden, precacheShownImages, pumpApp, tap;
 
 /// Decodes every bundled dream picture before a capture (asset decoding is asynchronous).
 Future<void> precacheAllDreamImages(WidgetTester tester) async {

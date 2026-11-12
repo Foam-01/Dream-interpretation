@@ -88,6 +88,33 @@ void main() {
       expect(u.toString(), contains('q=%E0%B8%87%E0%B8%B9+%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88'));
     });
 
+    test('daily asks once for the Thai pick day, rolling over at 04:00 Thai time (F15 I1)', () async {
+      final t = FakeTransport(
+        (_) => json(200, {
+          'data': [summary(id: 'b'), summary(id: 'a')],
+          'meta': {'date': 'x'},
+        }),
+      );
+      final repo = repoWith(t);
+      // 03:59 on 9 Nov in Thailand still belongs to 8 Nov; 04:00 is the new day.
+      final got = await repo.daily(DateTime.utc(2026, 11, 8, 20, 59));
+      await repo.daily(DateTime.utc(2026, 11, 8, 21), limit: 3);
+      expect(t.requests[0].path, '/api/v1/dreams/daily');
+      expect(t.requests[0].queryParameters, {'date': '2026-11-08', 'limit': '10'});
+      expect(t.requests[1].queryParameters, {'date': '2026-11-09', 'limit': '3'});
+      expect(got.map((d) => d.id), ['b', 'a'], reason: 'server draw order is kept');
+    });
+
+    test('daily rejects a response with the same dream twice', () {
+      final t = FakeTransport(
+        (_) => json(200, {
+          'data': [summary(), summary()],
+          'meta': {'date': '2026-11-08'},
+        }),
+      );
+      expect(repoWith(t).daily(DateTime.utc(2026, 11, 8, 6)), fails(DreamRepositoryErrorKind.badResponse, status: 200));
+    });
+
     test('blank query is not sent', () async {
       final t = FakeTransport((_) => json(200, page([])));
       await repoWith(t).list(q: '   ');
@@ -145,6 +172,24 @@ void main() {
       final repo = repoWith(t);
       expect(await repo.categories(), const [DreamCategory('animal', 'สัตว์'), DreamCategory('body', 'ร่างกาย')]);
       await repo.categories();
+      expect(t.requests, hasLength(1));
+    });
+
+    test('callers asking for categories at the same time share one request (F15 I2)', () async {
+      final answer = Completer<HttpResult>();
+      final t = FakeTransport((_) => answer.future);
+      final repo = repoWith(t);
+      final first = repo.categories();
+      final second = repo.categories();
+      answer.complete(
+        json(200, {
+          'data': [
+            {'id': 'animal', 'name': 'สัตว์'},
+          ],
+        }),
+      );
+      expect(await first, const [DreamCategory('animal', 'สัตว์')]);
+      expect(await second, const [DreamCategory('animal', 'สัตว์')]);
       expect(t.requests, hasLength(1));
     });
 
@@ -366,6 +411,11 @@ void main() {
       expect(
         repoWith(FakeTransport((_) => throw const TransportException(TransportFailure.network, 'n'))).list(),
         fails(DreamRepositoryErrorKind.network),
+      );
+      // TLS / malformed HTTP: the server was reached, so not "no internet" (F11 I3).
+      expect(
+        repoWith(FakeTransport((_) => throw const TransportException(TransportFailure.server, 's'))).list(),
+        fails(DreamRepositoryErrorKind.server),
       );
       expect(
         repoWith(FakeTransport((_) => throw const FormatException('utf8'))).list(),

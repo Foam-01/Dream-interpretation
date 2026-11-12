@@ -17,7 +17,11 @@ void main() {
     expect(remedies.map((r) => r.dream).toSet(), hasLength(18), reason: 'no remedy twice');
     expect(remedyClosing, startsWith('ที่ยกกล่าวนี้'));
     // Copy noise from the pasted page is not content.
-    final all = [...remedyIntro, for (final r in remedies) ...[r.dream, r.omen, r.cure], remedyClosing].join('\n');
+    final all = [
+      ...remedyIntro,
+      for (final r in remedies) ...[r.dream, r.omen, r.cure],
+      remedyClosing,
+    ].join('\n');
     expect(all, isNot(contains('แปะกงชี้โชค')));
     expect(RegExp(r'[0-9a-f]{8}-[0-9a-f]{4}').hasMatch(all), isFalse);
   });
@@ -41,7 +45,7 @@ void main() {
 
     final list = find.byType(Scrollable).first;
     // The list comes first; the long intro stays folded until asked for.
-    expect(find.byKey(const ValueKey('remedy-search')), findsNothing, reason: 'owner: no search on 18 items');
+    expect(find.byKey(const ValueKey('remedy-search')), findsOneWidget, reason: 'design: search in the header');
     expect(find.text('ฝันว่า${remedies.first.dream}'), findsOneWidget);
     expect(find.text(remedyIntro.first, skipOffstage: false), findsNothing);
     for (final r in remedies) {

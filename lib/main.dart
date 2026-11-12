@@ -8,15 +8,38 @@ import 'data/design_data.dart';
 import 'data/dream_repository.dart';
 import 'data/sample_dream_repository.dart';
 import 'screens/opening_screen.dart';
+import 'state/crash_reporter.dart';
+import 'state/error_log.dart';
 import 'theme.dart';
+import 'widgets/ui.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Crashlytics on Android release builds with google-services.json; otherwise reports nothing (F12).
+  crashReporter = await initCrashReporting();
+  installErrorHandlers();
   // Debug builds fail fast on malformed sample data (no-op in release).
   assert(debugValidateDreams());
-  runApp(MahaDreamApp(
-    repository: repositoryFromEnvironment(const String.fromEnvironment('API_BASE_URL')),
-    opening: true,
-  ));
+  final repository = repositoryFromEnvironment(const String.fromEnvironment('API_BASE_URL'));
+  crashReporter.setKey('data_source', repository.isRemote ? 'api' : 'sample').catchError((_) {});
+  runApp(MahaDreamApp(repository: repository, opening: true));
+}
+
+/// App-wide error handling (F11):
+/// - framework errors (build, layout, paint) are still shown in the console, and logged;
+/// - errors no one caught (async callbacks, platform) are logged instead of only reaching logcat;
+/// - in release, a widget that fails to build shows a short Thai message instead of a grey box
+///   (debug keeps Flutter's red error screen for developers).
+void installErrorHandlers({bool release = kReleaseMode}) {
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    logError(details.exception, details.stack, context: 'flutter', fatal: true);
+  };
+  PlatformDispatcher.instance.onError = (error, stack) {
+    logError(error, stack, context: 'uncaught', fatal: true);
+    return true;
+  };
+  if (release) ErrorWidget.builder = (_) => const BrokenSectionNotice();
 }
 
 /// `--dart-define=API_BASE_URL=<versioned API root>` (e.g. `http://10.0.2.2:3000/api/v1`)
@@ -67,7 +90,9 @@ class MahaDreamApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       home: opening
-          ? OpeningGate(child: AppShell(clock: clock, repository: repository))
+          ? OpeningGate(
+              child: AppShell(clock: clock, repository: repository),
+            )
           : AppShell(clock: clock, repository: repository),
     );
   }

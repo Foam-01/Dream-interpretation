@@ -31,7 +31,8 @@ export class DreamsRepository {
               { name: { contains: filter.q } },
               { short: { contains: filter.q } },
               { aliases: { has: filter.q } },
-              { twoDigit: { has: filter.q } },
+              // "8" also finds 08, as in the app (lib/data/number_search.dart); 3-digit numbers as typed.
+              { twoDigit: { has: /^[0-9]$/.test(filter.q) ? `0${filter.q}` : filter.q } },
               { threeDigit: { has: filter.q } },
             ],
           }
@@ -69,6 +70,26 @@ export class DreamsRepository {
     // A row changed between the two reads simply drops out of this page.
     const items = pageIds.map((id) => byId.get(id)).filter((r): r is DreamWithCategory => r !== undefined);
     return { items, total: keys.length };
+  }
+
+  /** Ids of every public dream (one short column), for the daily draw. */
+  async findPublicIds(): Promise<string[]> {
+    const rows = await this.prisma.dream.findMany({
+      where: { contentStatus: { in: PUBLIC_STATUSES } },
+      select: { id: true },
+    });
+    return rows.map((r) => r.id);
+  }
+
+  /** These dreams in the given order; ids that are gone (or no longer public) are left out. */
+  async findSummariesByIds(ids: string[]): Promise<DreamWithCategory[]> {
+    if (ids.length === 0) return [];
+    const rows = await this.prisma.dream.findMany({
+      where: { id: { in: ids }, contentStatus: { in: PUBLIC_STATUSES } },
+      include: { category: true },
+    });
+    const byId = new Map(rows.map((r) => [r.id, r]));
+    return ids.map((id) => byId.get(id)).filter((r): r is DreamWithCategory => r !== undefined);
   }
 
   findById(id: string): Promise<DreamWithRelations | null> {
