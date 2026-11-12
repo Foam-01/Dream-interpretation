@@ -44,6 +44,15 @@ DreamPage parseDreamPage(Object? json) {
   return result;
 }
 
+/// `{"data":[summary…],"meta":{"date"}}` from `GET /dreams/daily`, in the server's draw order.
+List<DreamSummary> parseDailyDreams(Object? json) {
+  final root = _map(json, r'$');
+  final data = _list(root['data'], 'data');
+  final items = [for (var i = 0; i < data.length; i++) _summary(_map(data[i], 'data[$i]'), 'data[$i]')];
+  if (items.map((d) => d.id).toSet().length != items.length) throw DreamJsonException('data', 'has duplicate ids');
+  return List.unmodifiable(items);
+}
+
 /// `{"data":{detail}}` from `GET /dreams/:id`.
 Dream parseDreamDetail(Object? json) {
   final m = _map(_map(json, r'$')['data'], 'data');

@@ -10,3 +10,9 @@ final drawShifts = <DateTime, DateTime>{
   // 2570 (2027)
   DateTime(2027, 1, 1): DateTime(2027, 1, 2), // New Year; GLO notice, Oct 2569
 };
+
+/// Every draw up to and including this date has been checked against the Government Lottery Office's
+/// announcements (news of the GLO notice of Oct 2569: 16 Dec 2569 → 17 Dec, 1 Jan 2570 → 2 Jan). After the next
+/// check, add any moved draw above and raise this date (README, "Moved lottery draws").
+/// test/draw_schedule_reminder_test.dart fails 14 days before it, as a reminder.
+final drawShiftsCheckedUntil = DateTime(2027, 1, 2);

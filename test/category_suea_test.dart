@@ -34,7 +34,27 @@ void main() {
   group('import file (19 predictions)', () {
     test('has exactly 19 DRAFT records of หมวด ส with unique ids and names', () {
       final dreams = importDreams();
-      expect(dreams.map((d) => d['name']), ['สนาม', 'สมอเรือ', 'สระน้ำ', 'สัปทน', 'สัปเหร่อ', 'สามเณร', 'สามง่าม', 'สายสะพาย', 'สาว', 'สิงโต', 'สุนัข', 'เสากระโดง', 'เสาเรือน', 'เสือ', 'เสือกัด', 'เสื้อผ้า', 'แส้', 'แสง', 'ไส้พุง']);
+      expect(dreams.map((d) => d['name']), [
+        'สนาม',
+        'สมอเรือ',
+        'สระน้ำ',
+        'สัปทน',
+        'สัปเหร่อ',
+        'สามเณร',
+        'สามง่าม',
+        'สายสะพาย',
+        'สาว',
+        'สิงโต',
+        'สุนัข',
+        'เสากระโดง',
+        'เสาเรือน',
+        'เสือ',
+        'เสือกัด',
+        'เสื้อผ้า',
+        'แส้',
+        'แสง',
+        'ไส้พุง',
+      ]);
       expect(dreams.map((d) => d['id']).toSet(), hasLength(19));
       expect(dreams.every((d) => d['categoryId'] == letterSueaCategoryId), isTrue);
       expect(dreams.every((d) => d['contentStatus'] == 'DRAFT'), isTrue, reason: 'never VERIFIED without review');
@@ -79,8 +99,11 @@ void main() {
         final d = dreamsSuea[i];
         final n = j['numbers'] as Map;
         final id = j['id'] as String;
-        expect((d.id, d.name, d.meaning, d.short, d.cat), (j['id'], j['name'], j['meaning'], j['short'], 'หมวด ส'),
-            reason: id);
+        expect(
+          (d.id, d.name, d.meaning, d.short, d.cat),
+          (j['id'], j['name'], j['meaning'], j['short'], 'หมวด ส'),
+          reason: id,
+        );
         expect(d.numbers.isNone, j['noLuckyNumbers'] == true, reason: id);
         expect(d.numbers.twoDigit, n['twoDigit'], reason: id);
         expect(d.numbers.threeDigit, n['threeDigit'], reason: id);

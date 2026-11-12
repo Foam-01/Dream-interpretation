@@ -49,7 +49,10 @@ class C {
 
 /// Fill for the highlighted number tiles (lock top row, digit boxes, lead numbers).
 const goldGradient = LinearGradient(
-    begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [C.goldLight, C.goldDeep]);
+  begin: Alignment.topCenter,
+  end: Alignment.bottomCenter,
+  colors: [C.goldLight, C.goldDeep],
+);
 
 /// Bright blue fill for the highlighted card (the lock บน group, the next draw's lead numbers).
 const blueGlowGradient = LinearGradient(
@@ -71,8 +74,13 @@ TextStyle _font(String family, double size, FontWeight weight, Color color, doub
       height: height,
     );
 
-TextStyle serif(double size, {FontWeight weight = FontWeight.w700, Color color = C.text, double? letterSpacing, double? height}) =>
-    _font('NotoSerifThai', size, weight, color, letterSpacing, height);
+TextStyle serif(
+  double size, {
+  FontWeight weight = FontWeight.w700,
+  Color color = C.text,
+  double? letterSpacing,
+  double? height,
+}) => _font('NotoSerifThai', size, weight, color, letterSpacing, height);
 
 TextStyle sans(double size, {FontWeight weight = FontWeight.w400, Color color = C.text, double? height}) =>
     _font('NotoSansThai', size, weight, color, null, height);

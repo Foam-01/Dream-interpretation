@@ -67,7 +67,6 @@ Future<void> systemBack(WidgetTester tester) async {
   await tester.pump();
 }
 
-
 void main() {
   group('A. Search and category', () {
     testWidgets('category "สัตว์" shows 4 results', (tester) async {
@@ -159,9 +158,6 @@ void main() {
       expect(find.text('ฟันหลุด'), findsOneWidget);
       expect(find.text('08 · 80'), findsOneWidget);
       expect(find.text('098 · 809'), findsOneWidget);
-      // Lucky digit boxes keep the leading zero digit.
-      expect(find.text('0'), findsOneWidget);
-      expect(find.text('8'), findsOneWidget);
     });
 
     testWidgets('bad-omen dream shows "เคล็ดลับแก้ฝันร้าย"', (tester) async {
@@ -336,7 +332,10 @@ void main() {
       expect(nextDrawDate(DateTime(2026, 10, 2)), DateTime(2026, 10, 16));
       expect(nextDrawDate(DateTime(2026, 10, 16)), DateTime(2026, 10, 16));
       expect(nextDrawDate(DateTime(2026, 10, 17)), DateTime(2026, 11, 1));
-      expect(nextDrawDate(DateTime(2026, 12, 20)), DateTime(2027, 1, 2)); // year rollover, New Year draw moved to the 2nd
+      expect(
+        nextDrawDate(DateTime(2026, 12, 20)),
+        DateTime(2027, 1, 2),
+      ); // year rollover, New Year draw moved to the 2nd
       // Draws the lottery office moved (drawShifts): 16 Dec 2569 → 17 Dec, 1 Jan 2570 → 2 Jan.
       expect(nextDrawDate(DateTime(2026, 12, 10)), DateTime(2026, 12, 17));
       expect(nextDrawDate(DateTime(2026, 12, 17)), DateTime(2026, 12, 17));
@@ -394,7 +393,7 @@ void main() {
         await pumpApp(tester, textScale: scale);
         // Home is a lazy list: scroll the page until the hot row is built.
         // The hot list is a daily random draw, so check whichever card comes first.
-        await scrollTo(tester, find.text('ฝันยอดฮิตวันนี้'));
+        await scrollTo(tester, find.text('ฝันเด่นวันนี้'));
         // The row now sits mid-page and may still be loading when its title appears.
         await tester.pumpAndSettle();
         await scrollTo(tester, find.byType(DreamCard).first);

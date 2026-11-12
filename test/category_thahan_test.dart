@@ -125,7 +125,9 @@ void main() {
     test('10 checked pictures — every dream has one, bundled and registered', () {
       expect(dreamImagesThahan.keys, dreamsThahan.map((d) => d.id));
       final onDisk = Directory('assets/dreams').listSync().whereType<File>().map((f) => f.uri.pathSegments.last);
-      expect(onDisk.where((f) => f.startsWith('thahan-')).toSet(), {for (final id in dreamImagesThahan.keys) '$id.jpg'});
+      expect(onDisk.where((f) => f.startsWith('thahan-')).toSet(), {
+        for (final id in dreamImagesThahan.keys) '$id.jpg',
+      });
       for (final MapEntry(:key, :value) in dreamImagesThahan.entries) {
         expect(value.url, 'assets/dreams/$key.jpg');
         expect(value.isAsset, isTrue);

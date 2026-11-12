@@ -1,5 +1,7 @@
 gradle-wrapper.jar
 /.gradle
+# Kotlin compiler session files, recreated by every build.
+/.kotlin/
 /captures/
 /gradlew
 /gradlew.bat

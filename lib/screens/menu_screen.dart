@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../app_shell.dart';
+import '../state/app_controller.dart';
 import '../data/design_data.dart';
 import '../theme.dart';
 import '../widgets/ui.dart';
@@ -49,8 +49,7 @@ class MenuScreen extends StatelessWidget {
                   spacing: 10,
                   runSpacing: 10,
                   children: [
-                    for (final item in features.take(paired))
-                      _FeatureTile(item, onTap: () => app.openFeat(item.key)),
+                    for (final item in features.take(paired)) _FeatureTile(item, onTap: () => app.openFeat(item.key)),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -62,48 +61,34 @@ class MenuScreen extends StatelessWidget {
                     child: _FeatureTile(item, wide: true, onTap: () => app.openFeat(item.key)),
                   )
                 else
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: AppCard(
-                    radius: 14,
-                    padding: const EdgeInsets.all(14),
-                    onTap: () => app.openFeat(item.key),
-                    child: Row(
-                      children: [
-                        GlyphTile(
-                          featureIcon(item.key),
-                          size: 46,
-                          radius: 12,
-                          borderWidth: 1,
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.title,
-                                style: sans(16, weight: FontWeight.w600),
-                              ),
-                              Text(
-                                item.desc,
-                                style: sans(13, color: C.textMuted),
-                              ),
-                            ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: AppCard(
+                      radius: 14,
+                      padding: const EdgeInsets.all(14),
+                      onTap: () => app.openFeat(item.key),
+                      child: Row(
+                        children: [
+                          GlyphTile(featureIcon(item.key), size: 46, radius: 12, borderWidth: 1),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(item.title, style: sans(16, weight: FontWeight.w600)),
+                                Text(item.desc, style: sans(13, color: C.textMuted)),
+                              ],
+                            ),
                           ),
-                        ),
-                        Text('›', style: sans(20, color: C.goldMuted)),
-                      ],
+                          Text('›', style: sans(20, color: C.goldMuted)),
+                        ],
+                      ),
                     ),
                   ),
-                ),
               if (letters.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text('ทำนายฝันตามตัวอักษร', style: serif(17, color: C.accent)),
-                Text(
-                  'แตะตัวอักษรแรกของสิ่งที่ฝันเห็น',
-                  style: sans(14, color: C.textSoft),
-                ),
+                Text('แตะตัวอักษรแรกของสิ่งที่ฝันเห็น', style: sans(14, color: C.textSoft)),
                 const SizedBox(height: 10),
                 // 32 letter categories as one grid instead of 32 rows.
                 ContentGrid(
@@ -111,10 +96,7 @@ class MenuScreen extends StatelessWidget {
                   spacing: 6,
                   runSpacing: 6,
                   minRowHeight: 44,
-                  children: [
-                    for (final item in letters)
-                      _LetterTile(item, onTap: () => app.openFeat(item.key)),
-                  ],
+                  children: [for (final item in letters) _LetterTile(item, onTap: () => app.openFeat(item.key))],
                 ),
               ],
             ],
@@ -146,18 +128,27 @@ class _FeatureTile extends StatelessWidget {
       onTap: onTap,
       child: wide
           // The wide row has no icon (owner's call).
-          ? Row(children: [
-              Expanded(child: title),
-              const SizedBox(width: 8),
-              Flexible(child: Text(item.desc, textAlign: TextAlign.right, style: sans(12, color: C.textMuted))),
-            ])
-          : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              icon,
-              const SizedBox(height: 10),
-              title,
-              const SizedBox(height: 2),
-              desc,
-            ]),
+          // At least 48 px tall with the padding: the minimum touch target (F23).
+          ? ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 24),
+              child: Row(
+                children: [
+                  Expanded(child: title),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      item.desc,
+                      textAlign: TextAlign.right,
+                      style: sans(12, color: C.textMuted),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [icon, const SizedBox(height: 10), title, const SizedBox(height: 2), desc],
+            ),
     );
   }
 }
@@ -189,8 +180,7 @@ class _LetterTile extends StatelessWidget {
           child: Center(
             child: Text(
               item.title.split(' ').last,
-              textScaler: MediaQuery.textScalerOf(context)
-                  .clamp(maxScaleFactor: 1.3),
+              textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.3),
               style: serif(18, color: C.goldLight, height: 1.2),
             ),
           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../app_shell.dart';
+import '../state/app_controller.dart';
 import '../data/design_data.dart';
 import '../data/dream_images_k.dart';
 import '../data/dream_repository.dart';
@@ -115,7 +115,10 @@ class _DreamRow extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           if (two.isNotEmpty)
-            Text(two.first, style: serif(20, weight: FontWeight.w800, color: C.number, height: 1.3))
+            Text(
+              two.first,
+              style: serif(20, weight: FontWeight.w800, color: C.number, height: 1.3),
+            )
           else
             // Capped so it wraps instead of pushing the row past a small screen.
             ConstrainedBox(

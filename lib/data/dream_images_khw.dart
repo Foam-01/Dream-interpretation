@@ -20,7 +20,10 @@ const dreamImagesKhw = <String, DreamImage>{
   'khw-trading': DreamImage.asset('assets/dreams/khw-trading.jpg', alt: 'ภาพประกอบ: ค้าขาย'),
   'khw-bat': DreamImage.asset('assets/dreams/khw-bat.jpg', alt: 'ภาพประกอบ: ค้างคาว'),
   'khw-starry-night': DreamImage.asset('assets/dreams/khw-starry-night.jpg', alt: 'ภาพประกอบ: ค่ำคืน'),
-  'khw-thinking-of-marriage': DreamImage.asset('assets/dreams/khw-thinking-of-marriage.jpg', alt: 'ภาพประกอบ: คิดแต่งงาน'),
+  'khw-thinking-of-marriage': DreamImage.asset(
+    'assets/dreams/khw-thinking-of-marriage.jpg',
+    alt: 'ภาพประกอบ: คิดแต่งงาน',
+  ),
   'khw-ditch': DreamImage.asset('assets/dreams/khw-ditch.jpg', alt: 'ภาพประกอบ: คู'),
   'khw-lover': DreamImage.asset('assets/dreams/khw-lover.jpg', alt: 'ภาพประกอบ: คู่รัก'),
   'khw-fine-clothes': DreamImage.asset('assets/dreams/khw-fine-clothes.jpg', alt: 'ภาพประกอบ: เครื่องแต่งตัว'),

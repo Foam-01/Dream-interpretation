@@ -100,8 +100,11 @@ void main() {
         final d = dreamsKhw[i];
         final n = j['numbers'] as Map;
         final id = j['id'] as String;
-        expect((d.id, d.name, d.meaning, d.short, d.cat), (j['id'], j['name'], j['meaning'], j['short'], 'หมวด ค'),
-            reason: id);
+        expect(
+          (d.id, d.name, d.meaning, d.short, d.cat),
+          (j['id'], j['name'], j['meaning'], j['short'], 'หมวด ค'),
+          reason: id,
+        );
         expect(d.numbers.isNone, j['noLuckyNumbers'] == true, reason: id);
         expect(d.numbers.twoDigit, n['twoDigit'], reason: id);
         expect(d.numbers.threeDigit, n['threeDigit'], reason: id);
@@ -110,8 +113,10 @@ void main() {
     });
 
     test('is part of the app data, after หมวด ข', () {
-      expect(dreams.skip(dreamsK.length + dreamsKh.length).take(dreamsKhw.length).map((d) => d.id),
-          dreamsKhw.map((d) => d.id));
+      expect(
+        dreams.skip(dreamsK.length + dreamsKh.length).take(dreamsKhw.length).map((d) => d.id),
+        dreamsKhw.map((d) => d.id),
+      );
       expect(dreams.map((d) => d.id).toSet(), hasLength(dreams.length), reason: 'ids unique across categories');
       expect(debugValidateDreams(), isTrue);
     });
@@ -155,7 +160,9 @@ void main() {
       expect(featureIcon('15'), featureIcon('13'));
     });
 
-    testWidgets('offline (bundled) mode: lists the 24 with ไม่ควรเสี่ยง and nothing from other categories', (tester) async {
+    testWidgets('offline (bundled) mode: lists the 24 with ไม่ควรเสี่ยง and nothing from other categories', (
+      tester,
+    ) async {
       await openPage(tester);
       expect(find.text('พบ 24 รายการ'), findsOneWidget);
       expect(find.text('ไม่ควรเสี่ยง'), findsNWidgets(14));

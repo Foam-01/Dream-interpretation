@@ -6,6 +6,14 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Crashlytics needs android/app/google-services.json (from the Firebase console, kept out of git).
+// Without it — CI, a fresh clone — the Firebase plugins are skipped and the app builds and runs with
+// crash reporting off (see lib/state/crash_reporter.dart).
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+    apply(plugin = "com.google.firebase.crashlytics")
+}
+
 // Release signing (upload key) comes from android/key.properties, which git ignores. Without it a release
 // build stops, so a debug-signed build can never reach Play by mistake. For a local test build without the
 // key, set ALLOW_DEBUG_SIGNING=true (never for a build you upload).

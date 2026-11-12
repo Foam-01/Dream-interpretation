@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'design_data.dart';
 import 'dream_json_parser.dart';
 import 'dream_repository.dart';
+import '../state/daily_pick.dart';
+import '../state/error_log.dart';
 import 'http_transport.dart';
 
 /// [DreamRepository] backed by the NestJS API.
@@ -17,7 +19,7 @@ class ApiDreamRepository implements DreamRepository {
 
   final Uri baseUrl;
   final HttpTransport _transport;
-  List<DreamCategory>? _categories;
+  Future<List<DreamCategory>>? _categories;
 
   /// Validates an API base URL: absolute http(s) with a host, no query or
   /// fragment, no credentials, and a path ending in `/api/v1` with `/api/v1`
@@ -50,9 +52,21 @@ class ApiDreamRepository implements DreamRepository {
   );
 
   /// Categories rarely change; a successful answer is kept for the app's lifetime.
+  /// The request itself is shared, so callers that ask at the same time (the search screen asks
+  /// twice when it opens with a category chosen) wait for one request instead of sending two.
+  /// A failed request is forgotten, so a retry asks the server again.
   @override
-  Future<List<DreamCategory>> categories() async =>
-      _categories ??= List.unmodifiable(await _get(_uri(['dream-categories']), parseCategoryList));
+  Future<List<DreamCategory>> categories() {
+    final pending = _categories ??= _get(
+      _uri(['dream-categories']),
+      parseCategoryList,
+    ).then<List<DreamCategory>>(List.unmodifiable);
+    pending.catchError((Object _) {
+      if (identical(_categories, pending)) _categories = null;
+      return const <DreamCategory>[];
+    });
+    return pending;
+  }
 
   @override
   Future<DreamPage> list({
@@ -88,6 +102,16 @@ class ApiDreamRepository implements DreamRepository {
     }
   }
 
+  /// The server draws (backend/src/dreams/daily-pick.ts, same algorithm as `dailyPick`); the app only
+  /// names the day, so its 04:00 Thai-time rollover stays the single rule.
+  @override
+  Future<List<DreamSummary>> daily(DateTime now, {int limit = DreamRepository.dailyCount}) {
+    final day = dailyPickDay(now);
+    String two(int n) => n.toString().padLeft(2, '0');
+    final date = '${day.year.toString().padLeft(4, '0')}-${two(day.month)}-${two(day.day)}';
+    return _get(_uri(['dreams', 'daily'], {'date': date, 'limit': '$limit'}), parseDailyDreams);
+  }
+
   @override
   void close() => _transport.close();
 
@@ -96,13 +120,15 @@ class ApiDreamRepository implements DreamRepository {
     try {
       res = await _transport.get(uri);
     } on TransportException catch (e) {
-      throw DreamRepositoryException(
-        e.failure == TransportFailure.timeout ? DreamRepositoryErrorKind.timeout : DreamRepositoryErrorKind.network,
-        e.message,
-      );
+      throw DreamRepositoryException(switch (e.failure) {
+        TransportFailure.timeout => DreamRepositoryErrorKind.timeout,
+        TransportFailure.network => DreamRepositoryErrorKind.network,
+        TransportFailure.server => DreamRepositoryErrorKind.server,
+      }, e.message);
     } on FormatException {
       throw const DreamRepositoryException(DreamRepositoryErrorKind.badResponse, 'response is not valid UTF-8');
-    } catch (e) {
+    } catch (e, s) {
+      logError(e, s, context: 'api_transport');
       throw DreamRepositoryException(DreamRepositoryErrorKind.unexpected, e.runtimeType.toString());
     }
 

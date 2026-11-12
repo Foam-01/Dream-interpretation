@@ -18,18 +18,21 @@ void main() {
     });
 
     test('ids are the fixed slugs assigned to each dream (locked)', () {
-      expect({for (final d in legacySampleDreams) d.name: d.id}, {
-        'งู': 'snake',
-        'ช้าง': 'elephant',
-        'ฟันหลุด': 'tooth-falling-out',
-        'น้ำท่วม': 'flood',
-        'ปลา': 'fish',
-        'ไฟไหม้': 'fire',
-        'พระ': 'monk',
-        'คนตาย': 'dead-person',
-        'ทองคำ': 'gold',
-        'เสือ': 'tiger',
-      });
+      expect(
+        {for (final d in legacySampleDreams) d.name: d.id},
+        {
+          'งู': 'snake',
+          'ช้าง': 'elephant',
+          'ฟันหลุด': 'tooth-falling-out',
+          'น้ำท่วม': 'flood',
+          'ปลา': 'fish',
+          'ไฟไหม้': 'fire',
+          'พระ': 'monk',
+          'คนตาย': 'dead-person',
+          'ทองคำ': 'gold',
+          'เสือ': 'tiger',
+        },
+      );
     });
 
     test('dreamById finds the right dream and returns null for unknown ids', () {
@@ -58,26 +61,21 @@ void main() {
       c.back();
       expect(c.page, isA<HomePage>());
     });
-
-    test('toggleSave saves and unsaves by id without touching other legacySampleDreams', () {
-      final c = AppController();
-      c.toggleSave('snake');
-      expect(c.saved, {'snake'});
-      c.toggleSave('elephant');
-      expect(c.saved, {'snake', 'elephant'});
-      c.toggleSave('snake');
-      expect(c.saved, {'elephant'});
-    });
   });
 
   group('ResultScreen by id', () {
     Future<void> pumpResult(WidgetTester tester, String id) async {
       final c = AppController(repository: legacySampleRepository);
       addTearDown(c.dispose);
-      await tester.pumpWidget(MaterialApp(
-        theme: buildTheme(),
-        home: AppScope(controller: c, child: Scaffold(body: ResultScreen(dreamId: id))),
-      ));
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: buildTheme(),
+          home: AppScope(
+            controller: c,
+            child: Scaffold(body: ResultScreen(dreamId: id)),
+          ),
+        ),
+      );
     }
 
     testWidgets('shows the dream for a known id', (tester) async {

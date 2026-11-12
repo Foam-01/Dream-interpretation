@@ -76,7 +76,11 @@ void main() {
     expect(find.text('มังกร'), findsNothing);
     await expectPagerLabel(tester, 'หน้า 1 / 5');
     final all = find.widgetWithText(SelectPill, 'ทั้งหมด');
-    await tester.scrollUntilVisible(all, -400, scrollable: find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first);
+    await tester.scrollUntilVisible(
+      all,
+      -400,
+      scrollable: find.byWidgetPredicate((w) => w is Scrollable && w.axisDirection == AxisDirection.down).first,
+    );
     await tester.tap(all);
     await tester.pumpAndSettle();
     expect(find.text('1000 ภาพ'), findsOneWidget);
@@ -84,7 +88,10 @@ void main() {
 
   testWidgets('search by dream word, by lucky number or picture number; clear goes back', (tester) async {
     await openPae(tester);
-    final horses = [for (final p in paeNumbers) if (p.name.contains('ม้า')) p];
+    final horses = [
+      for (final p in paeNumbers)
+        if (p.name.contains('ม้า')) p,
+    ];
     expect(horses, isNotEmpty);
     await tester.enterText(box, 'ม้า');
     await tester.pumpAndSettle();
@@ -104,5 +111,18 @@ void main() {
     expect(tester.widget<TextField>(box).controller!.text, isEmpty);
     expect(find.text('มังกร'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a picture number without its 0s in front still finds it; lucky numbers stay exact', (tester) async {
+    await openPae(tester);
+    final ten = [
+      for (final p in paeNumbers)
+        if (p.number == '010' || p.lucky == '10') p,
+    ];
+    expect(ten.map((p) => p.number), ['010'], reason: 'lucky numbers are three digits, so "10" is never one');
+    await tester.enterText(box, '10');
+    await tester.pumpAndSettle();
+    expect(find.text('พบ 1 ภาพ'), findsOneWidget);
+    expect(find.text(ten.single.name), findsWidgets);
   });
 }
